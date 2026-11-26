@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ajuste renal y hepático de medicamentos</title>
+<style>
+:root{--pri:#4b2a7b;--pri2:#7a4fb5;--soft:#f1eaf9;--bg:#f2eff7;--card:#fff;--ink:#1f1a2b;--mut:#6b6478;--line:#e3dcec;
+  --ok:#1e7b46;--okb:#e5f4ec;--aj:#a86200;--ajb:#fdf1df;--ev:#b3261e;--evb:#fbe9e7;--na:#7a7f8c;--nab:#eef0f3;--r:16px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+header{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:22px 18px 18px;padding-top:max(22px,env(safe-area-inset-top))}
+header h1{margin:0;font-size:1.3rem;letter-spacing:.2px}
+header p{margin:4px 0 0;font-size:.85rem;opacity:.9}
+.tabs{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-weight:700;font-size:.92rem;padding:11px 8px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--pri);cursor:pointer}
+.tabs button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.tabs button small{display:block;font-weight:500;font-size:.72rem;opacity:.85}
+main{max-width:760px;margin:0 auto;padding:12px 12px 110px}
+.pane{display:none}.pane.on{display:block}
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin:0 0 12px;box-shadow:0 1px 3px rgba(40,20,70,.08)}
+h2{margin:0 0 10px;font-size:.8rem;text-transform:uppercase;letter-spacing:.7px;color:var(--mut)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:340px){.g2{grid-template-columns:1fr}}
+label.f{display:block;font-size:.8rem;font-weight:600;color:#4a4458;margin:0 0 4px}
+input,select{width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fcfbfe;color:var(--ink)}
+input:focus,select:focus{outline:none;border-color:var(--pri2);background:#fff}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.kpi{background:var(--soft);border-radius:12px;padding:10px;text-align:center}
+.kpi small{display:block;font-size:.7rem;color:var(--mut)}
+.kpi b{display:block;font-size:1.35rem;color:var(--pri)}
+.stage{margin-top:10px;padding:10px 12px;border-radius:12px;font-size:.88rem;background:var(--soft)}
+.hint{font-size:.78rem;color:var(--mut);margin-top:8px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;width:0;height:0}
+.seg span{display:inline-block;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fcfbfe;font-size:.84rem;cursor:pointer}
+.seg input:checked+span{background:var(--soft);border-color:var(--pri2);color:var(--pri);font-weight:700}
+.seg input:checked+span::before{content:"✓ "}
+.search{position:relative}
+.sug{position:absolute;left:0;right:0;top:100%;z-index:4;background:#fff;border:1.5px solid var(--line);border-radius:12px;margin-top:4px;max-height:290px;overflow:auto;box-shadow:0 8px 20px rgba(40,20,70,.14);display:none}
+.sug div{padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer;font-size:.92rem}
+.sug div small{color:var(--mut);display:block;font-size:.74rem}
+.sug div:hover{background:var(--soft)}
+.btn{font:inherit;font-weight:700;border:none;border-radius:12px;padding:11px 14px;background:var(--pri);color:#fff;cursor:pointer}
+.btn.l{background:#fff;color:var(--pri);border:1.5px solid var(--pri2)}
+.row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.row > *{flex:1}
+.drug{background:#fff;border-radius:var(--r);margin:0 0 12px;box-shadow:0 1px 3px rgba(40,20,70,.08);overflow:hidden}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:14px 14px 8px}
+.dh b{font-size:1.02rem}
+.dh small{display:block;color:var(--mut);font-size:.76rem}
+.x{border:none;background:var(--nab);color:#555;border-radius:999px;width:30px;height:30px;font-size:1rem;cursor:pointer;flex:none}
+.lom{display:inline-block;font-size:.66rem;font-weight:700;background:var(--soft);color:var(--pri);border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:2px}
+.dose{margin:0 14px 10px;padding:9px 11px;background:#faf8fd;border-radius:10px;font-size:.86rem}
+.dose b{color:var(--pri)}
+.blk{margin:0 14px 10px;border-radius:12px;padding:10px 12px;border-left:5px solid var(--na);background:var(--nab)}
+.blk.ok{border-color:var(--ok);background:var(--okb)}.blk.ajuste{border-color:var(--aj);background:var(--ajb)}.blk.evitar{border-color:var(--ev);background:var(--evb)}
+.bt{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.blk.ok .bt{color:var(--ok)}.blk.ajuste .bt{color:var(--aj)}.blk.evitar .bt{color:var(--ev)}.blk.sin .bt{color:var(--na)}
+.pct{font-size:.72rem;font-weight:800;background:#fff;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.blk p{margin:0;font-size:.9rem}
+.nt{margin-top:6px;font-size:.8rem;color:#3e3850;background:rgba(255,255,255,.65);border-radius:8px;padding:6px 8px}
+.calc{display:flex;gap:6px;align-items:center;margin-top:8px;font-size:.82rem}
+.calc input{width:96px;flex:none;padding:7px 9px;font-size:15px;border-radius:9px}
+.calc span{color:#3e3850}
+.empty{text-align:center;color:var(--mut);padding:26px 12px;font-size:.92rem}
+.alert{border-radius:var(--r);padding:14px;margin:0 0 12px;background:var(--evb);border-left:6px solid var(--ev)}
+.alert h3{margin:0 0 8px;font-size:.95rem;color:var(--ev)}
+.alert li{margin-bottom:8px;font-size:.88rem}
+.alert ul{margin:0;padding-left:18px}
+.fab{position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:6;border:none;border-radius:999px;padding:14px 18px;font:inherit;font-weight:700;background:var(--pri);color:#fff;box-shadow:0 6px 18px rgba(75,42,123,.35);cursor:pointer}
+.fab i{font-style:normal;background:#fff;color:var(--pri);border-radius:999px;padding:1px 8px;margin-left:6px}
+sup{font-size:.62em;color:var(--pri2);font-weight:700}
+.refs{font-size:.78rem;color:var(--mut)}
+.refs ol{padding-left:20px;margin:6px 0 0}
+.refs li{margin-bottom:4px}
+details.imp summary{cursor:pointer;font-size:.84rem;color:var(--pri);font-weight:600}
+.leg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:.74rem}
+.leg span{padding:3px 8px;border-radius:999px}
+.fdv{background:#fff4e5;border:1.5px solid #f0b45c;border-radius:14px;margin:12px 0 0;padding:0}
+.fdv summary{cursor:pointer;padding:12px 14px;font-weight:700;font-size:.9rem;color:#8a4b00;list-style:none}
+.fdv summary::-webkit-details-marker{display:none}
+.fdv summary::before{content:"▸ "}
+.fdv[open] summary::before{content:"▾ "}
+.fdvb{padding:0 14px 12px;font-size:.86rem;line-height:1.45}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paliativos LDFS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>header{position:relative;padding-top:calc(env(safe-area-inset-top) + 18px)!important}.inicio{display:block;width:max-content;margin:0 0 10px;color:#fff;text-decoration:none;font-size:.85rem;font-weight:600;background:rgba(255,255,255,.18);padding:6px 12px;border-radius:999px}</style>
+</head>
+<body>
+<header>
+  <a class="inicio" href="index.html">‹ Inicio</a>
+  <h1>Ajuste renal y hepático de medicamentos</h1>
+  <p>Dr. Luis Diego Flores Salazar</p>
+</header>
+<nav class="tabs">
+  <button id="t1" class="on" onclick="verTab(1)">1 · Paciente<small id="tsub1">Riñón e hígado</small></button>
+  <button id="t2" onclick="verTab(2)">2 · Medicamentos<small id="tsub2">0 en la lista</small></button>
+</nav>
+<main>
+<div id="anticip"></div>
+<section class="pane on" id="p1">
+  <div class="card">
+    <h2>Función renal</h2>
+    <div class="g2">
+      <div><label class="f">Edad (años)</label><input id="edad" type="text" inputmode="decimal" placeholder="Ej: 72"></div>
+      <div><label class="f">Sexo</label><select id="sexo"><option value="F">Femenino</option><option value="M">Masculino</option></select></div>
+      <div><label class="f">Peso actual (kg)</label><input id="peso" type="text" inputmode="decimal" placeholder="Ej: 58"></div>
+      <div><label class="f">Creatinina (mg/dL)</label><input id="scr" type="text" inputmode="decimal" placeholder="Ej: 1.4"></div>
+      <div><label class="f">Cistatina C (mg/L, opcional)</label><input id="cys" type="text" inputmode="decimal" placeholder="Ej: 1.3"></div>
+      <div><label class="f">TFG conocida (opcional)</label><input id="tfgman" type="text" inputmode="decimal" placeholder="mL/min/1.73 m²"></div>
+      <div><label class="f">Diálisis</label><select id="dialisis"><option value="">Ninguna</option><option value="HD">Hemodiálisis</option><option value="DP">Diálisis peritoneal</option></select></div>
+    </div>
+    <div class="kpis" id="kpi"></div>
+    <div class="stage" id="estadio">Ingrese edad y creatinina.</div>
+    <div class="hint">Con cistatina C se usa CKD-EPI creatinina-cistatina 2021<sup>3</sup> (o solo cistatina 2012<sup>7</sup> si no hay creatinina) para todos los fármacos: más fiable en caquexia y sarcopenia. Sin cistatina: TFG por CKD-EPI 2021<sup>3</sup> y aclaramiento de creatinina (CrCl) por Cockcroft-Gault<sup>4</sup> con peso actual. Cada fármaco usa la medida de su fuente; sin peso, se usa la TFG. En pacientes caquécticos o con sarcopenia la creatinina sobreestima la función renal.</div>
+  </div>
+  <div class="card">
+    <h2>Función hepática · Child-Pugh<sup>5</sup></h2>
+    <div class="g2">
+      <div><label class="f">Bilirrubina (mg/dL)</label><input id="cp_bil" type="text" inputmode="decimal"></div>
+      <div><label class="f">Albúmina (g/dL)</label><input id="cp_alb" type="text" inputmode="decimal"></div>
+      <div><label class="f">INR</label><input id="cp_inr" type="text" inputmode="decimal"></div>
+      <div><label class="f">Ascitis</label><select id="cp_asc"><option value="">—</option><option value="1">Ausente</option><option value="2">Leve o controlada</option><option value="3">Moderada a grave</option></select></div>
+    </div>
+    <div style="margin-top:10px"><label class="f">Encefalopatía</label><select id="cp_enc"><option value="">—</option><option value="1">Ausente</option><option value="2">Grado 1–2</option><option value="3">Grado 3–4</option></select></div>
+    <div class="kpis" id="kpiHep" style="grid-template-columns:1fr 1fr"></div>
+    <div class="hint">A (5–6 pts): compensada, sobrevida a 1 año 100 %. B (7–9): deterioro moderado, 80 %. C (10–15): grave o descompensada, 45 %<sup>1</sup>.</div>
+  </div>
+  <div class="card">
+    <h2>Desprescripción</h2>
+    <div class="seg"><label><input type="checkbox" id="stopp"><span>Pronóstico &lt; 1 año o fragilidad avanzada</span></label></div>
+    <div class="hint">Activa los avisos STOPPFrail<sup>9</sup> en los fármacos de beneficio dudoso al final de la vida.</div>
+  </div>
+  <button class="btn" style="width:100%" onclick="verTab(2)">Siguiente: medicamentos →</button>
+</section>
+
+<section class="pane" id="p2">
+  <div class="card">
+    <h2>Agregar medicamentos</h2>
+    <div class="search">
+      <input id="buscar" type="text" placeholder="Buscar por nombre o familia…" autocomplete="off">
+      <div class="sug" id="sug"></div>
+    </div>
+    <div style="margin-top:10px"><label class="f">O elegir por familia</label><select id="famsel"></select></div>
+    <div class="seg" style="margin-top:10px">
+      <label><input type="checkbox" id="soloLom"><span>Solo Formulario CCSS primer nivel</span></label>
+    </div>
+    <div class="hint" id="msg"></div>
+    <div class="leg"><span style="background:var(--okb);color:var(--ok)">Sin ajuste</span><span style="background:var(--ajb);color:var(--aj)">Ajustar</span><span style="background:var(--evb);color:var(--ev)">Evitar</span><span style="background:var(--nab);color:var(--na)">Sin datos</span></div>
+  </div>
+  <div id="ctx" class="card" style="padding:12px 14px;font-size:.86rem"></div>
+  <div id="alerta"></div>
+  <div id="lista"><div class="empty">Agregue medicamentos para ver la dosis habitual y el ajuste renal y hepático.</div></div>
+  <div id="carga"></div>
+  <div class="card" id="qtbox" style="display:none">
+    <h2>QT · datos opcionales</h2>
+    <div class="g2">
+      <div><label class="f">QTc del ECG (ms)</label><input id="qtc" type="text" inputmode="decimal" placeholder="Ej: 460"></div>
+      <div><label class="f">Potasio (mmol/L)</label><input id="kpot" type="text" inputmode="decimal" placeholder="Ej: 3.8"></div>
+      <div><label class="f">Magnesio (mg/dL)</label><input id="mgn" type="text" inputmode="decimal" placeholder="Ej: 1.9"></div>
+    </div>
+    <div id="qtres" class="hint"></div>
+  </div>
+  <div class="row" id="acc" style="display:none"><button class="btn" onclick="copiar()">Copiar resumen</button><button class="btn l" onclick="limpiar()">Vaciar lista</button></div>
+</section>
+
+<div class="card refs" style="margin-top:8px">
+  <b>Referencias</b>
+  <ol>
+    <li>Wilcock A, Howard P, Charlesworth S (eds). Palliative Care Formulary, 8.ª ed. Pharmaceutical Press 2022 (caps. 17 y 18).</li>
+    <li>Caja Costarricense de Seguro Social. Formulario Terapéutico Institucional para el Primer Nivel de Atención en Salud, 1.ª ed. CCSS 2023.</li>
+    <li>Inker LA, et al. N Engl J Med 2021; 385: 1737. doi: 10.1056/NEJMoa2102953</li>
+    <li>Cockcroft DW, Gault MH. Nephron 1976; 16: 31. doi: 10.1159/000180580</li>
+    <li>Pugh RN, et al. Br J Surg 1973; 60: 646. doi: 10.1002/bjs.1800600817</li>
+    <li>Fichas técnicas de los fabricantes (fármacos fuera del Formulario de primer nivel).</li>
+    <li>Inker LA, et al. N Engl J Med 2012; 367: 20. doi: 10.1056/NEJMoa1114248</li>
+    <li>Boustani M, et al. Aging Health 2008; 4: 311. doi: 10.2217/1745509X.4.3.311</li>
+    <li>Curtin D, et al. Age Ageing 2021; 50: 465. doi: 10.1093/ageing/afaa159</li>
+    <li>Twycross R, Wilcock A, Howard P (eds). Palliative Care Formulary, 5.ª ed. palliativedrugs.com 2014.</li>
+  </ol>
+  <p style="margin:8px 0 0">Herramienta de apoyo; no reemplaza el juicio clínico. Los porcentajes y las dosis calculadas son orientativos: titule según respuesta, edad y fragilidad.</p>
+</div>
+</main>
+<button class="fab" id="fab" onclick="verTab(2)">Medicamentos <i id="fabn">0</i></button>
+
+<script>
+const fdvAbierto = {};
+document.addEventListener("toggle", e => { if(e.target.classList && e.target.classList.contains("fdv")) fdvAbierto[e.target.dataset.k] = e.target.open; }, true);
+/* d: dosis habitual del adulto · r: tramos renales [valor mínimo, estado, texto, % de la dosis habitual]
+   h: hepatopatía (Child-Pugh B y C) [estado, texto, %] · m: medida renal (crcl o tfg) · lom: Formulario CCSS primer nivel */
+const DRUGS = [
+/* ===== Analgésicos, AINE, opioides, adyuvantes del dolor ===== */
+{n:"Paracetamol (acetaminofén)",f:"Analgésicos y AINE",t:["acetaminofen"],lom:1,p:"500 mg tab; 100 mg/mL sol. oral; 300 mg y 1 g supositorio",
+ d:"0.5–1 g c/4–6 h VO; máximo 4 g/día (3 g/día en ancianos, desnutridos o consumo de alcohol).",m:"crcl",
+ r:[[50,"ok","Sin ajuste: 0.5–1 g c/4–6 h; máximo 4 g/día."],
+    [10,"ajuste","Mismo tamaño de dosis, intervalo c/6 h: 1 g c/6 h; máximo 3 g/día (75 % del máximo habitual).",75],
+    [0,"ajuste","Mismo tamaño de dosis, intervalo c/8 h: 1 g c/8 h; máximo 3 g/día (75 % del máximo habitual).",75]],
+ h:["ajuste","Hepatopatía: máximo 2–3 g/día (50–75 % del máximo habitual de 4 g), p. ej., 500 mg–1 g c/8 h. Evitar con consumo activo de alcohol o desnutrición."]},
+{n:"Codeína con paracetamol",f:"Opioides",t:["opioide","codeina","acetaminofen"],lom:1,p:"Codeína 30 mg + paracetamol 500 mg tab",
+ d:"1–2 tab c/4–6 h VO; máximo 240 mg de codeína y 4 g de paracetamol al día (8 tab).",m:"crcl",
+ r:[[30,"ajuste","Precaución: la codeína y sus metabolitos se acumulan. 1 tab c/6 h y titular; máximo 6 tab/día (75 %).",75],
+    [10,"ajuste","1 tab c/8 h (≈ 50 % de la dosis máxima habitual): 90 mg/día de codeína y 1.5 g/día de paracetamol.",50],
+    [0,"evitar","Evitar (CrCl < 10). Si es inevitable: 1 tab c/8–12 h; preferir otro opioide."]],
+ h:["evitar","La codeína es profármaco: analgesia impredecible en hepatopatía. Paracetamol máximo 2–3 g/día. Preferir otro opioide."]},
+{n:"Ibuprofeno",f:"Analgésicos y AINE",t:["AINE"],lom:1,p:"400 mg tab; 100 mg/5 mL susp. (2C)",
+ d:"400 mg c/6–8 h VO (1.2–2.4 g/día); máximo 3.2 g/día.",m:"tfg",
+ r:[[60,"ok","Dosis mínima eficaz por el menor tiempo: 200–400 mg c/8 h."],
+    [30,"ajuste","Evitar si hay enfermedad intercurrente o deshidratación. Si se usa: 200 mg c/8 h (≈ 50 % de la dosis usual) por pocos días; vigilar creatinina y potasio.",50],
+    [0,"evitar","Evitar (TFG < 30)."]],
+ h:["ajuste","Hepatopatía: si es inevitable, 200 mg c/8 h (50 % de 400 mg c/8 h). Evitar en Child-Pugh C, ascitis o varices (sangrado y falla renal)."]},
+{n:"Diclofenaco",f:"Analgésicos y AINE",t:["AINE"],lom:1,p:"75 mg/3 mL ampolla IM (dosis única institucional)",
+ d:"75 mg IM profunda, dosis única (lineamiento institucional). VO: 50 mg c/8–12 h; máximo 150 mg/día.",m:"crcl",
+ r:[[60,"ok","Dosis mínima eficaz por el menor tiempo posible."],
+    [30,"ajuste","Precaución: 75 mg IM dosis única o 50 mg c/12 h VO (≈ 67 % del máximo diario), máximo 3–5 días.",67],
+    [0,"evitar","Contraindicado en insuficiencia renal grave."]],
+ h:["evitar","Contraindicado en insuficiencia hepática grave. En leve a moderada, dosis mínima y vigilar transaminasas."]},
+{n:"Indometacina",f:"Analgésicos y AINE",t:["AINE"],lom:1,p:"100 mg supositorio; 25 mg cáps (2C)",
+ d:"Rectal: 100 mg c/12 h (máximo 200 mg/día). VO: 25 mg c/8–12 h; máximo 150–200 mg/día.",m:"crcl",
+ r:[[60,"ok","Dosis mínima eficaz; sin recomendación específica de ajuste."],
+    [30,"ajuste","Evitar si es posible. Si se usa: 25 mg c/12 h (≈ 33 % del máximo) por pocos días; vigilar creatinina.",33],
+    [0,"evitar","Evitar (CrCl < 30)."]],
+ h:["ajuste","Sin recomendación específica; dosis mínima. Evitar en hepatopatía grave (sangrado y falla renal)."]},
+{n:"Sulindaco",f:"Analgésicos y AINE",t:["AINE"],lom:1,p:"200 mg tab",
+ d:"200 mg c/12 h VO; máximo 400 mg/día.",m:"crcl",
+ r:[[60,"ok","Sin ajuste: 200 mg c/12 h."],
+    [30,"ajuste","Puede requerir reducción: 100–200 mg/día (25–50 % del máximo).",50],
+    [0,"evitar","Evitar (CrCl < 30)."]],
+ h:["ajuste","Reducir la dosis (metabolismo hepático extenso): p. ej., 100 mg c/12 h (50 %).",]},
+{n:"Naproxeno",src:"10",f:"Analgésicos y AINE",t:["AINE"],
+ d:"250–500 mg c/12 h VO; máximo 1 g/día.",m:"crcl",
+ r:[[60,"ok","Dosis mínima eficaz: 250 mg c/12 h."],
+    [30,"ajuste","Evitar o usar 250 mg c/12 h (50 % del máximo) por pocos días.",50],
+    [0,"evitar","Contraindicado (riesgo de empeoramiento renal)."]],
+ h:["ajuste","Vida media muy prolongada en hepatopatía: 50 % de la dosis (250 mg c/12 h → 250 mg/día). Contraindicado en hepatopatía activa o grave.",50]},
+{n:"Ketorolaco",f:"Analgésicos y AINE",t:["AINE"],
+ d:"10 mg c/4–6 h VO (máximo 40 mg/día) o 15–30 mg c/6 h IV/IM (máximo 120 mg/día); máximo 5 días.",m:"crcl",
+ r:[[50,"ok","Dosis habitual por máximo 5 días."],
+    [30,"ajuste","50 % de la dosis: 15 mg c/6 h IV/IM (máximo 60 mg/día) o 10 mg c/8 h VO; máximo 5 días.",50],
+    [0,"evitar","Contraindicado (CrCl < 30)."]],
+ h:["ajuste","Precaución; dosis mínima por el menor tiempo. Evitar en Child-Pugh C."]},
+{n:"Meloxicam",f:"Analgésicos y AINE",t:["AINE"],
+ d:"7.5–15 mg una vez al día VO.",m:"crcl",
+ r:[[30,"ajuste","Máximo 7.5 mg/día (50 % del máximo de 15 mg).",50],[0,"evitar","No recomendado (CrCl < 30)."]],
+ h:["ajuste","Leve a moderada: sin ajuste (7.5 mg/día). Grave: evitar."]},
+{n:"Celecoxib",src:"10",f:"Analgésicos y AINE",t:["AINE"],
+ d:"100–200 mg c/12 h VO; máximo 400 mg/día.",m:"crcl",
+ r:[[30,"ajuste","Dosis mínima eficaz: 100 mg c/12 h (50 %).",50],[0,"evitar","Contraindicado en insuficiencia renal grave o en deterioro."]],
+ h:["ajuste","Child-Pugh B: 50 % de la dosis (p. ej., 100 mg c/12 h → 100 mg/día). Child-Pugh C: evitar.",50]},
+{n:"Metamizol (dipirona)",f:"Analgésicos y AINE",t:["AINE"],
+ d:"0.5–1 g c/6–8 h VO o IV; máximo 4 g/día.",m:"crcl",
+ r:[[30,"ok","Sin ajuste mayor: 0.5–1 g c/8 h."],[0,"ajuste","Dosis reducida: 500 mg c/8–12 h (≈ 25–35 % del máximo); evitar dosis IV altas.",30]],
+ h:["ajuste","Reducir y espaciar: 500 mg c/8–12 h. Evitar dosis altas repetidas."]},
+{n:"Ácido acetilsalicílico",f:"Antitrombóticos",t:["antiagregante"],lom:1,p:"100 mg tab",
+ d:"Antiagregante: 75–100 mg una vez al día VO.",m:"crcl",
+ r:[[10,"ok","Dosis antiagregante sin cambios (75–100 mg/día); el beneficio supera el riesgo aun en ERC avanzada."],
+    [0,"ajuste","CrCl < 10: el fabricante sugiere evitar, pero en indicación cardiovascular se mantiene 75–100 mg/día. Evitar dosis analgésicas."]],
+ h:["evitar","Evitar en enfermedad hepática grave (sangrado)."]},
+/* Opioides */
+{n:"Morfina (oral o SC)",f:"Opioides",t:["opioide"],lom:1,p:"20 mg tab LI; 30 mg tab LP; ampollas",src:"10",
+ d:"VO: 5–10 mg c/4 h (paciente sin opioide previo; frágil 2.5–5 mg); titular. SC: 50 % de la dosis oral.",m:"crcl",
+ r:[[60,"ok","Sin ajuste; titular según respuesta."],
+    [30,"ajuste","Leve a moderada: dosis menor o menos frecuente, p. ej., 5–10 mg c/6–8 h en vez de c/4 h (≈ 50–67 % de la dosis diaria).",50],
+    [0,"evitar","Moderada a grave: preferir un opioide más seguro (fentanilo, buprenorfina, alfentanilo; metadona con cautela); M3G y M6G se acumulan."]],
+ h:["ajuste","Hepatopatía: aclaramiento reducido; disminuir la dosis y la frecuencia (p. ej., 5 mg c/6–8 h en vez de c/4 h; ≈ 50 %). Evitar liberación prolongada y estreñimiento (encefalopatía).",50]},
+{n:"Tramadol",f:"Opioides",t:["opioide","serotoninérgico"],lom:1,p:"50 mg/mL ampolla 2 mL",src:"2,10",
+ d:"50–100 mg c/4–6 h VO/IM/IV; máximo 400 mg/día (300 mg/día en mayores de 75 años).",m:"crcl",
+ r:[[30,"ok","Sin ajuste: 50–100 mg c/4–6 h; máximo 400 mg/día."],
+    [10,"ajuste","50 % de la dosis inicial: 50 mg c/12 h; máximo 100 mg/día sin diálisis o 200 mg/día en diálisis (25–50 % del máximo).",25],
+    [0,"evitar","Contraindicado (CrCl < 10); algunos centros lo usan con máximo 200 mg/día en diálisis."]],
+ h:["ajuste","Leve a moderada: 50 % de la dosis inicial (50 mg c/12 h; máximo 100–200 mg/día). Grave: contraindicado (profármaco, efecto impredecible).",50]},
+{n:"Codeína",f:"Opioides",t:["opioide","codeina"],
+ d:"30–60 mg c/4–6 h VO; máximo 240 mg/día.",m:"crcl",
+ r:[[50,"ok","Sin ajuste."],[10,"ajuste","75 % de la dosis: p. ej., 30 mg c/6 h (máximo 180 mg/día).",75],[0,"evitar","Evitar (CrCl < 10); si es inevitable, máximo 30 mg c/6 h (50 %)."]],
+ h:["evitar","Profármaco: efecto impredecible; preferir otro opioide."]},
+{n:"Oxicodona",f:"Opioides",t:["opioide"],src:"10",
+ d:"VO: 5 mg c/4–6 h (sin opioide previo); titular.",m:"crcl",
+ r:[[60,"ok","Sin ajuste; titular según respuesta."],
+    [30,"ajuste","Leve a moderada: alternativa a la morfina con cautela; iniciar con 50 % de la dosis (2.5 mg c/6 h).",50],
+    [10,"evitar","Grave: no recomendada (la oxicodona sube 50 % y sus metabolitos se acumulan). Si es inevitable: 1–2 mg c/6–8 h."],
+    [0,"evitar","Contraindicada (CrCl < 10)."]],
+ h:["ajuste","Leve a moderada: concentración y vida media aumentan; iniciar con 33–50 % de la dosis (2.5 mg c/8 h). Grave: evitar.",50]},
+{n:"Hidromorfona",f:"Opioides",t:["opioide"],src:"10",
+ d:"VO: 1.3–2 mg c/4 h; SC: 0.25–0.5 mg c/4 h (sin opioide previo).",m:"crcl",
+ r:[[60,"ok","Sin ajuste."],
+    [30,"ajuste","Moderada (AUC ×2): iniciar con 50 % de la dosis, p. ej., 1 mg c/4–6 h VO.",50],
+    [0,"ajuste","Grave (AUC ×4, vida media ×2): 25 % de la dosis y espaciar, p. ej., 0.5–1 mg c/6 h VO (inicio c/6 h, luego c/4 h si se tolera). HD remueve ≈ 50 %: dar una dosis de liberación inmediata si reaparece el dolor.",25]],
+ h:["ajuste","Moderada: biodisponibilidad aumentada; dosis inicial menor (≈ 50 %) a intervalos habituales. Grave: espaciar el intervalo. Evitar en síndrome hepatorrenal.",50]},
+{n:"Fentanilo",f:"Opioides",t:["opioide"],
+ d:"Parche: 12–25 mcg/h c/72 h según conversión. SC/IV: 25–50 mcg p.r.n.",m:"crcl",
+ r:[[0,"ok","Sin ajuste renal significativo; opción preferida en insuficiencia renal. Vigilar interacciones CYP3A4."]],
+ h:["ajuste","Child-Pugh B: dosis habitual con titulación lenta; evitar el parche en Child-Pugh C."]},
+{n:"Metadona",f:"Opioides",t:["opioide","QT"],
+ d:"Según esquema de rotación (ver calculadora de opioides); inicio en paciente sin opioide previo 2.5 mg c/8–12 h.",m:"crcl",
+ r:[[10,"ok","Sin ajuste fijo; titulación lenta por acumulación impredecible. Vigilar QT."],[0,"ajuste","CrCl < 10: 50–75 % de la dosis (p. ej., 5 mg c/8 h → 2.5–5 mg c/8–12 h).",50]],
+ h:["ajuste","Child-Pugh B: dosis habitual con titulación lenta. Child-Pugh C: evitar o reducir 50 %."]},
+{n:"Buprenorfina",f:"Opioides",t:["opioide"],
+ d:"Parche: 5–10 mcg/h c/7 días o 35 mcg/h c/3–4 días según presentación.",m:"crcl",
+ r:[[0,"ok","Sin ajuste renal significativo; opción preferida en insuficiencia renal."]],
+ h:["ajuste","Child-Pugh B: dosis habitual, vigilar. Child-Pugh C: evitar o dosis menores."]},
+{n:"Meperidina (petidina)",f:"Opioides",t:["opioide"],
+ d:"50–100 mg c/3–4 h IM/IV (uso no recomendado en paliativos).",m:"crcl",
+ r:[[30,"ajuste","Evitar uso repetido: la normeperidina se acumula (75 % de la dosis si es inevitable).",75],[0,"evitar","Evitar: neurotoxicidad y convulsiones."]],
+ h:["evitar","Evitar (acumulación y neurotoxicidad)."]},
+{n:"Sufentanilo",f:"Opioides",t:["opioide"],
+ d:"Uso hospitalario: titular por respuesta.",m:"crcl",r:[[0,"ok","Sin ajuste renal significativo."]],h:["ajuste","Titular con precaución."]},
+{n:"Alfentanilo",f:"Opioides",t:["opioide","CYP3A4sus"],
+ d:"ICSC: dosis según conversión (morfina SC 30:1).",m:"tfg",r:[[0,"ok","Sin ajuste renal significativo; dosis menores pueden bastar."]],h:["ajuste","Reducir y titular (metabolismo hepático)."]},
+{n:"Naloxona",f:"Opioides",t:[],
+ d:"Depresión respiratoria por opioides: 0.04–0.1 mg IV c/2 min hasta respuesta.",m:"crcl",r:[[0,"ok","Sin ajuste renal."]],h:["ok","Sin ajuste."]},
+{n:"Nefopam",f:"Analgésicos y AINE",t:[],
+ d:"30–90 mg c/8 h VO.",m:"tfg",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Máximo 30 mg c/8 h (33 % del máximo).",33]],h:["ajuste","Reducir la dosis."]},
+/* Adyuvantes */
+{n:"Gabapentina",f:"Gabapentinoides",t:["gabapentinoide"],src:"10",
+ d:"Inicio 100–300 mg/noche; titular hasta 900–3600 mg/día en 3 dosis (máximo 1200 mg c/8 h).",m:"crcl",
+ r:[[80,"ok","Sin ajuste: inicio 100–300 mg/noche; máximo 1200 mg c/8 h."],
+    [50,"ajuste","Inicio 200 mg c/8 h; máximo 600 mg c/8 h (50 % del máximo).",50],
+    [30,"ajuste","Inicio 100 mg c/8 h; máximo 300 mg c/8 h (25 % del máximo).",25],
+    [15,"ajuste","Inicio 300 mg en días alternos; máximo 300 mg c/12 h (≈ 17 % del máximo).",17],
+    [0,"ajuste","Inicio 300 mg en días alternos; máximo 300 mg/noche (≈ 8 % del máximo). HD: 200–300 mg tras cada sesión de 4 h; en anúricos solo la dosis posdiálisis.",8]],
+ h:["ok","Sin metabolismo hepático: dosis bajas y titulación lenta; ajustar a la función renal (la creatinina sobreestima la función renal en cirrosis)."]},
+{n:"Pregabalina",f:"Gabapentinoides",t:["gabapentinoide"],src:"10",
+ d:"Inicio 75 mg c/12 h (debilitados 25–50 mg c/12 h); máximo 300 mg c/12 h.",m:"crcl",
+ r:[[60,"ok","Sin ajuste: inicio 75 mg c/12 h; máximo 300 mg c/12 h."],
+    [30,"ajuste","Inicio 25 mg c/8 h; máximo 150 mg c/12 h (50 % del máximo).",50],
+    [15,"ajuste","Inicio 25–50 mg una vez al día; máximo 150 mg/día (25 %).",25],
+    [0,"ajuste","Inicio 25 mg una vez al día; máximo 75 mg/día (12.5 %). HD: dosis suplementaria tras cada sesión de 4 h (25 mg/día → 25–50 mg; 50 mg/día → 50–75 mg; 75 mg/día → 100–150 mg).",12]],
+ h:["ok","Sin metabolismo hepático: dosis bajas y titulación lenta; ajustar a la función renal."]},
+{n:"Ketamina",f:"Anestésicos",t:[],
+ d:"VO: 10 mg c/6 h o 0.5 mg/kg c/8 h; IV: 0.1 mg/kg/h (ver calculadora de opioides).",m:"crcl",r:[[0,"ok","Sin ajuste renal significativo."]],h:["ajuste","Reducir la dosis; vigilar."]},
+{n:"Propofol",f:"Anestésicos",t:[],d:"Uso hospitalario; titular por efecto.",m:"crcl",r:[[0,"ok","Sin ajuste renal."]],h:["ok","Sin ajuste; titular por efecto."]},
+{n:"Bupivacaína",f:"Anestésicos",t:[],d:"Máximo 2 mg/kg (150 mg) por dosis.",m:"crcl",r:[[0,"ok","Sin ajuste renal fijo; respetar la dosis máxima."]],h:["ajuste","Reducir dosis repetidas en hepatopatía grave."]},
+{n:"Lidocaína",f:"Anestésicos",t:[],d:"Infiltración: máximo 4.5 mg/kg (300 mg). Parche 5 %: 1–3 parches 12 h/día.",m:"crcl",r:[[0,"ok","Sin ajuste renal fijo; respetar la dosis máxima."]],h:["ajuste","Reducir la infusión (metabolismo hepático)."]},
+{n:"Baclofeno",src:"10",f:"Relajantes musculares",t:[],d:"5 mg c/8 h; titular hasta 20 mg c/8 h (máximo 80–100 mg/día).",m:"crcl",
+ r:[[60,"ok","Sin ajuste."],[30,"ajuste","TFG 30–60: dosis bajas a intervalos largos (p. ej., 5 mg c/12–24 h) y titular por efecto.",25],[0,"evitar","TFG < 30: preferir otra opción (tizanidina). Si es inevitable: 5 mg una vez al día (también en hemodiálisis)."]],h:["ajuste","Precaución: dosis inicial 5 mg una vez al día; vigilar pruebas hepáticas."]},
+{n:"Tizanidina",f:"Relajantes musculares",t:[],d:"2 mg c/8 h; titular hasta 24–36 mg/día.",m:"crcl",
+ r:[[25,"ok","Sin ajuste."],[0,"ajuste","2 mg una vez al día y titular lento (≈ 33 % de la dosis inicial diaria).",33]],h:["evitar","Evitar (hepatotoxicidad)."]},
+/* ===== Psiquiatría y neurología ===== */
+{n:"Amitriptilina",f:"Antidepresivos",t:["QT"],lom:1,p:"10 mg tab",
+ d:"Dolor neuropático: 10–25 mg/noche (máximo 75 mg). Depresión: 50–150 mg/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste establecido; iniciar 10 mg/noche y titular lento. Riesgo de QT y efectos anticolinérgicos."]],
+ h:["ajuste","Precaución: iniciar 10 mg/noche (dosis mínima) y titular lento."]},
+{n:"Imipramina",f:"Antidepresivos",t:["QT"],lom:1,p:"10 y 25 mg tab",
+ d:"Depresión: 75 mg/día, hasta 150–200 mg/día. Dolor: 10–25 mg/noche.",m:"crcl",
+ r:[[0,"ok","Sin ajuste establecido; usar con precaución (dosis bajas)."]],h:["ajuste","Precaución: dosis bajas y titular lento."]},
+{n:"Nortriptilina",f:"Antidepresivos",t:["QT"],d:"10–25 mg/noche; hasta 75–150 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste fijo; dosis baja. Riesgo de QT."]],h:["ajuste","Dosis bajas y titular lento."]},
+{n:"Fluoxetina",f:"Antidepresivos",t:["ISRS","CYP2D6"],lom:1,p:"20 mg cáps",
+ d:"20 mg/día (mañana); rango 10–80 mg/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste rutinario; no requiere dosis tras hemodiálisis. Inhibidor potente de CYP2D6."]],
+ h:["ajuste","Cirrosis compensada: 50 % de la dosis inicial (10 mg/día o 20 mg en días alternos).",50]},
+{n:"Sertralina",f:"Antidepresivos",t:["ISRS"],d:"25–50 mg/día; hasta 200 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste renal."]],h:["ajuste","Child-Pugh B: 50 % de la dosis (25 mg/día). C: evitar.",50]},
+{n:"Citalopram",f:"Antidepresivos",t:["ISRS","QT"],d:"10–20 mg/día; máximo 40 mg (20 mg en mayores de 60 años).",m:"tfg",
+ r:[[30,"ok","Sin ajuste."],[0,"ajuste","Dosis menores: 10 mg/día (50 %).",50]],h:["ajuste","Máximo 20 mg/día (50 %).",50]},
+{n:"Duloxetina",f:"Antidepresivos",t:["ISRS","serotoninérgico"],d:"30–60 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"evitar","Evitar (CrCl < 30)."]],h:["evitar","Evitar en hepatopatía."]},
+{n:"Venlafaxina",f:"Antidepresivos",t:["ISRS","serotoninérgico"],src:"10",
+ d:"37.5–75 mg c/12 h; hasta 225 mg/día.",m:"crcl",
+ r:[[60,"ok","Sin ajuste."],[30,"ajuste","Moderada: 50 % de la dosis en una sola toma diaria (p. ej., 150 mg/día → 75 mg una vez al día).",50],[0,"ajuste","Grave: 50 % o menos, una vez al día (37.5 mg/día); en HD dar tras la sesión.",25]],
+ h:["ajuste","Leve a moderada: 50 % de la dosis en una sola toma diaria (p. ej., 75 mg/día). Grave: evitar.",50]},
+{n:"Mirtazapina",f:"Antidepresivos",t:[],d:"15 mg/noche; hasta 45 mg.",m:"crcl",r:[[40,"ok","Sin ajuste."],[0,"ajuste","≈ 70 % de la dosis: 7.5–15 mg/noche (aclaramiento reducido ≈ 30 %).",70]],h:["ajuste","≈ 70 % de la dosis: 7.5–15 mg/noche.",70]},
+{n:"Trazodona",f:"Antidepresivos",t:[],d:"Insomnio: 25–50 mg/noche; depresión 150–300 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste fijo; dosis bajas."]],h:["ajuste","Dosis bajas (25 mg/noche)."]},
+{n:"Haloperidol",f:"Antipsicóticos",t:["QT"],lom:1,p:"2 mg/mL gotas; 5 mg/mL ampolla",
+ d:"Náusea/delirium: 0.5–1.5 mg/noche o c/12 h VO/SC; máximo habitual 5–10 mg/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste establecido; iniciar con 0.5 mg. Riesgo de QT."]],
+ h:["ajuste","Puede aumentar su nivel: iniciar 0.5 mg y titular; dosis menores pueden bastar."]},
+{n:"Olanzapina",f:"Antipsicóticos",t:[],lom:1,p:"10 mg polvo inyectable",
+ d:"Náusea/delirium: 2.5–5 mg/noche VO o SC; máximo 10–20 mg/día. Agitación: 10 mg IM.",m:"crcl",
+ r:[[0,"ok","Sin ajuste; no se remueve por hemodiálisis. Iniciar 2.5 mg en ancianos."]],
+ h:["ajuste","Iniciar 2.5–5 mg/día y titular; vigilar transaminasas."]},
+{n:"Quetiapina",f:"Antipsicóticos",t:["QT"],src:"10",
+ d:"12.5–25 mg/noche; titular.",m:"crcl",
+ r:[[30,"ok","Sin ajuste; titular con cautela."],[0,"ajuste","Dosis inicial menor y titulación más lenta: 12.5–25 mg/día (máximo inicial 25 mg/24 h).",50]],
+ h:["ajuste","Dosis inicial menor y titulación lenta: 12.5 mg c/12 h, aumentando 12.5 mg al día.",50]},
+{n:"Risperidona",f:"Antipsicóticos",t:[],d:"0.5–1 mg c/12 h; máximo 6 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","50 % de la dosis: inicio 0.25–0.5 mg c/12 h.",50]],h:["ajuste","50 % de la dosis: inicio 0.5 mg c/12 h.",50]},
+{n:"Clorpromazina",f:"Antipsicóticos",t:["QT"],d:"12.5–25 mg c/8–12 h.",m:"crcl",r:[[0,"ok","Sin ajuste fijo; dosis baja. Riesgo de QT e hipotensión."]],h:["evitar","Evitar (puede precipitar coma hepático)."]},
+{n:"Levomepromazina",f:"Antipsicóticos",t:["QT"],d:"Náusea: 2.5–6.25 mg SC/VO noche. Sedación: 12.5–25 mg SC.",m:"crcl",
+ r:[[30,"ok","Sin ajuste mayor; iniciar con dosis baja."],[0,"ajuste","Iniciar con dosis baja una vez al día (≈ 50 %): 2.5–6.25 mg/noche.",50]],h:["ajuste","Dosis bajas."]},
+{n:"Lorazepam",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],lom:1,p:"2 mg tab",
+ d:"Ansiedad: 0.5–1 mg c/8–12 h (2–3 mg/día); insomnio 0.5–2 mg/noche.",m:"crcl",
+ r:[[0,"ok","Sin ajuste; metabolitos inactivos, opción preferida en insuficiencia renal. Vigilar sedación."]],
+ h:["ajuste","Hepatopatía grave: dosis más bajas (0.5 mg c/12 h); riesgo de encefalopatía.",50]},
+{n:"Diazepam",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],lom:1,p:"5 mg tab; 10 mg/2 mL ampolla",
+ d:"Ansiedad/espasmo: 2–10 mg c/8–12 h VO. Convulsión: 5–10 mg IV o 10 mg rectal.",m:"crcl",
+ r:[[30,"ok","Sin ajuste fijo; metabolitos activos, vigilar sedación."],[0,"ajuste","50 % de la dosis: 2–5 mg c/12 h; preferir lorazepam.",50]],
+ h:["ajuste","50 % de la dosis: 2–5 mg c/12 h; preferir lorazepam.",50]},
+{n:"Clonazepam",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],lom:1,p:"2 mg tab; 2.5 mg/mL gotas",
+ d:"0.25–0.5 mg c/12 h; convulsiones hasta 1.5 mg/día al inicio.",m:"crcl",
+ r:[[0,"ok","Sin ajuste fijo; los metabolitos pueden acumularse. Iniciar 0.25 mg."]],
+ h:["evitar","Contraindicado con enfermedad hepática clínica o bioquímica (eliminación prolongada)."]},
+{n:"Midazolam",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],src:"10",
+ d:"SC: 2.5–5 mg p.r.n.; ICSC 10–30 mg/24 h. Sedación paliativa según protocolo.",m:"crcl",
+ r:[[10,"ok","Sin ajuste fijo; titular por sedación (vida media ×3 en ancianos)."],[0,"ajuste","CrCl < 10: se acumula (sedación prolongada); 50 % de la dosis: 1.25–2.5 mg SC p.r.n.; ICSC 5–15 mg/24 h.",50]],
+ h:["ajuste","Leve a moderada: iniciar con dosis reducida (50 %) y titular. Grave: contraindicado salvo en el paciente moribundo.",50]},
+{n:"Alprazolam",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],d:"0.25–0.5 mg c/8–12 h.",m:"crcl",r:[[0,"ok","Sin ajuste fijo; iniciar con dosis baja."]],h:["ajuste","50 % de la dosis: 0.25 mg c/8–12 h.",50]},
+{n:"Temazepam",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],d:"10–20 mg/noche.",m:"tfg",r:[[0,"ok","Dosis bajas; vigilar sedación."]],h:["ajuste","Dosis bajas."]},
+{n:"Zolpidem",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],d:"5–10 mg/noche.",m:"tfg",r:[[0,"ok","Sin ajuste fijo; 5 mg puede bastar."]],h:["ajuste","5 mg/noche (50 %).",50]},
+{n:"Zopiclona",f:"Benzodiacepinas y fármacos Z",t:["benzodiacepina"],d:"3.75–7.5 mg/noche.",m:"tfg",r:[[0,"ok","Sin ajuste fijo; 3.75 mg puede bastar."]],h:["ajuste","3.75 mg/noche (50 %).",50]},
+{n:"Hidrato de cloral",f:"Benzodiacepinas y fármacos Z",t:[],lom:1,p:"500 mg/5 mL jarabe",
+ d:"Hipnótico: 0.5–1 g 15–30 min antes de dormir; máximo 2 g/día.",m:"crcl",
+ r:[[30,"ok","Sin ajuste establecido; usar con precaución."],[0,"evitar","Contraindicado en insuficiencia renal marcada."]],
+ h:["evitar","Contraindicado en insuficiencia hepática marcada."]},
+{n:"Carbamazepina",f:"Anticonvulsivantes",t:[],lom:1,p:"200 mg tab",
+ d:"200 mg c/12 h; titular hasta 800–1200 mg/día. Neuralgia: 200–1200 mg/día.",m:"crcl",
+ r:[[10,"ok","Sin ajuste; evaluar beneficio/riesgo si hay daño renal. Vigilar sodio."],[0,"ajuste","CrCl < 10: 75 % de la dosis (p. ej., 400 mg c/12 h → 300 mg c/12 h).",75]],
+ h:["ajuste","Solo tras valorar beneficio/riesgo; dosis bajas y vigilar niveles y transaminasas."]},
+{n:"Fenitoína",f:"Anticonvulsivantes",t:[],lom:1,p:"125 mg/5 mL susp; cápsulas",
+ d:"100 mg c/8 h VO (300 mg/día); máximo 600 mg/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste; con hipoalbuminemia o uremia vigilar fenitoína libre (niveles totales engañosos)."]],
+ h:["ajuste","Puede requerir reducción (≈ 25–50 %) guiada por fenitoína libre."]},
+{n:"Fenobarbital",f:"Anticonvulsivantes",t:[],lom:1,p:"25 y 100 mg tab",
+ d:"1–3 mg/kg/día o 100–300 mg/noche VO. Sedación paliativa: 100–200 mg SC.",m:"crcl",
+ r:[[10,"ok","Sin ajuste."],[0,"ajuste","Mismo tamaño de dosis c/12–16 h. HD: dosis antes y 50 % adicional después. DP: 50 % de la dosis.",50]],
+ h:["ajuste","Reducir la dosis (p. ej., 50 %): mayor exposición en hepatopatía.",50]},
+{n:"Ácido valproico",f:"Anticonvulsivantes",t:[],lom:1,p:"Valproato 200 mg/mL sol. oral; divalproex tab",
+ d:"10–15 mg/kg/día; titular 5–10 mg/kg/semana; máximo 60 mg/kg/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste; niveles totales engañosos (vigilar valproato libre)."]],
+ h:["evitar","No recomendado en enfermedad hepática (hepatotoxicidad; fracción libre ×2–2.6)."]},
+{n:"Lamotrigina",f:"Anticonvulsivantes",t:[],d:"25 mg/día; titular lento hasta 100–400 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Mantenimiento 75 % de la dosis.",75]],h:["ajuste","Child-Pugh B: 50 %; C: 25 % de la dosis.",50]},
+{n:"Levetiracetam",f:"Anticonvulsivantes",t:[],d:"500 mg c/12 h; hasta 1500 mg c/12 h.",m:"crcl",
+ r:[[80,"ok","Sin ajuste: 500–1500 mg c/12 h."],[50,"ajuste","500–1000 mg c/12 h (≈ 67 % del máximo).",67],[30,"ajuste","250–750 mg c/12 h (50 %).",50],[0,"ajuste","250–500 mg c/12 h (≈ 33 %); HD: 500–1000 mg/día + 250–500 mg tras la diálisis.",33]],
+ h:["ok","Sin ajuste; Child-Pugh C: 50 % de la dosis.",50]},
+{n:"Oxcarbazepina",f:"Anticonvulsivantes",t:[],d:"300 mg c/12 h; hasta 1200 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","50 % de la dosis inicial: 150 mg c/12 h y titular lento.",50]],h:["ajuste","Precaución en hepatopatía grave."]},
+{n:"Biperideno",f:"Anticolinérgicos y antiespasmódicos",t:[],lom:1,p:"2 mg tab",
+ d:"Extrapiramidalismo: 2 mg 1–3 veces al día; parkinsonismo hasta 16 mg/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste establecido; vigilar confusión y retención urinaria."]],h:["ok","Sin ajuste establecido."]},
+{n:"Ergotamina",f:"Otros",t:[],lom:1,p:"Ergotamina 1 mg + cafeína 100 mg tab; 2 mg tab",
+ d:"1–2 mg al inicio, luego 1 mg c/30 min; máximo 6 mg/día o 10 mg/semana.",m:"crcl",
+ r:[[0,"evitar","Contraindicado en insuficiencia renal."]],h:["evitar","Contraindicado en insuficiencia hepática."]},
+/* ===== Gastrointestinal, antieméticos, respiratorio, antihistamínicos ===== */
+{n:"Metoclopramida",f:"Antieméticos y procinéticos",t:[],lom:1,p:"10 mg tab; 10 mg/2 mL ampolla",src:"2,10",
+ d:"10 mg c/6–8 h VO/SC/IV (30 min antes de comidas); máximo 30 mg/día (40–60 mg/día en paliativos).",m:"crcl",
+ r:[[50,"ok","Sin ajuste: 10 mg c/8 h."],[0,"ajuste","Moderada a grave: 50 % de la dosis inicial (5 mg c/8 h) y vigilar; ajustar por respuesta.",50]],
+ h:["ajuste","Cirrosis grave: 50 % de la dosis inicial (5 mg c/8–12 h) y vigilar extrapiramidalismo.",50]},
+{n:"Domperidona",f:"Antieméticos y procinéticos",t:["QT"],src:"10",
+ d:"10 mg c/8 h; máximo 30 mg/día.",m:"crcl",
+ r:[[30,"ok","Sin ajuste; riesgo de QT."],[0,"ajuste","Grave: misma dosis 1–2 veces al día (33–67 %): 10 mg c/12–24 h.",50]],
+ h:["ajuste","Leve a moderada: precaución (5 mg c/12 h). Grave: contraindicada."]},
+{n:"Dimenhidrinato",f:"Antieméticos y procinéticos",t:[],lom:1,p:"25 y 100 mg supositorio; 50 mg/mL ampolla; tab",
+ d:"50–100 mg c/4–6 h VO/IM/IV o c/6–8 h rectal; máximo 400 mg/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste establecido; vigilar sedación y efectos anticolinérgicos."]],h:["ok","Sin ajuste establecido."]},
+{n:"Ondansetrón",src:"10",f:"Antieméticos y procinéticos",t:["QT"],d:"4–8 mg c/8–12 h VO/IV.",m:"crcl",r:[[0,"ok","Sin ajuste renal. Riesgo de QT."]],h:["ajuste","Moderada a grave: máximo 8 mg/24 h VO o SC (≈ 33–50 % del máximo habitual).",33]},
+{n:"Granisetrón",f:"Antieméticos y procinéticos",t:["QT"],d:"1 mg c/12 h VO o 1–3 mg IV.",m:"tfg",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Ciclizina",f:"Antieméticos y procinéticos",t:[],d:"50 mg c/8 h VO/SC.",m:"tfg",r:[[0,"ok","Sin ajuste."]],h:["ajuste","Precaución: sedación."]},
+{n:"Prometazina",f:"Antieméticos y procinéticos",t:[],d:"12.5–25 mg c/6–8 h.",m:"tfg",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Dosis menores (≈ 50 %): 12.5 mg c/8 h.",50]],h:["evitar","Evitar en hepatopatía grave (sedación, encefalopatía)."]},
+{n:"Proclorperazina",f:"Antieméticos y procinéticos",t:["QT"],d:"5–10 mg c/8 h.",m:"crcl",r:[[0,"ok","Sin ajuste renal fijo; riesgo de QT y extrapiramidalismo."]],h:["ajuste","Precaución en hepatopatía; si es inevitable, bucal 3 mg c/12 h o VO 5 mg c/8 h."]},
+{n:"Famotidina",f:"Gastrointestinal",t:[],lom:1,p:"40 mg tab",
+ d:"40 mg/noche o 20 mg c/12 h; mantenimiento 20 mg/noche.",m:"crcl",
+ r:[[60,"ok","Sin ajuste: 40 mg/noche."],[30,"ajuste","50 % de la dosis: 20 mg/día (o 40 mg en días alternos).",50],[0,"ajuste","25 % de la dosis: 10 mg/día (o 20 mg en días alternos).",25]],
+ h:["ok","Sin ajuste establecido."]},
+{n:"Ranitidina",f:"Gastrointestinal",t:[],d:"150 mg c/12 h.",m:"crcl",r:[[50,"ok","Sin ajuste."],[0,"ajuste","50 % de la dosis: 150 mg c/24 h.",50]],h:["ok","Sin ajuste."]},
+{n:"Omeprazol",f:"Gastrointestinal",t:[],d:"20–40 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste; nefritis intersticial rara e impredecible."]],h:["ajuste","Child-Pugh B/C: máximo 20 mg/día (50 % de 40 mg).",50]},
+{n:"Pantoprazol",f:"Gastrointestinal",t:[],d:"40 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ajuste","Hepatopatía grave: máximo 20 mg/día (50 %).",50]},
+{n:"Lansoprazol",f:"Gastrointestinal",t:[],d:"15–30 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ajuste","Hepatopatía grave: 15 mg/día (50 %).",50]},
+{n:"Hidróxido de aluminio y magnesio con simeticona",f:"Gastrointestinal",t:[],lom:1,p:"Tab masticable; suspensión oral",
+ d:"10–20 mL o 1–2 tab 1–3 h después de las comidas y al acostarse, p.r.n.",m:"crcl",
+ r:[[30,"ok","Uso ocasional."],[0,"evitar","Evitar uso prolongado: acumulación de aluminio (encefalopatía, osteomalacia) y magnesio (hipermagnesemia)."]],
+ h:["ok","Sin ajuste establecido."]},
+{n:"Octreótido",f:"Gastrointestinal",t:[],d:"100–300 mcg/24 h SC o ICSC (hasta 600 mcg).",m:"crcl",r:[[0,"ok","Sin ajuste fijo; dosis menores pueden bastar."]],h:["ajuste","Cirrosis: titular desde dosis bajas."]},
+{n:"Loperamida",f:"Antidiarreicos y laxantes",t:[],lom:1,p:"2 mg tab/cáps",
+ d:"4 mg inicial y 2 mg tras cada deposición; máximo 16 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste. Precaución con dosis altas (QT)."]],h:["ajuste","Precaución: efecto de primer paso reducido; vigilar sedación."]},
+{n:"Racecadotrilo",f:"Antidiarreicos y laxantes",t:[],d:"100 mg c/8 h.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Bisacodilo",f:"Antidiarreicos y laxantes",t:["laxante"],lom:1,p:"10 mg supositorio",d:"10 mg rectal una vez al día (VO 5–10 mg/noche).",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Senósidos",f:"Antidiarreicos y laxantes",t:["laxante"],d:"7.5–15 mg/noche; hasta 30 mg c/12 h.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Lactulosa",src:"10",f:"Antidiarreicos y laxantes",t:["laxante"],d:"15 mL c/12 h; encefalopatía 20–30 mL c/6–8 h.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Encefalopatía: iniciar 30–50 mL c/8 h y ajustar a 2–3 deposiciones blandas al día."]},
+{n:"Polietilenglicol",f:"Antidiarreicos y laxantes",t:["laxante"],d:"1–3 sobres/día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Aceite mineral (oral)",f:"Antidiarreicos y laxantes",t:["laxante"],lom:1,p:"Frasco 120 mL",d:"15–45 mL/día en 1 o varias dosis.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste. Evitar si hay riesgo de aspiración."]},
+{n:"Glicerina (supositorio)",f:"Antidiarreicos y laxantes",t:["laxante"],lom:1,p:"1–1.5 g y 2–2.6 g supositorio",d:"1 supositorio rectal p.r.n.; máximo 1 semana continua.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Hidróxido de magnesio",f:"Antidiarreicos y laxantes",t:["laxante"],lom:1,p:"Suspensión 7–8.5 %",
+ d:"2.4–4.8 g/día (≈ 30–60 mL) en 1 dosis al acostarse; máximo 4.8 g/día.",m:"crcl",
+ r:[[30,"ajuste","Precaución: vigilar magnesio sérico."],[0,"evitar","Evitar (hipermagnesemia)."]],h:["ok","Sin ajuste."]},
+{n:"Psyllium",f:"Antidiarreicos y laxantes",t:["laxante"],lom:1,p:"Polvo",d:"2.5–30 g/día en dosis divididas con abundante agua.",m:"crcl",r:[[0,"ok","Sin ajuste. Evitar si hay restricción hídrica u obstrucción."]],h:["ok","Sin ajuste."]},
+{n:"Butilbromuro de hioscina",f:"Anticolinérgicos y antiespasmódicos",t:[],lom:1,p:"10 mg tab; 20 mg/mL ampolla",
+ d:"VO: 10–20 mg c/6–8 h (máximo 60 mg/día). SC/IV: 20 mg c/6–8 h; ICSC 60–120 mg/24 h (estertores, obstrucción).",m:"crcl",
+ r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Glicopirronio",f:"Anticolinérgicos y antiespasmódicos",t:[],d:"200 mcg SC c/4–6 h; ICSC 600–1200 mcg/24 h.",m:"tfg",r:[[30,"ok","Sin ajuste habitual."],[0,"ajuste","50 % de la dosis: 100 mcg SC c/6–8 h (se acumula).",50]],h:["ok","Sin ajuste."]},
+{n:"Atropina",f:"Anticolinérgicos y antiespasmódicos",t:[],d:"Gotas 1 % 1–2 SL c/4 h p.r.n. (estertores).",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Escopolamina (parche)",f:"Anticolinérgicos y antiespasmódicos",t:[],d:"1 parche 1.5 mg c/72 h.",m:"crcl",r:[[0,"ok","Sin ajuste fijo; vigilar confusión."]],h:["ajuste","Precaución: confusión."]},
+{n:"Drotaverina",f:"Anticolinérgicos y antiespasmódicos",t:[],d:"40–80 mg c/8 h.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["evitar","Evitar en hepatopatía grave."]},
+{n:"Oxibutinina",f:"Anticolinérgicos y antiespasmódicos",t:[],d:"2.5–5 mg c/8–12 h.",m:"crcl",r:[[30,"ok","Sin ajuste; precaución."],[0,"ajuste","50 % de la dosis: 2.5 mg c/12 h.",50]],h:["ajuste","2.5 mg c/12 h (50 %).",50]},
+{n:"Neostigmina",f:"Otros",t:[],lom:1,p:"15 mg tab",
+ d:"Miastenia: 15 mg c/8 h; usual 150 mg/día en dosis divididas.",m:"crcl",
+ r:[[50,"ok","Sin ajuste."],[10,"ajuste","50 % de la dosis: p. ej., 15 mg c/8 h → 7.5 mg c/8 h.",50],[0,"ajuste","25 % de la dosis: p. ej., 15 mg c/8 h → 7.5 mg c/12–24 h (≈ 4 mg c/8 h).",25]],
+ h:["ok","Sin recomendación de ajuste."]},
+/* Respiratorio */
+{n:"Salbutamol",f:"Respiratorio",t:[],lom:1,p:"Inhalador 100 mcg/dosis; solución 5 mg/mL para nebulizar; tab y jarabe",
+ d:"Inhalador: 100–200 mcg p.r.n. (hasta c/4–6 h). Nebulización: 2.5–5 mg c/4–6 h.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Bromuro de ipratropio",f:"Respiratorio",t:[],lom:1,p:"250 mcg/mL solución para nebulizar",
+ d:"Nebulización: 0.25–0.5 mg c/6–8 h (crisis: 0.5 mg c/20 min × 3).",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Beclometasona inhalada",f:"Respiratorio",t:[],lom:1,p:"100 mcg/dosis inhalador",
+ d:"200–400 mcg/día en 2 dosis; máximo 800 mcg/día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Teofilina",f:"Respiratorio",t:[],lom:1,p:"150 mg tab; 50 mg/5 mL elíxir; tab LP",
+ d:"300–400 mg/día; titular a 400–600 mg/día según niveles (10–15 mcg/mL).",m:"crcl",
+ r:[[0,"ok","Sin ajuste; vigilar niveles."]],
+ h:["ajuste","Reducir la dosis y vigilar niveles: cirrosis máximo 400 mg/día (≈ 50–67 % del máximo).",67]},
+{n:"Dextrometorfano",f:"Respiratorio",t:["serotoninérgico"],lom:1,p:"15 mg tab; 15 mg/5 mL jarabe",
+ d:"10–20 mg c/4 h o 30 mg c/6–8 h; máximo 120 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste establecido."]],h:["ajuste","Reducir la dosis (p. ej., 15 mg c/8 h, ≈ 40 % del máximo).",40]},
+/* Antihistamínicos */
+{n:"Clorfenamina",f:"Antihistamínicos",t:[],lom:1,p:"4 mg tab; jarabe; 10 mg/mL ampolla",
+ d:"4 mg c/4–6 h VO (máximo 24 mg/día); 10 mg IM/IV, hasta 4 dosis/día.",m:"crcl",r:[[0,"ok","Sin ajuste establecido."]],h:["ajuste","Metabolismo hepático: puede requerir reducción (4 mg c/8–12 h)."]},
+{n:"Difenhidramina",f:"Antihistamínicos",t:[],lom:1,p:"50 mg tab; jarabe; ampolla",
+ d:"25–50 mg c/6–8 h VO/IV; máximo 300 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste establecido; sedante y anticolinérgico."]],h:["ok","Sin ajuste establecido; precaución por sedación."]},
+{n:"Hidroxizina",f:"Antihistamínicos",t:[],lom:1,p:"10 mg/5 mL jarabe",
+ d:"Prurito: 25 mg c/6–8 h.",m:"tfg",
+ r:[[50,"ok","Sin ajuste."],[0,"ajuste","50 % de la dosis: 12.5 mg c/6–8 h (o 25 mg c/12 h). También en HD y DP.",50]],
+ h:["ajuste","Cirrosis biliar primaria: mismo tamaño de dosis c/24 h (25 mg/día)."]},
+{n:"Loratadina",f:"Antihistamínicos",t:[],lom:1,p:"10 mg tab",
+ d:"10 mg una vez al día.",m:"crcl",
+ r:[[50,"ok","Sin ajuste: 10 mg/día."],[10,"ajuste","10 mg c/24–48 h (50–100 %).",50],[0,"ajuste","10 mg c/48 h (50 %); igual en diálisis.",50]],
+ h:["ajuste","Mayor exposición: 10 mg en días alternos (50 %).",50]},
+{n:"Desloratadina",f:"Antihistamínicos",t:[],lom:1,p:"5 mg tab (código compartido)",
+ d:"5 mg una vez al día.",m:"crcl",r:[[50,"ok","Sin ajuste."],[0,"ajuste","Reducir: 5 mg en días alternos (50 %).",50]],h:["ajuste","5 mg en días alternos (50 %).",50]},
+{n:"Fexofenadina",f:"Antihistamínicos",t:[],lom:1,p:"120 mg tab (código compartido)",
+ d:"60 mg c/12 h o 120 mg/día; máximo 120 mg/día.",m:"tfg",
+ r:[[50,"ok","Sin ajuste: 60 mg c/12 h."],[10,"ajuste","60 mg c/12–24 h (50–100 %).",50],[0,"ajuste","60 mg c/24 h (50 %).",50]],
+ h:["ok","Sin ajuste."]},
+/* ===== Cardiovascular, antitrombóticos, metabólico, endocrino ===== */
+{n:"Enalapril",f:"Cardiovascular",t:["IECA_ARA"],lom:1,p:"5 y 20 mg tab",
+ d:"HTA: 5 mg/día; mantenimiento 10–40 mg/día en 1–2 dosis. IC: 2.5–5 mg c/12 h hasta 10–20 mg c/12 h.",m:"crcl",
+ r:[[30,"ok","Sin ajuste: 5–40 mg/día."],[0,"ajuste","Inicio 2.5 mg/día (50 % de la dosis inicial) y titular; máximo 40 mg/día. HD: 2.5 mg tras la diálisis.",50]],
+ h:["ok","Sin recomendación específica; vigilar presión y función renal."]},
+{n:"Irbesartán",f:"Cardiovascular",t:["IECA_ARA"],lom:1,p:"150 mg tab",
+ d:"150–300 mg una vez al día.",m:"crcl",r:[[0,"ok","Sin ajuste de dosis inicial; vigilar potasio y creatinina."]],h:["ok","Sin ajuste de dosis inicial."]},
+{n:"Losartán",f:"Cardiovascular",t:["IECA_ARA"],d:"50–100 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste; vigilar potasio y creatinina."],[0,"ajuste","Sin ajuste fijo; vigilar potasio y creatinina."]],h:["ajuste","Inicio 25 mg/día (50 %).",50]},
+{n:"Metildopa",f:"Cardiovascular",t:[],lom:1,p:"250 y 500 mg tab",
+ d:"250 mg c/8–12 h; mantenimiento 0.5–2 g/día en 2–4 dosis.",m:"crcl",
+ r:[[50,"ok","Sin ajuste: c/8 h."],[10,"ajuste","Mismo tamaño de dosis c/8–12 h (67–100 %): p. ej., 250 mg c/12 h.",67],[0,"ajuste","Mismo tamaño de dosis c/12–24 h (33–67 %): p. ej., 250 mg c/12–24 h. HD: dosis tras la diálisis.",50]],
+ h:["evitar","Contraindicada en enfermedad hepática activa."]},
+{n:"Hidralazina",f:"Cardiovascular",t:[],lom:1,p:"10 y 50 mg tab",
+ d:"HTA: 10 mg c/6 h, hasta 50 mg c/6 h. IC: 25–50 mg c/6–8 h con isosorbida.",m:"tfg",
+ r:[[10,"ok","Sin ajuste: c/8 h."],[0,"ajuste","Mismo tamaño de dosis c/8–16 h (50–100 %): p. ej., 25 mg c/12 h. HD: dosis tras la diálisis.",50]],
+ h:["ajuste","Acetiladores lentos y hepatopatía: dosis menores (p. ej., 25 mg c/12 h)."]},
+{n:"Atenolol",f:"Cardiovascular",t:[],lom:1,p:"50 mg tab",
+ d:"50–100 mg una vez al día.",m:"crcl",
+ r:[[35,"ok","Sin ajuste: 50–100 mg/día."],[15,"ajuste","Máximo 50 mg/día (50 % del máximo).",50],[0,"ajuste","Máximo 25 mg/día (25 %); HD: 25–50 mg tras la diálisis.",25]],
+ h:["ok","Sin ajuste (metabolismo hepático mínimo)."]},
+{n:"Propranolol",f:"Cardiovascular",t:[],lom:1,p:"10 y 40 mg tab",
+ d:"HTA: 40 mg c/12 h (80–160 mg/día). Profilaxis de varices: 20–40 mg c/12 h según FC.",m:"crcl",
+ r:[[0,"ok","Sin ajuste; usar con precaución."]],h:["ajuste","Precaución: iniciar 10–20 mg c/12 h y titular por frecuencia cardíaca."]},
+{n:"Metoprolol",f:"Cardiovascular",t:[],d:"25–100 mg c/12 h.",m:"crcl",r:[[0,"ok","Sin ajuste renal."]],h:["ajuste","Iniciar 25 mg c/12 h (dosis baja) y titular."]},
+{n:"Amlodipino",f:"Cardiovascular",t:[],lom:1,p:"5 mg tab",
+ d:"2.5–10 mg una vez al día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ajuste","Inicio 2.5 mg/día (50 % de 5 mg) y titular lento.",50]},
+{n:"Clonidina",f:"Cardiovascular",t:[],d:"0.1 mg c/12 h; hasta 0.6 mg/día.",m:"crcl",r:[[10,"ok","Sin ajuste mayor."],[0,"ajuste","50–75 % de la dosis; vigilar hipotensión y sedación.",50]],h:["ok","Sin ajuste."]},
+{n:"Isosorbida dinitrato",f:"Cardiovascular",t:[],lom:1,p:"20 mg tab",
+ d:"Inicio 5–20 mg c/8–12 h; mantenimiento 10–40 mg c/8–12 h.",m:"crcl",r:[[0,"ok","Sin recomendación de ajuste."]],h:["ok","Sin recomendación de ajuste."]},
+{n:"Nitroglicerina",f:"Cardiovascular",t:[],lom:1,p:"0.5–0.6 mg tab SL; spray 0.4 mg/dosis",
+ d:"0.4–0.6 mg SL al inicio del dolor; repetir c/5 min hasta 3 dosis.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Digoxina",f:"Cardiovascular",t:["digoxina"],lom:1,p:"0.25 mg tab; 0.75 mg/mL elíxir",
+ d:"125–250 mcg (0.125–0.25 mg) una vez al día; ancianos 62.5–125 mcg.",m:"crcl",
+ r:[[50,"ok","Sin ajuste: 125–250 mcg/día; vigilar niveles."],[10,"ajuste","50 % de la dosis: 62.5–125 mcg/día (o 125 mcg en días alternos); vigilar niveles.",50],[0,"ajuste","25 % de la dosis: 62.5 mcg en días alternos o 3 veces por semana; niveles estrictos.",25]],
+ h:["ok","Sin ajuste; guiar por niveles séricos."]},
+{n:"Amiodarona",f:"Cardiovascular",t:["QT","amiodarona"],d:"Carga 200 mg c/8 h × 1 semana; mantenimiento 100–200 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste renal."]],h:["ajuste","Precaución; vigilar transaminasas (hepatotóxica)."]},
+{n:"Furosemida",f:"Cardiovascular",t:["diuretico"],lom:1,p:"40 mg tab; 20 mg/2 mL ampolla",src:"2,10",
+ d:"Edema: 20–80 mg/día VO en 1–2 dosis; máximo 600 mg/día. SC/IV: 20–40 mg. Ascitis: 40–160 mg/día junto con espironolactona.",m:"crcl",
+ r:[[30,"ok","Sin ajuste."],[0,"ajuste","Puede requerir dosis mayores para lograr efecto (p. ej., 80–160 mg/día); contraindicada en falla renal anúrica."]],
+ h:["ajuste","Contraindicada en encefalopatía hepática. En ascitis, solo asociada a espironolactona; aumentar 40 mg cada 3 días hasta máximo 160 mg/día; suspender si Na < 120 o K < 3.5 mmol/L."]},
+{n:"Hidroclorotiazida",f:"Cardiovascular",t:["diuretico"],lom:1,p:"25 mg tab",
+ d:"12.5–25 mg/día (máximo 50 mg/día).",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"evitar","Poco eficaz y puede precipitar azotemia (CrCl < 30)."]],
+ h:["ajuste","Precaución: alteraciones electrolíticas pueden precipitar coma hepático."]},
+{n:"Espironolactona",f:"Cardiovascular",t:["espironolactona"],lom:1,p:"100 mg tab",
+ d:"IC: 12.5–25 mg/día. Ascitis: 100 mg/día hasta 400 mg/día. Edema: 25–200 mg/día.",m:"tfg",
+ r:[[50,"ok","Dosis habitual con control de potasio."],[30,"ajuste","IC: 12.5–25 mg/día o en días alternos (50 % de la dosis): 25 mg c/48 h.",50],[0,"evitar","Evitar (hiperpotasemia grave)."]],
+ h:["ajuste","Cirrosis: iniciar con la dosis más baja (p. ej., 50–100 mg/día) y titular lento; iniciar en hospital."]},
+{n:"Acetazolamida",f:"Cardiovascular",t:[],lom:1,p:"250 mg tab",
+ d:"250 mg 1–4 veces al día (glaucoma, edema, mal de altura).",m:"crcl",r:[[0,"evitar","Evitar en insuficiencia renal (acidosis metabólica)."]],h:["evitar","Evitar (riesgo de encefalopatía hepática)."]},
+{n:"Sitagliptina",f:"Antidiabéticos",t:[],d:"100 mg una vez al día.",m:"tfg",
+ r:[[45,"ok","100 mg/día sin ajuste."],[30,"ajuste","50 mg/día (50 %).",50],[0,"ajuste","25 mg/día (25 %).",25]],h:["ok","Sin ajuste en leve a moderada."]},
+/* Antitrombóticos */
+{n:"Warfarina",f:"Antitrombóticos",t:["anticoagulante"],lom:1,p:"1 y 5 mg tab",
+ d:"Inicio 2.5–5 mg/día; ajustar a INR 2–3.",m:"crcl",
+ r:[[30,"ok","Sin ajuste fijo; INR más frecuente."],[0,"ajuste","Respuesta aumentada: iniciar 2.5 mg/día (50 %) y vigilar INR estrecho; sopesar riesgo/beneficio.",50]],
+ h:["ajuste","Respuesta aumentada: iniciar 1–2.5 mg/día (≈ 25–50 %); sopesar riesgo/beneficio.",50]},
+{n:"Fitomenadiona (vitamina K)",src:"2,10",f:"Antitrombóticos",t:[],lom:1,p:"10 mg/mL y 1–2 mg ampollas",
+ d:"Reversión de antagonistas de vitamina K: 2.5–10 mg IV/VO/SC según INR y sangrado.",m:"crcl",
+ r:[[0,"ok","Sin ajuste."]],h:["ajuste","No de rutina en falla hepática crónica (la coagulación está rebalanceada). Solo si hay sangrado: 2.5–10 mg VO; si el TP no corrige, la causa es la síntesis hepática."]},
+{n:"Enoxaparina",f:"Antitrombóticos",t:["anticoagulante"],d:"Profilaxis 40 mg SC/día; tratamiento 1 mg/kg c/12 h o 1.5 mg/kg/día.",m:"crcl",
+ r:[[30,"ok","Sin ajuste."],[0,"ajuste","Tratamiento: 1 mg/kg c/24 h (50 %); profilaxis: 20–30 mg/día (50–75 %). Vigilar anti-Xa.",50]],h:["ajuste","Precaución por sangrado."]},
+{n:"Heparina sódica",f:"Antitrombóticos",t:["anticoagulante"],d:"Profilaxis 5000 UI SC c/8–12 h; tratamiento según TTPa.",m:"crcl",r:[[0,"ok","Sin ajuste; preferida frente a enoxaparina en insuficiencia renal grave."]],h:["ajuste","Precaución; vigilar TTPa."]},
+{n:"Rivaroxabán (fibrilación auricular)",f:"Antitrombóticos",t:["anticoagulante"],d:"20 mg una vez al día con la cena.",m:"crcl",
+ r:[[50,"ok","20 mg/día con la comida."],[15,"ajuste","15 mg/día (75 %).",75],[0,"evitar","No recomendado (CrCl < 15)."]],h:["evitar","Evitar en Child-Pugh B y C."]},
+{n:"Apixabán",f:"Antitrombóticos",t:["anticoagulante"],d:"FA: 5 mg c/12 h.",m:"crcl",
+ r:[[30,"ok","5 mg c/12 h; 2.5 mg c/12 h (50 %) si ≥ 2 de: edad ≥ 80, peso ≤ 60 kg, creatinina ≥ 1.5 mg/dL."],[15,"ajuste","2.5 mg c/12 h (50 %).",50],[0,"evitar","Datos limitados; evitar."]],
+ h:["ajuste","Child-Pugh B: precaución; C: evitar."]},
+{n:"Estreptoquinasa",f:"Antitrombóticos",t:[],lom:1,p:"1 500 000 UI frasco",d:"IAM: 1.5 millones UI IV en 30–60 min (protocolo institucional).",m:"crcl",r:[[0,"ok","Sin recomendaciones de ajuste."]],h:["ok","Sin recomendaciones de ajuste; riesgo de sangrado."]},
+/* Hipolipemiantes */
+{n:"Lovastatina",f:"Antilipémicos",t:["estatina"],lom:1,p:"20 mg tab",
+ d:"20 mg/noche; máximo 80 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Máximo 20 mg/día (25 % del máximo); aumentos con extrema precaución.",25]],
+ h:["evitar","Contraindicada en hepatopatía activa o transaminasas persistentemente elevadas."]},
+{n:"Rosuvastatina",f:"Antilipémicos",t:["estatina"],lom:1,p:"10 mg tab",
+ d:"10 mg/día; alta intensidad 20–40 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Iniciar 5 mg/día; máximo 10 mg/día (25 % del máximo).",25]],h:["evitar","Contraindicada en hepatopatía activa."]},
+{n:"Atorvastatina",f:"Antilipémicos",t:["estatina"],d:"10–80 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste renal."]],h:["evitar","Contraindicada en hepatopatía activa."]},
+{n:"Simvastatina",f:"Antilipémicos",t:["simvastatina"],d:"20–40 mg/noche.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Iniciar 5–10 mg/noche (25 %).",25]],h:["evitar","Contraindicada en hepatopatía activa."]},
+{n:"Gemfibrozilo",f:"Antilipémicos",t:[],lom:1,p:"600 mg tab",
+ d:"600 mg c/12 h.",m:"tfg",
+ r:[[50,"ok","Sin ajuste: 600 mg c/12 h."],[10,"ajuste","75 % de la dosis: 900 mg/día (p. ej., 600 mg + 300 mg). Puede empeorar la función renal si creatinina > 2 mg/dL.",75],[0,"ajuste","50 % de la dosis: 600 mg/día. Preferir otra opción.",50]],
+ h:["evitar","Contraindicado en insuficiencia hepática."]},
+{n:"Colestiramina",f:"Antilipémicos",t:[],lom:1,p:"4 g sobre",
+ d:"Prurito colestásico/dislipidemia: 4 g 1–2 veces al día; mantenimiento 8–16 g/día.",m:"crcl",
+ r:[[0,"ok","Sin ajuste; precaución (acidosis hiperclorémica)."]],h:["ok","Sin ajuste (no se absorbe). Separar otros fármacos 1 h antes o 4–6 h después."]},
+{n:"Ezetimiba",f:"Antilipémicos",t:[],d:"10 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste renal."]],h:["evitar","Evitar en Child-Pugh B y C."]},
+{n:"Fenofibrato",f:"Antilipémicos",t:[],d:"145–160 mg/día.",m:"crcl",r:[[60,"ok","Sin ajuste."],[30,"ajuste","Máximo 54 mg/día (≈ 33 %).",33],[0,"evitar","Evitar (CrCl < 30)."]],h:["evitar","Contraindicado en hepatopatía."]},
+/* Antidiabéticos */
+{n:"Metformina",f:"Antidiabéticos",t:["metformina"],lom:1,p:"500 mg tab",
+ d:"500 mg c/12 h; usual 1 g c/12 h; máximo 2.5 g/día.",m:"tfg",
+ r:[[60,"ok","Sin ajuste."],[45,"ok","Sin ajuste obligatorio; función renal c/3–6 meses."],[30,"ajuste","No iniciar. Si ya la recibe: máximo 1000 mg/día (50 % de la dosis usual de 2 g).",50],[0,"evitar","Contraindicada (TFG < 30)."]],
+ h:["evitar","Evitar en hepatopatía clínica o de laboratorio (acidosis láctica)."]},
+{n:"Glibenclamida",f:"Antidiabéticos",t:[],lom:1,p:"5 mg tab",
+ d:"2.5–5 mg con el desayuno; mantenimiento 1.25–20 mg/día.",m:"crcl",
+ r:[[60,"ok","Sin ajuste; dosis mínima eficaz."],[30,"ajuste","No recomendada en ERC; si se mantiene: 1.25–2.5 mg/día (dosis mínima). Preferir gliclazida o insulina."],[0,"evitar","Evitar (hipoglucemia prolongada)."]],
+ h:["ajuste","Dosis inicial y de mantenimiento conservadoras (1.25–2.5 mg/día)."]},
+{n:"Gliclazida",f:"Antidiabéticos",t:[],lom:1,p:"80 mg tab",
+ d:"80 mg antes del desayuno; titular hasta 160 mg (1 toma) o 240–320 mg/día en 2 tomas.",m:"crcl",
+ r:[[60,"ok","Sin ajuste."],[15,"ajuste","Leve a moderada: inicio 40 mg/día (50 % de la dosis inicial) y titular.",50],[0,"evitar","Evitar en insuficiencia renal grave; preferir insulina."]],
+ h:["ajuste","Leve a moderada: puede requerir reducción (40 mg/día). Grave: contraindicada."]},
+{n:"Insulina regular (cristalina)",f:"Antidiabéticos",t:[],lom:1,p:"100 UI/mL frasco",
+ d:"0.4–1 UI/kg/día (todas las insulinas); prandial según esquema.",m:"crcl",
+ r:[[50,"ok","Sin ajuste; titular por glucemias."],[10,"ajuste","75 % de la dosis: p. ej., 8 UI → 6 UI; vigilar glucosa.",75],[0,"ajuste","50 % de la dosis: p. ej., 8 UI → 4 UI; vigilar glucosa.",50]],
+ h:["ajuste","Requerimientos pueden disminuir; vigilar glucosa con frecuencia."]},
+{n:"Insulina NPH",f:"Antidiabéticos",t:[],lom:1,p:"100 UI/mL frasco",
+ d:"Basal 40–50 % de la dosis diaria total, en 1–2 inyecciones (p. ej., 0.2 UI/kg/día al inicio).",m:"crcl",
+ r:[[50,"ok","Sin ajuste; titular por glucemias."],[10,"ajuste","75 % de la dosis: p. ej., 20 UI → 15 UI.",75],[0,"ajuste","50 % de la dosis: p. ej., 20 UI → 10 UI.",50]],
+ h:["ajuste","Requerimientos pueden disminuir; vigilar glucosa."]},
+{n:"Dapagliflozina",f:"Antidiabéticos",t:[],d:"10 mg/día.",m:"tfg",r:[[25,"ok","Sin ajuste; poca eficacia glucémica con TFG < 45."],[0,"evitar","No iniciar (TFG < 25)."]],h:["ok","Sin ajuste; Child-Pugh C: iniciar 5 mg (50 %).",50]},
+{n:"Empagliflozina",f:"Antidiabéticos",t:[],d:"10–25 mg/día.",m:"tfg",r:[[20,"ok","Sin ajuste; poca eficacia glucémica con TFG < 30."],[0,"evitar","No iniciar (TFG < 20)."]],h:["evitar","Child-Pugh C: no recomendado."]},
+{n:"Pioglitazona",f:"Antidiabéticos",t:[],d:"15–45 mg/día.",m:"tfg",r:[[0,"ok","Sin ajuste renal. Vigilar retención de líquidos."]],h:["evitar","Evitar en hepatopatía activa."]},
+/* Endocrino */
+{n:"Levotiroxina",f:"Endocrino",t:[],lom:1,p:"0.1 mg tab",
+ d:"1.6–1.7 mcg/kg/día; mayores de 50 años o cardiópatas: inicio 25–50 mcg/día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Propiltiouracilo",f:"Endocrino",t:[],lom:1,p:"50 mg tab",
+ d:"Inicio 100 mg c/8 h (300 mg/día); mantenimiento 50 mg c/8–12 h.",m:"crcl",r:[[0,"ok","Sin ajuste establecido."]],h:["ajuste","Sin ajuste establecido; hepatotóxico: vigilar transaminasas."]},
+{n:"Solución de Lugol",f:"Endocrino",t:[],lom:1,p:"Frasco gotero 30 mL",
+ d:"Preoperatorio Graves: 5–7 gotas c/8 h × 10 días. Tormenta tiroidea: 4–8 gotas c/6–8 h.",m:"crcl",r:[[0,"ok","Sin ajuste establecido."]],h:["ok","Sin ajuste establecido."]},
+{n:"Alopurinol",f:"Otros",t:[],lom:1,p:"300 mg tab",
+ d:"Inicio 100 mg/día; usual 300 mg/día; máximo 800–900 mg/día.",m:"crcl",
+ r:[[20,"ok","Inicio 100 mg/día y titular según ácido úrico."],[10,"ajuste","Máximo 200 mg/día (≈ 67 % de 300 mg).",67],[3,"ajuste","Máximo 100 mg/día (≈ 33 %).",33],[0,"ajuste","Espaciar: p. ej., 300 mg 2 veces por semana (≈ 29 %).",29]],
+ h:["ok","Sin recomendación de ajuste; vigilar transaminasas."]},
+{n:"Colchicina",f:"Otros",t:["CYP3A4sus"],lom:1,p:"0.5–0.6 mg tab",
+ d:"Brote: 1.2 mg (2 tab) y 0.6 mg 1 h después. Profilaxis: 0.5–0.6 mg 1–2 veces al día.",m:"crcl",
+ r:[[30,"ok","Sin ajuste; vigilar efectos adversos."],[0,"ajuste","Brote: dosis habitual sin repetir ciclos en 2 semanas. Profilaxis: 0.3 mg/día (25–50 %). Diálisis: brote 0.6 mg única, sin repetir en 3 semanas.",50]],
+ h:["ajuste","Grave: dosis habitual sin repetir ciclos en 2 semanas; profilaxis dosis menor. Contraindicada con inhibidores potentes de CYP3A4 o P-gp."]},
+{n:"Fenazopiridina",f:"Otros",t:[],lom:1,p:"100 mg tab",
+ d:"200 mg c/8 h VO; máximo 3 días.",m:"crcl",r:[[50,"ok","Sin ajuste; máximo 3 días."],[0,"evitar","Contraindicada en insuficiencia renal (acumulación)."]],h:["evitar","Contraindicada en insuficiencia hepática grave."]},
+/* Corticosteroides */
+{n:"Dexametasona",f:"Corticosteroides",t:["corticosteroide"],lom:1,p:"0.5 mg tab; 4 mg/mL ampolla",
+ d:"Paliativos: 2–4 mg/día (anorexia, náusea); 8–16 mg/día (compresión, HTEC, obstrucción); dar en la mañana.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste; hipoalbuminemia aumenta efectos adversos."]},
+{n:"Prednisolona",f:"Corticosteroides",t:["corticosteroide"],lom:1,p:"1, 5 y 25 mg tab; 15 mg/5 mL",
+ d:"5–60 mg/día según indicación.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste (forma activa; preferible a prednisona en hepatopatía)."]},
+{n:"Prednisona",f:"Corticosteroides",t:["corticosteroide"],d:"5–60 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ajuste","Profármaco: preferir prednisolona en hepatopatía."]},
+{n:"Metilprednisolona",f:"Corticosteroides",t:["corticosteroide"],d:"4–48 mg/día VO; pulsos según indicación.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Hidrocortisona",f:"Corticosteroides",t:["corticosteroide"],lom:1,p:"100 mg frasco ampolla",
+ d:"100–200 mg IV/IM; reemplazo 15–25 mg/día VO.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+/* Hormonas sexuales */
+{n:"Medroxiprogesterona",f:"Hormonas",t:[],lom:1,p:"150 mg/mL inyectable; tab",
+ d:"Anticoncepción: 150 mg IM c/3 meses. Protección endometrial: 5–10 mg/día 12–14 días/mes.",m:"crcl",r:[[0,"ok","Sin recomendación de ajuste."]],h:["evitar","Contraindicada en disfunción o enfermedad hepática."]},
+{n:"Estradiol o estrógenos conjugados (oral)",f:"Hormonas",t:[],lom:1,p:"Estradiol 1 mg; estrógenos conjugados 0.625 mg tab",
+ d:"Estradiol 1–2 mg/día; estrógenos conjugados 0.3–0.625 mg/día.",m:"crcl",r:[[0,"ok","Sin recomendación de ajuste."]],h:["evitar","Contraindicados en disfunción o enfermedad hepática de cualquier tipo."]},
+{n:"Estrógenos conjugados (vaginal)",f:"Hormonas",t:[],lom:1,p:"Crema vaginal",d:"0.5–2 g intravaginal/día por 3 semanas de cada 4; luego 2 veces/semana.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["evitar","Contraindicados en enfermedad hepática."]},
+{n:"Anticonceptivo oral combinado",f:"Hormonas",t:[],lom:1,p:"Etinilestradiol 30 mcg + levonorgestrel 0.15 mg",d:"1 tab/día según esquema.",m:"crcl",r:[[0,"ok","Sin ajuste; vigilar presión arterial."]],h:["evitar","Contraindicado en insuficiencia hepática."]},
+{n:"Levonorgestrel",f:"Hormonas",t:[],lom:1,p:"1.5 mg tab",d:"Anticoncepción de emergencia: 1.5 mg dosis única (≤ 72–120 h).",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Etonogestrel (implante)",f:"Hormonas",t:[],lom:1,p:"68 mg implante",d:"1 implante subdérmico c/3 años.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["evitar","Contraindicado en hepatopatía."]},
+{n:"Oxitocina",f:"Hormonas",t:[],lom:1,p:"5 UI/mL ampolla",d:"Alumbramiento: 10 UI IM o 5 UI IV lenta.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+/* ===== Antimicrobianos y antiparasitarios ===== */
+{n:"Amoxicilina",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"500 mg cáps; 250 mg/5 mL susp",
+ d:"500 mg c/8 h o 875 mg–1 g c/12 h VO.",m:"crcl",
+ r:[[30,"ok","Sin ajuste."],[10,"ajuste","Misma dosis c/12 h (≈ 67 % de la dosis diaria): p. ej., 500 mg c/12 h.",67],[0,"ajuste","Misma dosis c/24 h (≈ 33 %): p. ej., 500 mg c/24 h; en HD dar tras la diálisis.",33]],
+ h:["ok","Sin recomendación específica; precaución."]},
+{n:"Bencilpenicilina benzatínica",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"1 200 000 UI frasco",
+ d:"1.2 millones UI IM dosis única o c/3–4 semanas (profilaxis de fiebre reumática).",m:"crcl",
+ r:[[50,"ok","Sin ajuste."],[10,"ajuste","75 % de la dosis manteniendo el intervalo: 1.2 M UI → 900 000 UI.",75],[0,"ajuste","20–50 % de la dosis manteniendo el intervalo: 1.2 M UI → 240 000–600 000 UI.",35]],
+ h:["ok","Sin recomendación específica."]},
+{n:"Cefalexina",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"500 mg tab/cáps; 250 mg/5 mL susp",
+ d:"250–500 mg c/6 h VO (1–4 g/día).",m:"crcl",
+ r:[[60,"ok","Sin ajuste."],[30,"ok","Sin ajuste; máximo 1 g/día."],[15,"ajuste","250 mg c/8–12 h (≈ 25–37 % de 500 mg c/6 h).",25],[5,"ajuste","250 mg c/24 h (≈ 12 %).",12],[0,"ajuste","250 mg c/48–60 h (sin diálisis).",6]],
+ h:["ok","Sin recomendación específica."]},
+{n:"Ceftriaxona",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"250 mg frasco IM",
+ d:"Institucional IM: 250–500 mg dosis única (ITS, profilaxis). Hospital: 1–2 g/día IV.",m:"crcl",
+ r:[[0,"ok","Sin ajuste; máximo 2 g/día si hay insuficiencia renal y hepática combinadas."]],h:["ok","Sin ajuste (salvo falla renal y hepática combinadas)."]},
+{n:"Claritromicina",f:"Antimicrobianos",t:["CYP3A4","QT","antibiotico"],lom:1,p:"500 mg tab; 250 mg/5 mL susp",
+ d:"500 mg c/12 h VO.",m:"crcl",
+ r:[[30,"ok","Sin ajuste."],[0,"ajuste","50 % de la dosis: 500 mg c/24 h o 250 mg c/12 h; en HD dar tras la diálisis.",50]],
+ h:["ok","Sin ajuste si la función renal es normal; con falla renal y hepática, reducir o espaciar."]},
+{n:"Doxiciclina",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"100 mg cáps/tab",d:"100 mg c/12 h VO (100–200 mg/día).",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin recomendación específica."]},
+{n:"Gentamicina",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"40 mg/mL ampolla 2 mL",
+ d:"5–7 mg/kg IV/IM c/24 h, o 1.7 mg/kg c/8 h (5 mg/kg/día).",m:"crcl",
+ r:[[60,"ok","Sin ajuste: 5–7 mg/kg c/24 h."],[40,"ajuste","5–7 mg/kg c/36 h (≈ 67 % de la dosis diaria); ajustar por niveles.",67],[20,"ajuste","5–7 mg/kg c/48 h (50 %); ajustar por niveles.",50],[0,"ajuste","Dosis única de 5–7 mg/kg y siguiente dosis según niveles (< 1 mcg/mL). Esquema c/8 h: misma dosis c/48–72 h.",25]],
+ h:["ok","Sin ajuste (no se metaboliza en el hígado)."]},
+{n:"Metronidazol",src:"2,10",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"500 mg tab; 125 mg/5 mL susp",
+ d:"500 mg c/8 h VO (máximo 4 g/día) por 7–10 días.",m:"crcl",
+ r:[[10,"ok","Sin ajuste."],[0,"ajuste","Metabolitos se acumulan: 500 mg c/12 h (≈ 67 %); en HD dar tras la diálisis.",67]],
+ h:["ajuste","Hepatopatía significativa o encefalopatía incipiente: 400–500 mg una vez al día (≈ 33 % de la dosis diaria); se acumula y puede empeorar la encefalopatía.",33]},
+{n:"Trimetoprim-sulfametoxazol",f:"Antimicrobianos",t:["TMP-SMX"],lom:1,p:"160/800 mg tab; 40/200 mg/5 mL susp",
+ d:"160/800 mg c/12 h VO.",m:"crcl",
+ r:[[30,"ok","Sin ajuste."],[15,"ajuste","50 % de la dosis: 160/800 mg c/24 h (u 80/400 mg c/12 h).",50],[0,"evitar","No recomendado (CrCl < 15)."]],
+ h:["ajuste","Usar con precaución."]},
+{n:"Nitrofurantoína",f:"Antimicrobianos",t:["antibiotico"],lom:1,p:"50 y 100 mg cáps; susp",
+ d:"50–100 mg c/6 h VO por 7 días; supresión 50–100 mg/noche.",m:"crcl",
+ r:[[60,"ok","Sin ajuste."],[0,"evitar","Contraindicada (CrCl < 60 según el Formulario CCSS): acumulación y toxicidad."]],
+ h:["evitar","Contraindicada si hubo ictericia colestásica o disfunción hepática con nitrofurantoína."]},
+{n:"Ciprofloxacino",f:"Antimicrobianos",t:["antibiotico","QT"],d:"250–750 mg c/12 h VO.",m:"crcl",
+ r:[[50,"ok","Sin ajuste."],[30,"ajuste","250–500 mg c/12 h (≈ 67 %).",67],[0,"ajuste","250–500 mg c/24 h (≈ 33–50 %); en HD tras la diálisis.",50]],h:["ok","Sin ajuste."]},
+{n:"Aciclovir",f:"Antimicrobianos",t:[],lom:1,p:"400 mg tab",
+ d:"Herpes simple: 400 mg c/8 h. Zóster: 800 mg 5 veces al día por 7–10 días.",m:"crcl",
+ r:[[25,"ok","Sin ajuste (con CrCl 10–25 el esquema de zóster pasa a 800 mg c/8 h)."],[10,"ajuste","Zóster: 800 mg c/8 h (60 %). Herpes 400 mg c/8 h: sin ajuste.",60],[0,"ajuste","Zóster: 800 mg c/12 h (40 %). Herpes: 200 mg c/12 h (33 %).",40]],
+ h:["ok","Sin recomendación específica."]},
+{n:"Fluconazol",f:"Antimicrobianos",t:["CYP3A4"],d:"Candidiasis: 50–200 mg/día; carga 200–400 mg.",m:"crcl",
+ r:[[50,"ok","Dosis habitual."],[0,"ajuste","Carga habitual, luego 50 % de la dosis diaria: p. ej., 100 mg → 50 mg/día; en HD dosis completa tras cada diálisis.",50]],h:["ajuste","Precaución; vigilar transaminasas."]},
+{n:"Nistatina",f:"Antimicrobianos",t:[],lom:1,p:"100 000 U/mL susp",d:"400 000–600 000 U (4–6 mL) c/6 h, enjuagar y tragar, 14 días.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Griseofulvina",f:"Antimicrobianos",t:[],lom:1,p:"125 mg/5 mL susp",d:"500 mg–1 g/día VO.",m:"crcl",r:[[0,"ok","Sin recomendación de ajuste."]],h:["evitar","Contraindicada en falla hepatocelular."]},
+{n:"Albendazol",f:"Antiparasitarios",t:[],lom:1,p:"200 mg tab",d:"400 mg dosis única (helmintiasis); esquemas más largos según indicación.",m:"crcl",r:[[0,"ok","Sin ajuste (metabolismo hepático)."]],h:["ajuste","Precaución en hepatopatía grave."]},
+{n:"Ivermectina",f:"Antiparasitarios",t:[],lom:1,p:"6 mg tab",d:"200 mcg/kg dosis única (estrongiloidiasis, escabiosis: repetir a las 2 semanas).",m:"crcl",r:[[0,"ok","Sin recomendaciones de ajuste."]],h:["ok","Sin recomendaciones de ajuste."]},
+{n:"Cloroquina",f:"Antiparasitarios",t:["QT"],lom:1,p:"150 mg base tab",d:"Malaria: 10 mg/kg día 1, 7.5 mg/kg días 2 y 3 (total 25 mg/kg).",m:"crcl",
+ r:[[10,"ok","Sin ajuste."],[0,"ajuste","50 % de la dosis: p. ej., 600 mg base → 300 mg base.",50]],h:["ajuste","Utilizar con precaución."]},
+{n:"Hidroxicloroquina",f:"Antiparasitarios",t:["QT"],lom:1,p:"310 mg base tab",d:"155–310 mg base/día (200–400 mg de sulfato).",m:"crcl",r:[[30,"ok","Sin recomendación específica; precaución."],[0,"ajuste","Disfunción grave: puede requerir reducción (p. ej., 155 mg/día, 50 %).",50]],h:["ajuste","Usar con precaución."]},
+{n:"Primaquina",f:"Antiparasitarios",t:[],lom:1,p:"5 y 15 mg base tab",d:"15 mg/día × 14 días (0.25 mg/kg/día). Descartar déficit de G6PD.",m:"crcl",r:[[0,"ok","Sin recomendaciones de ajuste."]],h:["ok","Sin recomendaciones de ajuste."]},
+{n:"Artemeter con lumefantrina",f:"Antiparasitarios",t:["QT"],lom:1,p:"20/120 mg tab",d:"4 tab a las 0, 8, 24, 36, 48 y 60 h (adulto > 35 kg).",m:"crcl",r:[[30,"ok","Sin ajuste en leve a moderada."],[0,"ajuste","Usar con precaución en insuficiencia renal grave."]],h:["ajuste","Sin ajuste en leve a moderada; precaución en grave."]},
+{n:"Artesunato",f:"Antiparasitarios",t:[],lom:1,p:"60 mg polvo inyectable",d:"2.4 mg/kg IV/IM a las 0, 12 y 24 h y luego c/24 h (esquema institucional 2 mg/kg + 1 mg/kg).",m:"crcl",r:[[0,"ok","Sin ajuste; precaución."]],h:["ok","Sin ajuste; precaución."]},
+{n:"Antimoniato de meglumina o estibogluconato",f:"Antiparasitarios",t:["QT"],lom:1,p:"300 mg/mL ampolla",d:"20 mg/kg/día de antimonio IM/IV por 20–30 días.",m:"crcl",r:[[50,"ok","Sin ajuste."],[0,"ajuste","Insuficiencia moderada: aumentan los efectos adversos; vigilar."]],h:["ajuste","Leve a moderada: precaución (riesgo de daño hepático)."]},
+/* Vitaminas y minerales */
+{n:"Hierro oral",f:"Suplementos",t:[],lom:1,p:"Sulfato ferroso tab; hierro polimaltosato 50 mg/mL gotas",
+ d:"50–100 mg de hierro elemental c/8 h (o 60–120 mg/día si hay intolerancia).",m:"crcl",r:[[0,"ok","Sin ajuste; en HD con eritropoyetina ≥ 200 mg/día."]],h:["ok","Sin recomendación de ajuste."]},
+{n:"Ácido fólico",f:"Suplementos",t:[],lom:1,p:"1 mg tab",d:"1–5 mg una vez al día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Cianocobalamina (vitamina B12)",f:"Suplementos",t:[],lom:1,p:"1 mg/mL ampolla",d:"1000 mcg IM diario o en días alternos × 1 semana, semanal × 4–8 semanas, luego mensual.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Tiamina (vitamina B1)",f:"Suplementos",t:[],lom:1,p:"100 mg tab",d:"100 mg/día VO (déficit 5–30 mg/día; alcoholismo 100–300 mg/día).",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Piridoxina (vitamina B6)",f:"Suplementos",t:[],lom:1,p:"50 mg tab",d:"Profilaxis con isoniazida 25–50 mg/día.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Ácido ascórbico (vitamina C)",f:"Suplementos",t:[],lom:1,p:"500 mg tab; 100 mg/mL gotas",d:"Escorbuto: 300 mg–1 g/día; profilaxis 25–75 mg/día.",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Precaución: nefropatía por oxalato; dosis bajas (≤ 100–200 mg/día).",20]],h:["ok","Sin ajuste."]},
+{n:"Vitamina D3 (colecalciferol)",f:"Suplementos",t:[],lom:1,p:"Gotas",d:"Osteoporosis: 1500 UI/día; déficit 1000–2000 UI/día.",m:"crcl",r:[[0,"ok","Sin ajuste (en ERC avanzada la activación renal disminuye)."]],h:["ok","Sin ajuste."]},
+/* Bifosfonatos y otros */
+{n:"Denosumab",f:"Bifosfonatos y denosumab",t:[],d:"Metástasis óseas: 120 mg SC c/4 semanas; osteoporosis 60 mg c/6 meses.",m:"tfg",r:[[0,"ok","Dosis sin cambios; vigilar calcio (hipocalcemia más frecuente en ERC avanzada)."]],h:["ok","Sin ajuste."]},
+{n:"Ácido zoledrónico",f:"Bifosfonatos y denosumab",t:[],d:"4 mg IV en 15 min c/3–4 semanas (hipercalcemia: 4 mg dosis única).",m:"crcl",
+ r:[[60,"ok","4 mg; creatinina antes de cada dosis."],[50,"ajuste","3.5 mg (88 %).",88],[40,"ajuste","3.3 mg (83 %).",83],[30,"ajuste","3 mg (75 %).",75],[0,"evitar","No recomendado (CrCl < 30)."]],h:["ok","Sin ajuste."]},
+{n:"Pamidronato",f:"Bifosfonatos y denosumab",t:[],d:"60–90 mg IV en 2–4 h.",m:"crcl",r:[[30,"ok","Sin ajuste; infusión lenta (≤ 90 mg en ≥ 4 h)."],[0,"evitar","Evitar salvo hipercalcemia grave (60 mg en ≥ 4 h)."]],h:["ok","Sin ajuste."]},
+{n:"Ácido ibandrónico",f:"Bifosfonatos y denosumab",t:[],d:"6 mg IV c/3–4 semanas o 50 mg/día VO.",m:"crcl",
+ r:[[50,"ok","Sin ajuste."],[30,"ajuste","4 mg IV (67 %) o 50 mg VO en días alternos (50 %).",67],[0,"ajuste","2 mg IV (33 %) o 50 mg VO una vez por semana.",33]],h:["ok","Sin ajuste."]},
+{n:"Epinefrina (adrenalina)",f:"Otros",t:[],lom:1,p:"1 mg/mL ampolla",d:"Anafilaxia: 0.3–0.5 mg IM, repetir c/5–15 min. Paro: 1 mg IV c/3–5 min.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Antiveneno ofídico",f:"Otros",t:[],lom:1,p:"Polivalente y anticoral (ICP)",d:"Según la gravedad del envenenamiento y protocolo institucional (IV).",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Yoduro de potasio (solución saturada)",f:"Otros",t:[],lom:1,p:"1 g/mL solución",d:"Esporotricosis: 250 mg c/8 h; titular hasta 2–2.5 g c/8 h.",m:"crcl",r:[[30,"ok","Sin recomendación de ajuste."],[0,"ajuste","Precaución: riesgo de hiperpotasemia."]],h:["ok","Sin recomendación de ajuste."]},
+/* Uso tópico, oftálmico, ótico, nasal y vaginal (absorción sistémica mínima) */
+{n:"Tópicos dermatológicos (cremas, lociones, champú)",f:"Uso tópico y local",t:[],lom:1,p:"Betametasona, hidrocortisona, miconazol, tioconazol, bifonazol, óxido de zinc, calamina, crotamitón, crema de rosas, peróxido de benzoílo, brea, ácido salicílico, podofilina, acetato de aluminio, sulisobenzona",
+ d:"Capa fina 1–3 veces al día según el producto.",m:"crcl",r:[[0,"ok","Sin ajuste (absorción sistémica mínima)."]],h:["ok","Sin ajuste."]},
+{n:"Sulfadiazina de plata crema",f:"Uso tópico y local",t:[],lom:1,p:"Crema 1 %",d:"Cubrir la quemadura 1–2 veces al día (capa de 1.6 mm).",m:"crcl",r:[[30,"ok","Sin ajuste."],[0,"ajuste","Precaución: la sulfadiazina puede acumularse en quemaduras extensas."]],h:["ajuste","Precaución en quemaduras extensas."]},
+{n:"Oftálmicos (gotas y ungüentos)",f:"Uso tópico y local",t:[],lom:1,p:"Fluorometolona, gentamicina, tetraciclina, tetracaína, oximetazolina, tetrizolina, lágrimas artificiales",
+ d:"1–2 gotas o una aplicación 2–4 veces al día según el producto.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Nasales y óticos",f:"Uso tópico y local",t:[],lom:1,p:"Oximetazolina 0.05 %, tetrizolina 0.1 % nasal; gotas para cerumen",d:"Nasales: 2–3 gotas c/12 h por máximo 3 días. Óticas: 5–10 gotas c/12 h hasta 4 días.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]},
+{n:"Óvulos vaginales y antihemorroidales",f:"Uso tópico y local",t:[],lom:1,p:"Miconazol, tioconazol, policresuleno; preparación antihemorroidal",d:"1 óvulo/noche por 3–7 días; antihemorroidal 1 supositorio c/12 h y tras cada deposición.",m:"crcl",r:[[0,"ok","Sin ajuste."]],h:["ok","Sin ajuste."]}
+];
+const PCF = {
+ "Morfina (oral o SC)":{r:["e","Si es inevitable: PO/SC iniciar 1.25–2.5 mg p.r.n.; controlado el dolor, considerar dosis equivalente de buprenorfina o fentanilo TD."],
+   h:["p","PO: iniciar 5 mg c/6–8 h y c/2–4 h p.r.n.; SC: 2.5 mg c/2–4 h p.r.n.; ICSC: 10 mg/24 h. Evitar liberación prolongada y TD."]},
+ "Codeína":{r:["e","Si es inevitable: PO máximo 30 mg c/6 h."],h:["e","Profármaco: biotransformación reducida y efecto impredecible."]},
+ "Tramadol":{r:["e","PO: iniciar 50 mg c/12 h; máximo 200 mg/24 h."],d:"Posible remoción por HD; si se pierde la analgesia tras la diálisis, dar una dosis adicional.",h:["e","Profármaco: efecto reducido e impredecible."]},
+ "Oxicodona":{r:["p","PO: iniciar 1–2 mg c/6–8 h y p.r.n.; controlado el dolor, considerar dosis equivalente de buprenorfina o fentanilo TD."],
+   h:["e","Si es inevitable: PO 2.5 mg c/8 h y c/2–4 h p.r.n.; SC 1.5 mg c/2–4 h p.r.n.; ICSC 5 mg/24 h."]},
+ "Hidromorfona":{r:["p","PO: iniciar 1.3 mg c/6 h y p.r.n.; SC: 0.25–0.5 mg c/6 h y p.r.n.; ICSC: 1 mg/24 h."],d:"Posible remoción por HD; precaución. Si se pierde la analgesia tras la diálisis, dar una dosis adicional.",
+   h:["e","Si es inevitable: espaciar la liberación inmediata PO/SC a c/8 h (metabolito neurotóxico)."]},
+ "Fentanilo":{r:["s","Dosis menores pueden bastar. SC: 12.5–25 mcg p.r.n.; ICSC: 100–150 mcg/24 h. TD solo con dolor estable, en dosis equivalente al opioide previo."],d:"No se elimina por diálisis, pero precaución. Si se pierde la analgesia antes o poco después de la diálisis, dar una dosis adicional.",
+   h:["s","Dosis menores pueden bastar. SC: 12.5–25 mcg c/1 h p.r.n.; ICSC: 100–150 mcg/24 h. Evitar TD."]},
+ "Alfentanilo":{r:["s","Dosis menores pueden bastar. SC: 50–100 mcg p.r.n.; ICSC: 0.5–1 mg/24 h."],h:["e","Si es inevitable: SC 50–100 mcg c/1 h p.r.n.; ICSC 0.5–1 mg/24 h."]},
+ "Buprenorfina":{r:["s","SL/SC/ICSC: reducir la dosis inicial 25–50 %. TD solo con dolor estable: iniciar 5 mcg/h o dosis equivalente al opioide previo."],d:"Posible remoción por diálisis; precaución.",
+   h:["p","SL/SC: reducir la dosis inicial 25–50 %. Evitar TD."]},
+ "Metadona":{r:["s","Iniciar con 50 % de la dosis habitual; titulación cuidadosa y muy lenta: se acumula aun sin insuficiencia renal. No se elimina por diálisis."],
+   h:["e","Titulación cuidadosa y lenta; se acumula aun sin hepatopatía."]},
+ "Lorazepam":{r:["s","Dosis menores pueden bastar. SL/PO: iniciar 500 mcg/24 h."],h:["p","SL/PO: iniciar 500 mcg/24 h."]},
+ "Zolpidem":{r:["s","Dosis menores pueden bastar. PO: iniciar 5 mg al acostarse."]},
+ "Zopiclona":{r:["s","Dosis menores pueden bastar. PO: iniciar 3.75 mg al acostarse."],h:["p","PO: iniciar 3.75 mg al acostarse."]},
+ "Clonazepam":{r:["p","Dosis menores pueden bastar. PO: iniciar 500 mcg/24 h."],h:["e","Evitar si es posible; no es primera línea para convulsiones."]},
+ "Diazepam":{r:["e","Si es inevitable, usar la mitad de la dosis habitual (metabolito activo de vida media muy larga)."],h:["e","Evitar si es posible."]},
+ "Temazepam":{h:["e","Si es inevitable: PO iniciar 5 mg al acostarse."]},
+ "Olanzapina":{r:["s","Dosis menores pueden bastar. PO: dosis inicial máxima 5 mg/24 h."],h:["p","PO: iniciar 2.5–5 mg al acostarse."]},
+ "Haloperidol":{r:["p","Uso ocasional: dosis sin cambios. Uso regular: la mitad de la dosis habitual."],h:["e","Si es inevitable: PO/SC iniciar 500 mcg al acostarse y c/4 h p.r.n."]},
+ "Quetiapina":{r:["p","Dosis menores pueden bastar. PO: dosis inicial máxima 25 mg/24 h."],h:["p","PO: iniciar 12.5 mg c/12 h, aumentando 12.5 mg al día. Evitar liberación prolongada."]},
+ "Risperidona":{r:["e","Si es inevitable: PO dosis inicial máxima 500 mcg c/12 h; titular 500 mcg c/12 h cada 7 días."],d:"En DP o HD: evitar (remoción impredecible por diálisis).",
+   h:["p","PO: iniciar 500 mcg al acostarse; aumentar 500 mcg cada 3–4 días."]},
+ "Ciclizina":{r:["s","Dosis sin cambios; dosis menores pueden bastar."],h:["e","Si es inevitable: PO 50 mg c/12 h; SC 25 mg c/12 h."]},
+ "Granisetrón":{r:["s","Dosis sin cambios."]},
+ "Ondansetrón":{r:["s","Dosis sin cambios."],h:["p","PO/SC: máximo 8 mg/24 h."]},
+ "Proclorperazina":{r:["s","Dosis menores pueden bastar."],h:["e","Si es inevitable: bucal 3 mg c/12 h; PO 5 mg c/8 h."]},
+ "Domperidona":{r:["p","PO: máximo 10 mg una o dos veces al día. Usar la menor dosis eficaz por el menor tiempo (QT)."],h:["p","PO: iniciar 5 mg c/12 h; máximo 10 mg c/8 h."]},
+ "Levomepromazina":{r:["p","PO/SC: iniciar 6–6.25 mg al acostarse y p.r.n. hasta c/8 h; pueden bastar 2.5–3 mg."],h:["e","Si es inevitable: PO/SC 2.5–3.125 mg al acostarse y c/4 h p.r.n."]},
+ "Metoclopramida":{r:["p","PO/SC: iniciar 5 mg c/8 h; máximo 10 mg c/8 h. Menor dosis por el menor tiempo (trastornos del movimiento)."],h:["p","PO/SC: iniciar 5 mg c/12 h; máximo 10 mg c/8–12 h."]},
+ "Prometazina":{r:["p","PO: iniciar 10 mg c/12 h; máximo 25 mg c/8 h."]},
+ "Sertralina":{r:["s","Dosis sin cambios. PO: iniciar 25 mg cada mañana."],h:["e","Evitar salvo prurito colestásico: PO iniciar 50 mg/día; máximo 100 mg/día."]},
+ "Amitriptilina":{r:["p","Dosis menores pueden bastar. PO: iniciar 10 mg al acostarse. No es primera línea para depresión."],h:["p","PO: iniciar 5–10 mg al acostarse. No es primera línea para depresión."]},
+ "Citalopram":{r:["p","Dosis sin cambios; dosis menores pueden bastar. PO: iniciar 10 mg cada mañana."],h:["p","PO: iniciar 10 mg/día; máximo 16 mg/día (solución) o 20 mg/día (tabletas)."]},
+ "Nortriptilina":{r:["p","Dosis menores pueden bastar. PO: iniciar 10 mg al acostarse. No es primera línea para depresión."]},
+ "Trazodona":{r:["p","Dosis menores pueden bastar. PO: iniciar 25–50 mg al acostarse. No es primera línea para depresión."],h:["e","No es primera línea para depresión."]},
+ "Duloxetina":{r:["e","Si es inevitable, dosis menores: PO iniciar ≤ 30 mg al acostarse."],h:["e","Evitar."]},
+ "Mirtazapina":{r:["e","Si es inevitable: PO iniciar 15 mg al acostarse."],h:["p","PO: iniciar 15 mg al acostarse; máximo 30 mg."]},
+ "Venlafaxina":{r:["e","Si es inevitable: PO iniciar 37.5 mg/día; máximo 75–112.5 mg/24 h en dosis divididas."],d:"En HD: dar la dosis después de la sesión para reducir efectos adversos.",
+   h:["e","Si es inevitable: PO iniciar 37.5 mg una vez al día. No usar liberación prolongada."]},
+ "Carbamazepina":{r:["s","Dosis sin cambios."],h:["e","Si es inevitable: PO iniciar 50 mg c/12 h."]},
+ "Ácido valproico":{r:["s","Dosis sin cambios; dosis menores pueden bastar."],h:["e","Si es inevitable: dosis baja y titulación lenta."]},
+ "Gabapentina":{r:["p","Sin diálisis o en DP: PO iniciar 100 mg en noches alternas y titular lento."],
+   d:"HD con diuresis > 100 mL/24 h: 100 mg al acostarse, con dosis suplementaria tras cada sesión o dosis diaria después de la HD. HD anúrico: 100 mg dosis única y 100 mg tras cada HD; en general no se requiere mantenimiento.",
+   h:["s","Dosis bajas y titulación lenta: PO 100 mg al acostarse, aumentando 100 mg/24 h cada 2–3 días; ajustar a la función renal."]},
+ "Pregabalina":{r:["p","Sin diálisis o en DP: PO iniciar 25 mg una vez al día; máximo 75 mg una vez al día."],d:"HD: dosis suplementaria de 25–100 mg tras cada sesión o dar la dosis diaria después de la HD.",
+   h:["s","Dosis bajas y titulación lenta: PO 25–50 mg c/12 h; ajustar a la función renal."]},
+ "Levetiracetam":{r:["p","Sin diálisis: PO/IV iniciar 250 mg c/12 h; máximo 500 mg c/12 h (si pesa < 50 kg, dosis por kg según ficha)."],
+   d:"DP o HD: 750 mg dosis única y luego la dosis de mantenimiento una vez al día; suplemento de 250–500 mg tras cada HD o dosis diaria después de la HD.",
+   h:["s","PO/IV: iniciar 250 mg c/12 h; ajustar a la función renal."]},
+ "Oxcarbazepina":{r:["p","PO: dosis inicial máxima 150 mg c/12 h (pueden bastar 75 mg c/12 h); titular 75 mg cada semana."],h:["p","Profármaco: efecto reducido o impredecible. PO: iniciar 75 mg c/12 h."]},
+ "Fenobarbital":{r:["e","Si es inevitable, solo con asesoría neurológica."],h:["e","Si es inevitable, solo con supervisión neurológica."]},
+ "Fenitoína":{r:["e","Si es inevitable: dosis como en función renal normal; vigilar niveles ajustados por hipoalbuminemia (más fracción libre, riesgo de toxicidad)."],h:["e","Si es inevitable: vigilar niveles ajustados por hipoalbuminemia."]},
+ "Loperamida":{r:["p","Dosis sin cambios; dosis menores pueden bastar."],h:["e","Si es inevitable: PO 2 mg dosis única."]},
+ "Glicopirronio":{r:["e","Si es inevitable: SC iniciar 200 mcg p.r.n.; dosis menores pueden bastar."],h:["p","SC: 200 mcg c/2 h p.r.n.; ICSC: iniciar 600 mcg/24 h."]},
+ "Butilbromuro de hioscina":{r:["s","ICSC o PO: dosis sin cambios."],h:["p","SC: 20 mg c/1 h p.r.n.; ICSC: iniciar 60 mg/24 h."]},
+ "Denosumab":{r:["s","Dosis sin cambios."],h:["s","Dosis sin cambios."]},
+ "Ácido ibandrónico":{r:["p","Metástasis óseas de cáncer de mama: PO 50 mg semanal o IV 2 mg en 500 mL en 1 h cada 3–4 semanas. Hipercalcemia tumoral: consultar a nefrología."],h:["s","Dosis sin cambios; puede requerir ajuste renal."]},
+ "Pamidronato":{r:["e","Hipercalcemia tumoral: consultar a nefrología."],h:["s","Dosis sin cambios; puede requerir ajuste renal."]},
+ "Ácido zoledrónico":{r:["e","Evitar si es posible."],h:["s","Dosis sin cambios; puede requerir ajuste renal."]},
+ "Paracetamol (acetaminofén)":{r:["p","PO: iniciar 500 mg c/6–8 h; máximo 3 g/24 h. IV: ver ficha; intervalo mínimo 6 h."],
+   h:["p","Solo sin otros factores de riesgo de toxicidad. PO/PR: iniciar 500 mg c/8 h; máximo 1 g c/8 h. IV contraindicado por el fabricante (algunas unidades usan 500 mg–1 g c/8 h)."]},
+ "Nefopam":{r:["p","PO: máximo 30 mg c/8 h."]},
+ "Baclofeno":{r:["e","Si es inevitable: PO máximo 5 mg una vez al día."],d:"HD: dar la dosis después de la sesión.",h:["p","PO: iniciar 5 mg una vez al día; ajustar a la función renal."]},
+ "Tizanidina":{r:["p","PO: iniciar 2 mg una vez al día; titular lento en pasos de 2 mg; aumentar la frecuencia solo si una dosis diaria no basta."],h:["e","Evitar."]},
+ "Dexametasona":{h:["p","PO: iniciar 2–16 mg una vez al día según la indicación."]},
+ "Lansoprazol":{h:["p","PO: iniciar 15 mg una vez al día; máximo 30 mg/día."]},
+ "Omeprazol":{h:["p","PO: iniciar 10 mg una vez al día; máximo 20 mg/día."]},
+ "Ranitidina":{h:["s","Dosis sin cambios; puede requerir ajuste renal."]},
+ "Octreótido":{h:["p","SC: dosis de mantenimiento menores pueden bastar."]},
+ "Espironolactona":{h:["p","PO: una dosis diaria; vigilar electrolitos de cerca."]}
+};
+/* Reglas por clase (si el fármaco no tiene entrada propia) */
+const PCF_CLASE = [
+ [/\bAINE\b/i, {r:["e","AINE: evitar si es posible."], h:["e","AINE: evitar si es posible; si es inevitable, ibuprofeno PO 200 mg c/8 h."]}],
+ [/corticosteroide/i, {r:["s","Corticosteroides: generalmente seguros."]}],
+ [/^laxante$/i, {r:["s","Laxantes: generalmente seguros."], h:["s","Laxantes: dosis sin cambios."]}]
+];
+const PCF_EST = {s:"ok", p:"ajuste", e:"evitar"};
+const INTER = [
+ {a:"opioide",b:"benzodiacepina",nivel:"Grave",efecto:"Depresión respiratoria y sedación profunda.",manejo:"Menor dosis eficaz; vigilar frecuencia respiratoria y nivel de conciencia; tener naloxona disponible."},
+ {a:"opioide",b:"gabapentinoide",nivel:"Grave",efecto:"Depresión respiratoria y sedación, sobre todo con insuficiencia renal o edad avanzada.",manejo:"Ajustar el gabapentinoide a la función renal; vigilar sedación."},
+ {a:"AINE",b:"anticoagulante",nivel:"Grave",efecto:"Sangrado digestivo y de otros sitios.",manejo:"Evitar la combinación; si es necesaria, valorar protección gástrica y vigilancia."},
+ {a:"AINE",b:"antiagregante",nivel:"Grave",efecto:"Sangrado digestivo.",manejo:"Evitar; si es necesaria, protección gástrica."},
+ {a:"antiagregante",b:"anticoagulante",nivel:"Grave",efecto:"Aumento importante del riesgo de sangrado.",manejo:"Usar solo con indicación clara y vigilar."},
+ {a:"AINE",b:"IECA_ARA",nivel:"Moderada",efecto:"Lesión renal aguda y aumento de potasio; el riesgo sube con diuréticos.",manejo:"Evitar; vigilar creatinina y potasio."},
+ {a:"espironolactona",b:"IECA_ARA",nivel:"Grave",efecto:"Hiperpotasemia potencialmente fatal.",manejo:"Controlar potasio y creatinina a la semana y al mes; evitar si la TFG es menor de 30."},
+ {a:"TMP-SMX",b:"IECA_ARA",nivel:"Moderada",efecto:"Hiperpotasemia.",manejo:"Controlar potasio, sobre todo con insuficiencia renal."},
+ {a:"QT",b:"QT",nivel:"Grave",efecto:"Prolongación del QT y riesgo de torsades de pointes.",manejo:"ECG basal y de control; corregir potasio y magnesio; evitar combinaciones innecesarias."},
+
+ {a:"serotoninérgico",b:"ISRS",nivel:"Grave",efecto:"Síndrome serotoninérgico; con tramadol aumenta el riesgo de convulsiones.",manejo:"Evitar; si es inevitable, dosis bajas y vigilancia."},
+
+ 
+ {a:"AINE",b:"corticosteroide",nivel:"Moderada",efecto:"Mayor riesgo de úlcera y sangrado digestivo.",manejo:"Protección gástrica y vigilancia; evitar si es posible."},
+ {a:"AINE",b:"diuretico",nivel:"Moderada",efecto:"Lesión renal aguda, sobre todo con IECA o ARA II (triple combinación).",manejo:"Evitar la combinación; vigilar creatinina y potasio."},
+ {a:"digoxina",b:"amiodarona",nivel:"Grave",efecto:"La amiodarona aumenta los niveles de digoxina y el riesgo de toxicidad.",manejo:"Reducir la dosis de digoxina y monitorizar niveles."},
+ {a:"opioide",b:"CYP3A4",nivel:"Moderada",efecto:"Los inhibidores de CYP3A4 aumentan el nivel del opioide.",manejo:"Vigilar sedación y depresión respiratoria; ajustar dosis si se inicia o suspende el inhibidor."},
+ {a:"codeina",b:"CYP2D6",nivel:"Moderada",efecto:"Los inhibidores de CYP2D6 reducen la activación de la codeína y su eficacia.",manejo:"Considerar otro opioide."},
+ {a:"simvastatina",b:"CYP3A4",nivel:"Grave",efecto:"Miopatía y riesgo de rabdomiólisis.",manejo:"Suspender o evitar simvastatina mientras dure el inhibidor (claritromicina, azoles)."},
+ {a:"CYP3A4",b:"anticoagulante",nivel:"Moderada",efecto:"Los inhibidores de CYP3A4 (azoles, claritromicina) aumentan el nivel de anticoagulantes como apixabán.",manejo:"Valorar alternativa o ajustar dosis; vigilar sangrado."}
+];
+
+
+/* Vía subcutánea: [1 = sí / 0 = no, texto] */
+const SC = {
+"Morfina (oral o SC)":[1,"SC: 50 % de la dosis oral (p. ej., 10 mg VO → 5 mg SC); ICSC en 24 h."],
+"Hidromorfona":[1,"SC: 50 % de la dosis oral; ICSC."],
+"Oxicodona":[1,"SC: 50 % de la dosis oral; ICSC."],
+"Fentanilo":[1,"SC: 12.5–25 mcg p.r.n.; ICSC 100–150 mcg/24 h en adelante."],
+"Alfentanilo":[1,"SC 50–100 mcg p.r.n.; ICSC (1 mg alfentanilo ≈ 30 mg morfina SC)."],
+"Metadona":[1,"SC/ICSC: 50 % de la dosis oral (con < 80 mg/24 h VO puede ser 1:1); SC c/8–12 h; irritante, rotar el sitio."],
+"Tramadol":[1,"SC 50–100 mg c/6–8 h o ICSC 100–400 mg/24 h (uso fuera de ficha)."],
+"Naloxona":[1,"SC/IM 0.4 mg si no hay acceso IV."],
+"Ketamina":[1,"SC 10–25 mg p.r.n.; ICSC 50–150 mg/24 h (irritante)."],
+"Ketorolaco":[1,"ICSC 30–60 mg/24 h (máximo 5 días)."],
+"Midazolam":[1,"SC 2.5–5 mg p.r.n.; ICSC 10–60 mg/24 h."],
+"Fenobarbital":[1,"Carga 100–200 mg SC/IM; ICSC 100–800 mg/24 h según indicación (jeringa aparte)."],
+"Levetiracetam":[1,"ICSC 500–3000 mg/24 h (fuera de ficha), misma dosis que VO."],
+"Haloperidol":[1,"SC 0.5–1.5 mg c/8–12 h o p.r.n.; ICSC 1.5–10 mg/24 h."],
+"Levomepromazina":[1,"Antiemético: 6–6.25 mg SC al acostarse y p.r.n. Agitación terminal: 25 mg SC y c/1 h p.r.n. (frágil 6.25–12.5 mg); máximo usual 100 mg/24 h SC por ICSC."],
+"Olanzapina":[1,"SC 2.5–5 mg/24 h (fuera de ficha)."],
+"Metoclopramida":[1,"SC 10 mg c/8 h o p.r.n.; ICSC 30–40 mg/24 h, máximo 100 mg/24 h."],
+"Ondansetrón":[1,"SC 4–8 mg c/8–12 h; ICSC 8–24 mg/24 h."],
+"Granisetrón":[1,"SC 1–3 mg/24 h."],
+"Ciclizina":[1,"SC 50 mg c/8 h; ICSC 100–150 mg/24 h."],
+"Dexametasona":[1,"SC: misma dosis que VO (1 mg VO ≈ 1 mg SC); bolo SC preferible a ICSC."],
+"Hidrocortisona":[1,"SC 50–100 mg (fuera de ficha)."],
+"Butilbromuro de hioscina":[1,"Estertores: 20 mg SC y 20–60 mg/24 h ICSC, 20 mg SC c/1 h p.r.n. Obstrucción: 20 mg SC y 60 mg/24 h ICSC (hasta 120–300 mg/24 h)."],
+"Glicopirronio":[1,"SC 200 mcg y p.r.n.; ICSC 600–1200 mcg/24 h."],
+"Octreótido":[1,"SC 50–100 mcg c/8 h; ICSC 250–600 mcg/24 h."],
+"Furosemida":[1,"SC 20–40 mg; ICSC 20–80 mg/24 h (fuera de ficha)."],
+"Enoxaparina":[1,"SC según indicación."],
+"Heparina sódica":[1,"SC 5000 UI c/8–12 h."],
+"Insulina regular (cristalina)":[1,"SC según esquema."],
+"Insulina NPH":[1,"SC según esquema."],
+"Ceftriaxona":[1,"SC 1 g/24 h diluido (fuera de ficha); IM institucional."],
+"Fitomenadiona (vitamina K)":[1,"SC 2.5–10 mg (absorción variable)."],
+"Clorfenamina":[1,"SC/IM 10 mg."],
+"Epinefrina (adrenalina)":[1,"IM preferible (0.3–0.5 mg); SC posible."],
+"Diazepam":[0,"No SC (irritante, absorción errática): IV o rectal."],
+"Clorpromazina":[0,"No SC (irritante)."],
+"Prometazina":[0,"No SC (necrosis tisular)."],
+"Fenitoína":[0,"No SC (necrosis tisular)."],
+"Diclofenaco":[0,"No SC: solo IM profunda."],
+"Dimenhidrinato":[0,"No SC: IM, IV o rectal."],
+"Difenhidramina":[0,"No SC (irritante): IV o IM."],
+"Omeprazol":[0,"No SC: VO o IV."],"Pantoprazol":[0,"No SC: VO o IV."],
+"Lorazepam":[0,"No SC: VO o sublingual."],
+"Clonazepam":[0,"No SC en presentación CCSS: gotas VO o sublingual."],
+"Paracetamol (acetaminofén)":[0,"No SC: VO, rectal o IV."],
+"Gentamicina":[0,"No SC: IM o IV."],
+"Metamizol (dipirona)":[0,"No SC: VO o IV."],
+"Amiodarona":[0,"No SC."]
+};
+/* Diálisis (HD = hemodiálisis; DP = diálisis peritoneal) */
+const DIAL = {
+"Paracetamol (acetaminofén)":"HD: dializable; dar la dosis tras la sesión; intervalo c/8 h.",
+"Gabapentina":"HD: dializable; 100–300 mg/día y dosis suplementaria de 125–350 mg tras cada sesión.",
+"Pregabalina":"HD: dializable (≈ 50 %); 25–75 mg/día y dosis suplementaria de 25–150 mg tras la sesión.",
+"Morfina (oral o SC)":"HD: los metabolitos se dializan con rebote posterior; evitar.",
+"Oxicodona":"HD: parcialmente dializable; dosis tras la sesión.",
+"Fentanilo":"HD: no dializable; sin dosis extra.","Metadona":"HD y DP: no dializable; sin dosis extra.",
+"Buprenorfina":"HD: no dializable; sin dosis extra.",
+"Codeína con paracetamol":"Evitar en diálisis (acumulación de metabolitos).",
+"Midazolam":"HD: no se elimina de forma significativa; el metabolito activo se acumula.",
+"Lorazepam":"HD: no dializable; sin dosis extra.","Diazepam":"HD: no dializable.","Clonazepam":"HD: no dializable.",
+"Haloperidol":"HD: no dializable.","Olanzapina":"HD: no se remueve (Formulario CCSS).","Quetiapina":"HD: no dializable.","Risperidona":"HD: no dializable; 0.25–0.5 mg c/12 h.",
+"Levetiracetam":"HD: dializable (≈ 50 %); 500–1000 mg/día + 250–500 mg tras la sesión.",
+"Fenobarbital":"HD: dosis antes de la sesión y 50 % adicional después. DP: 50 % de la dosis.",
+"Ácido valproico":"HD: no dializable de forma relevante; vigilar valproato libre.",
+"Fenitoína":"HD: no dializable; vigilar fenitoína libre.","Carbamazepina":"HD: no dializable.",
+"Lamotrigina":"HD: ≈ 20 % removido; dosis tras la sesión.",
+"Metoclopramida":"HD: no se remueve de forma significativa; 50 % de la dosis.",
+"Ondansetrón":"HD: no dializable.",
+"Famotidina":"HD: 10–20 mg/día dados tras la sesión.","Ranitidina":"HD: 150 mg/día tras la sesión.",
+"Omeprazol":"HD: no dializable.","Pantoprazol":"HD: no dializable.",
+"Enalapril":"HD: moderadamente dializable; 2.5 mg tras la sesión en días de diálisis (Formulario CCSS).",
+"Atenolol":"HD: dializable; 25–50 mg tras cada sesión.","Metoprolol":"HD: dializable; dosis tras la sesión.",
+"Propranolol":"HD: no dializable.","Amlodipino":"HD: no dializable.",
+"Hidralazina":"HD: dosis tras la sesión. DP: c/8–16 h (Formulario CCSS).",
+"Metildopa":"HD: hasta 60 % removido; dosis tras la sesión. DP: c/12–24 h (Formulario CCSS).",
+"Digoxina":"HD: no dializable; sin dosis extra; niveles.",
+"Furosemida":"HD: no dializable; útil si hay diuresis residual.","Espironolactona":"Evitar en diálisis (hiperpotasemia).",
+"Warfarina":"HD: no dializable.","Enoxaparina":"No dializable; acumula: preferir heparina sódica.","Heparina sódica":"No dializable.",
+"Apixabán":"HD: mínimamente dializable.","Rivaroxabán (fibrilación auricular)":"No dializable; no recomendado.",
+"Insulina regular (cristalina)":"HD y DP: no se remueve; sin dosis extra (Formulario CCSS).","Insulina NPH":"HD y DP: no se remueve.",
+"Glibenclamida":"No dializable; evitar.","Gliclazida":"No dializable; preferir insulina.",
+"Amoxicilina":"HD: dializable; 500 mg c/24 h dados tras la sesión.",
+"Cefalexina":"HD: dializable; 250–500 mg tras cada sesión.",
+"Ceftriaxona":"HD: no dializable; sin dosis extra.",
+"Claritromicina":"HD: dar tras la sesión; 50 % de la dosis (Formulario CCSS).",
+"Ciprofloxacino":"HD/DP: 250–500 mg c/24 h, tras la sesión.",
+"Trimetoprim-sulfametoxazol":"HD: dializable; si es imprescindible, 50 % de la dosis tras la sesión.",
+"Metronidazol":"HD: dializable; dosis tras la sesión.",
+"Gentamicina":"HD: dializable; 1–2 mg/kg tras la sesión según niveles.",
+"Aciclovir":"HD: ≈ 60 % removido; dosis tras la sesión.",
+"Fluconazol":"HD: dializable; dosis completa tras cada sesión.",
+"Doxiciclina":"HD: no dializable; sin ajuste.",
+"Alopurinol":"HD: dializable; dosis tras la sesión (p. ej., 100 mg).",
+"Colchicina":"No dializable: brote 0.6 mg dosis única sin repetir en 3 semanas; profilaxis 0.3 mg 2 veces/semana.",
+"Gemfibrozilo":"HD: sin dosis suplementaria. DP: 50 % de la dosis como suplemento (Formulario CCSS).",
+"Hidroxizina":"HD y DP: 50 % de la dosis (Formulario CCSS).","Loratadina":"Diálisis: 10 mg c/48 h (Formulario CCSS).",
+"Fexofenadina":"HD: no dializable; 60 mg/día.",
+"Baclofeno":"Evitar; la HD remueve el fármaco en caso de toxicidad.",
+"Teofilina":"HD: dializable; dosis suplementaria tras la sesión según niveles.",
+"Ibuprofeno":"HD: no dializable (Formulario CCSS); evitar si hay diuresis residual.",
+"Ácido acetilsalicílico":"HD: dializable; dar la dosis antiagregante tras la sesión.",
+"Hierro oral":"HD con eritropoyetina: ≥ 200 mg/día de hierro elemental (Formulario CCSS).",
+"Ácido fólico":"HD: se pierde en diálisis; suplementar 1 mg/día.",
+"Tiamina (vitamina B1)":"HD y DP: se pierde en diálisis; suplementar.",
+"Piridoxina (vitamina B6)":"HD: se pierde en diálisis; suplementar 10–50 mg/día.",
+"Ácido ascórbico (vitamina C)":"HD: suplementar ≤ 100 mg/día (riesgo de oxalosis).",
+"Neostigmina":"HD y DP: sin ajuste (Formulario CCSS).",
+"Hidróxido de magnesio":"Evitar (hipermagnesemia).",
+"Hidróxido de aluminio y magnesio con simeticona":"Evitar (aluminio y magnesio).",
+"Venlafaxina":"HD: 50 % de la dosis, tras la sesión.","Mirtazapina":"HD: no dializable; 7.5–15 mg/noche.",
+"Sertralina":"HD: no dializable.","Fluoxetina":"HD: sin dosis suplementaria (Formulario CCSS).","Citalopram":"HD: no dializable.",
+"Amitriptilina":"HD: no dializable.","Nortriptilina":"HD: no dializable.",
+"Dexametasona":"HD: no relevante.","Prednisolona":"HD: modestamente dializable; sin ajuste.",
+"Ácido zoledrónico":"No recomendado en diálisis.","Denosumab":"Sin ajuste; riesgo alto de hipocalcemia.",
+"Sitagliptina":"HD/DP: 25 mg/día, sin relación con el horario de diálisis.",
+"Tramadol":"HD: ≈ 7 % removido; dosis tras la sesión; máximo 200 mg/día."
+};
+/* Carga anticolinérgica (escala ACB) */
+const ACB = {
+"Amitriptilina":3,"Imipramina":3,"Nortriptilina":3,"Clorpromazina":3,"Olanzapina":3,"Quetiapina":3,"Difenhidramina":3,"Hidroxizina":3,
+"Clorfenamina":3,"Dimenhidrinato":3,"Prometazina":3,"Biperideno":3,"Atropina":3,"Escopolamina (parche)":3,"Oxibutinina":3,
+"Butilbromuro de hioscina":3,"Glicopirronio":3,"Levomepromazina":3,"Proclorperazina":3,"Ciclizina":3,
+"Carbamazepina":2,"Oxcarbazepina":2,"Meperidina (petidina)":2,
+"Alprazolam":1,"Atenolol":1,"Diazepam":1,"Digoxina":1,"Furosemida":1,"Haloperidol":1,"Hidralazina":1,"Isosorbida dinitrato":1,
+"Loperamida":1,"Metoprolol":1,"Morfina (oral o SC)":1,"Prednisona":1,"Prednisolona":1,"Hidrocortisona":1,"Ranitidina":1,"Famotidina":1,
+"Trazodona":1,"Warfarina":1,"Fentanilo":1,"Oxicodona":1,"Tramadol":1,"Codeína":1,"Codeína con paracetamol":1,"Venlafaxina":1,"Mirtazapina":1,
+"Risperidona":1,"Colchicina":1,"Loratadina":1,"Desloratadina":1,"Teofilina":1,"Metildopa":1,"Lorazepam":1,"Clonazepam":1,"Midazolam":1};
+/* Depresores del sistema nervioso central */
+const SNC_TAGS = ["opioide","benzodiacepina","gabapentinoide"];
+const SNC_N = ["Haloperidol","Olanzapina","Quetiapina","Risperidona","Clorpromazina","Levomepromazina","Amitriptilina","Imipramina","Nortriptilina",
+"Mirtazapina","Trazodona","Difenhidramina","Hidroxizina","Clorfenamina","Dimenhidrinato","Prometazina","Ciclizina","Fenobarbital","Hidrato de cloral",
+"Baclofeno","Tizanidina","Ketamina","Carbamazepina","Ácido valproico","Fenitoína","Levetiracetam","Oxcarbazepina","Clonidina","Codeína con paracetamol"];
+/* STOPPFrail: fármacos a revisar con pronóstico limitado o fragilidad avanzada */
+const STOP = {
+estatina:"Estatinas e hipolipemiantes: suspender; no hay beneficio con pronóstico menor de 1 año.",
+antiagregante:"Antiagregante en prevención primaria: suspender. En prevención secundaria, reevaluar.",
+antiHTA:"Antihipertensivo: reducir o suspender si PAS < 130 mmHg o hay hipotensión ortostática o caídas.",
+antidiab:"Antidiabético: evitar control estricto; meta HbA1c < 8.5 % y evitar hipoglucemia (suspender sulfonilureas si es posible).",
+osteo:"Bifosfonato, denosumab o vitamina D para osteoporosis: suspender (no si es por metástasis óseas o hipercalcemia).",
+suple:"Suplemento o vitamina sin déficit documentado: suspender.",
+ibp:"IBP o anti-H2 a dosis plena > 8 semanas: reducir a mantenimiento o suspender si no hay indicación (úlcera, esofagitis, sangrado, uso de AINE o corticoide).",
+hormona:"Terapia hormonal: suspender salvo indicación sintomática clara.",
+espasmo:"Antiespasmódico urinario o anticolinérgico crónico: reevaluar por delirium y estreñimiento.",
+alopu:"Alopurinol o colchicina profiláctica: suspender si no hay gota activa."
+};
+const STOP_N = {
+"Lovastatina":"estatina","Rosuvastatina":"estatina","Atorvastatina":"estatina","Simvastatina":"estatina","Ezetimiba":"estatina","Fenofibrato":"estatina","Gemfibrozilo":"estatina",
+"Ácido acetilsalicílico":"antiagregante",
+"Enalapril":"antiHTA","Irbesartán":"antiHTA","Losartán":"antiHTA","Amlodipino":"antiHTA","Metildopa":"antiHTA","Hidralazina":"antiHTA","Atenolol":"antiHTA","Propranolol":"antiHTA","Metoprolol":"antiHTA","Clonidina":"antiHTA","Hidroclorotiazida":"antiHTA",
+"Metformina":"antidiab","Glibenclamida":"antidiab","Gliclazida":"antidiab","Sitagliptina":"antidiab","Dapagliflozina":"antidiab","Empagliflozina":"antidiab","Pioglitazona":"antidiab","Insulina regular (cristalina)":"antidiab","Insulina NPH":"antidiab",
+"Ácido ibandrónico":"osteo","Denosumab":"osteo","Vitamina D3 (colecalciferol)":"osteo","Ácido zoledrónico":"osteo",
+"Ácido fólico":"suple","Cianocobalamina (vitamina B12)":"suple","Hierro oral":"suple","Ácido ascórbico (vitamina C)":"suple","Piridoxina (vitamina B6)":"suple",
+"Omeprazol":"ibp","Pantoprazol":"ibp","Lansoprazol":"ibp","Famotidina":"ibp","Ranitidina":"ibp",
+"Estradiol o estrógenos conjugados (oral)":"hormona","Medroxiprogesterona":"hormona","Anticonceptivo oral combinado":"hormona",
+"Oxibutinina":"espasmo","Alopurinol":"alopu","Colchicina":"alopu"
+};
+/* Biodisponibilidad oral en hepatopatía grave (PCF8, cap. 18, tabla 2) */
+const BIO = {
+"Lorazepam":"alta","Espironolactona":"alta",
+"Amitriptilina":"moderada","Haloperidol":"moderada","Olanzapina":"moderada",
+"Domperidona":"baja","Granisetrón":"baja","Morfina (oral o SC)":"baja","Ondansetrón":"baja","Propranolol":"baja","Sertralina":"baja"};
+const BIO_T = {
+alta:"Biodisponibilidad oral alta (> 70 %): sin cambio por primer paso; reducir la dosis de mantenimiento.",
+moderada:"Biodisponibilidad oral moderada (40–70 %): puede aumentar; iniciar en el rango bajo y reducir el mantenimiento.",
+baja:"Biodisponibilidad oral baja (< 40 %): puede aumentar mucho; reducir la dosis inicial y la de mantenimiento."};
+/* Fármacos crónicos en hepatopatía terminal (PCF8, cap. 18) */
+const HEPSTOP = {
+"Propranolol":"Profilaxis de varices: continuar mientras tolere la vía oral.",
+"Espironolactona":"Ascitis: continuar mientras tolere la vía oral si al suspender empeoran los síntomas; suspender en los últimos días.",
+"Furosemida":"Ascitis: continuar mientras tolere la vía oral si al suspender empeoran los síntomas; suspender en los últimos días.",
+"Lactulosa":"Encefalopatía: continuar tanto como sea posible (meta: 2 deposiciones al día).",
+"Polietilenglicol":"Encefalopatía: continuar tanto como sea posible (meta: 2 deposiciones al día).",
+"Enalapril":"Suspender si la función renal es mala o aparece ascitis.","Irbesartán":"Suspender si la función renal es mala o aparece ascitis.","Losartán":"Suspender si la función renal es mala o aparece ascitis.",
+"Vitamina D3 (colecalciferol)":"Suplemento óseo: se puede suspender.",
+"Tiamina (vitamina B1)":"Vitaminas en hepatopatía alcohólica: se pueden suspender.","Ácido fólico":"Vitaminas en hepatopatía alcohólica: se pueden suspender.","Piridoxina (vitamina B6)":"Vitaminas: se pueden suspender.",
+"Fitomenadiona (vitamina K)":"Limitar a pacientes conscientes, con funcionalidad aceptable y en quienes otras medidas de soporte son apropiadas; no usar en el moribundo para evitar una muerte inminente.",
+"Ciprofloxacino":"Profilaxis de peritonitis bacteriana (500 mg/día): suspender en las últimas semanas de vida.",
+"Colestiramina":"Prurito colestásico: continuar si es posible."};
+const HEP_ANTIHTA = "Antihipertensivo en hepatopatía terminal: suspender en las últimas semanas (hipotensión, caídas, hematoma subdural), salvo profilaxis de varices.";
+
+/* PCF8 cap. 19, tabla 8: sustratos (s), inhibidores (i) e inductores (d) moderados o potentes */
+const CYP = {
+"1A2":{s:["Amitriptilina","Duloxetina","Imipramina","Mirtazapina","Olanzapina","Propranolol","Teofilina","Tizanidina"],i:["Ciprofloxacino"],d:["Fenitoína"]},
+"2C8":{s:["Loperamida","Pioglitazona"],i:["Gemfibrozilo"],d:[]},
+"2C9":{s:["Celecoxib","Diclofenaco","Glibenclamida","Gliclazida","Ibuprofeno","Irbesartán","Losartán","Fenitoína","Warfarina"],i:["Amiodarona","Fluconazol"],d:["Carbamazepina"]},
+"2C19":{s:["Amitriptilina","Citalopram","Diazepam","Fluoxetina","Imipramina","Lansoprazol","Omeprazol","Pantoprazol","Fenitoína","Sertralina"],i:["Fluconazol","Fluoxetina","Omeprazol"],d:[]},
+"2D6":{s:["Amitriptilina","Codeína","Codeína con paracetamol","Dextrometorfano","Duloxetina","Fluoxetina","Imipramina","Metoprolol","Mirtazapina","Nortriptilina","Ondansetrón","Oxicodona","Paracetamol (acetaminofén)","Propranolol","Risperidona","Sertralina","Tramadol","Trazodona","Venlafaxina"],i:["Duloxetina","Fluoxetina"],d:[]},
+"3A4":{s:["Alfentanilo","Alprazolam","Amiodarona","Atorvastatina","Buprenorfina","Carbamazepina","Claritromicina","Codeína","Codeína con paracetamol","Dexametasona","Diazepam","Domperidona","Estradiol o estrógenos conjugados (oral)","Fentanilo","Haloperidol","Imipramina","Ketamina","Loperamida","Losartán","Lovastatina","Metadona","Metilprednisolona","Midazolam","Mirtazapina","Omeprazol","Oxibutinina","Oxicodona","Fenitoína","Quetiapina","Risperidona","Rivaroxabán (fibrilación auricular)","Sertralina","Simvastatina","Tramadol","Trazodona","Venlafaxina","Warfarina","Zolpidem","Zopiclona"],
+  i:["Ciprofloxacino","Claritromicina","Fluconazol"],d:["Carbamazepina","Fenobarbital","Fenitoína"]},
+"P-gp":{s:["Digoxina","Loperamida"],i:["Amiodarona","Claritromicina"],d:["Carbamazepina"]}
+};
+DRUGS.forEach(d => { if(["Amiodarona","Citalopram","Fluconazol","Claritromicina","Ciprofloxacino","Cloroquina","Clorpromazina","Haloperidol","Levomepromazina","Domperidona","Metadona","Ondansetrón","Propofol"].includes(d.n) && !(d.t||[]).includes("QT")) (d.t = d.t||[]).push("QT"); });
+const PRODROGA = ["Codeína","Codeína con paracetamol","Tramadol"];
+/* PCF8 cap. 20, recuadro B: riesgo conocido de QT largo y torsade de pointes */
+const QT_CONOCIDO = ["Amiodarona","Citalopram","Fluconazol","Claritromicina","Ciprofloxacino","Cloroquina","Clorpromazina","Haloperidol","Levomepromazina","Domperidona","Metadona","Ondansetrón","Propofol"];
+function cypInter(sel){
+  const out = [], vis = new Set();
+  for(const [enz, x] of Object.entries(CYP)){
+    for(const a of sel) for(const b of sel){
+      if(a.n===b.n || !x.s.includes(b.n)) continue;
+      const inh = x.i.includes(a.n), ind = x.d.includes(a.n);
+      if(!inh && !ind) continue;
+      const k = a.n+"|"+b.n+"|"+enz; if(vis.has(k)) continue; vis.add(k);
+      const pro = PRODROGA.includes(b.n) && enz==="2D6";
+      let efecto;
+      if(inh) efecto = pro ? `${b.n}: menor conversión al metabolito activo → analgesia reducida.` : `${b.n}: metabolismo ↓ → niveles y efecto ↑ (riesgo de toxicidad).`;
+      else efecto = `${b.n}: metabolismo ↑ → efecto ↓${(b.t||[]).includes("opioide")?" (recurrencia del dolor o abstinencia)":""}. La inducción se instala en 2–3 semanas; al suspender el inductor, riesgo de toxicidad.`;
+      out.push({par:`${a.n} + ${b.n}`, nivel:"CYP"+(enz==="P-gp"?"":"")+" "+enz+(inh?" · inhibición":" · inducción"), efecto, manejo: inh ? (pro?"Considerar otro opioide.":"Vigilar efectos adversos; reducir la dosis del sustrato o elegir alternativa. Al suspender el inhibidor, el efecto puede caer.") : "Puede requerir aumentar la dosis del sustrato; reajustar al retirar el inductor.", ref:1});
+    }
+  }
+  return out;
+}
+
+/* PCF8 cap. 4: toxicidad serotoninérgica (recuadro A) y efectos adversos de antidepresivos (tabla 3) */
+const SER_GRAVE = {"Fluoxetina":"ISRS","Sertralina":"ISRS","Citalopram":"ISRS","Duloxetina":"IRSN","Venlafaxina":"IRSN","Amitriptilina":"tricíclico","Imipramina":"tricíclico","Nortriptilina":"tricíclico",
+ "Tramadol":"opioide","Fentanilo":"opioide","Metadona":"opioide","Meperidina (petidina)":"opioide","Dextrometorfano":"opioide","Clorfenamina":"antihistamínico"};
+const SER_INCIERTO = ["Ondansetrón","Granisetrón","Metoclopramida","Oxicodona","Mirtazapina","Trazodona"];
+const AD_EFECTOS = {
+"Amitriptilina":{f:["aumento de peso","sedación","hipotensión postural","boca seca y estreñimiento"],p:["QT","disfunción sexual","hiponatremia"]},
+"Duloxetina":{f:["náusea o diarrea","disfunción sexual"],p:["agitación o insomnio","QT","hiponatremia"]},
+"Imipramina":{f:["hipotensión postural","boca seca y estreñimiento"],p:["agitación o insomnio","aumento de peso","sedación","QT","disfunción sexual","hiponatremia"]},
+"Venlafaxina":{f:["náusea o diarrea","disfunción sexual"],p:["agitación o insomnio","QT","hiponatremia"]},
+"Nortriptilina":{f:[],p:["agitación o insomnio","sedación","hipotensión postural","QT","disfunción sexual","boca seca y estreñimiento","hiponatremia"]},
+"Citalopram":{f:["náusea o diarrea","QT","disfunción sexual","hiponatremia"],p:["agitación o insomnio"]},
+"Fluoxetina":{f:["náusea o diarrea","disfunción sexual","hiponatremia"],p:["agitación o insomnio","QT"]},
+"Sertralina":{f:["náusea o diarrea","disfunción sexual","hiponatremia"],p:["agitación o insomnio","QT"]},
+"Mirtazapina":{f:["aumento de peso","sedación"],p:["hiponatremia"]},
+"Trazodona":{f:["sedación","hipotensión postural"],p:["aumento de peso","QT","hiponatremia"]}};
+const RANK = {ok:0, sin:0, ajuste:1, evitar:2};
+const ETQ = {ok:"Sin ajuste", ajuste:"Ajustar", evitar:"Evitar", sin:"Sin datos"};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = x => (x==null || !isFinite(x)) ? "—" : Math.round(x);
+let lista = [], importados = [], dosisPac = {}, tabaco = {};
+const TAB_N = ["Olanzapina","Teofilina","Duloxetina","Mirtazapina","Amitriptilina","Imipramina","Propranolol","Tizanidina","Metadona"];
+const todos = () => DRUGS.concat(importados);
+const buscarD = n => todos().find(d => d.n === n);
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+
+/* ---------- Cálculos ---------- */
+function eGFR(edad, sexo, scr){
+  const k = sexo==="F" ? 0.7 : 0.9, a = sexo==="F" ? -0.241 : -0.302;
+  let v = 142 * Math.pow(Math.min(scr/k,1), a) * Math.pow(Math.max(scr/k,1), -1.2) * Math.pow(0.9938, edad);
+  return sexo==="F" ? v*1.012 : v;
+}
+function valores(){
+  const edad=+$("edad").value, sexo=$("sexo").value, peso=+$("peso").value, scr=+$("scr").value, tm=+$("tfgman").value;
+  const cys=+$("cys").value;
+  const ok = edad>0 && scr>0;
+  const tfg = ok ? eGFR(edad,sexo,scr) : null;
+  const crcl = ok && peso>0 ? (140-edad)*peso/(72*scr)*(sexo==="F"?0.85:1) : null;
+  let tfgC = null;
+  if(edad>0 && cys>0){
+    const cz = Math.pow(Math.min(cys/0.8,1),-0.499)*Math.pow(Math.max(cys/0.8,1),-1.328);
+    if(scr>0){
+      const k = sexo==="F"?0.7:0.9, a = sexo==="F"?-0.219:-0.144;
+      tfgC = 135*Math.pow(Math.min(scr/k,1),a)*Math.pow(Math.max(scr/k,1),-0.544)*Math.pow(Math.min(cys/0.8,1),-0.323)*Math.pow(Math.max(cys/0.8,1),-0.778)*Math.pow(0.9961,edad)*(sexo==="F"?0.963:1);
+    } else tfgC = 133*cz*Math.pow(0.996,edad)*(sexo==="F"?0.932:1);
+  }
+  const tfgU = tm>0 ? tm : tfgC!=null ? tfgC : tfg;
+  const crclU = tfgC!=null && !(tm>0) ? tfgC : crcl!=null ? crcl : tfgU;
+  return {tfg, crcl, tfgC, tfgU, crclU, dial: $("dialisis").value};
+}
+function estadioERC(v){
+  if(v.dial) return "Diálisis: se aplican las recomendaciones de ERC G5 y las de diálisis.";
+  const t = v.tfgU; if(t==null) return "Ingrese edad y creatinina.";
+  const g = t>=90?"G1":t>=60?"G2":t>=45?"G3a":t>=30?"G3b":t>=15?"G4":"G5";
+  return `ERC ${g} (TFG ${fmt(t)}).` + (g==="G5" ? " Se aplican además las recomendaciones para ERC G5<sup>1</sup>." : g==="G4" ? " Las recomendaciones para G5<sup>1</sup> se muestran como referencia." : "");
+}
+function childPugh(){
+  const bil=+$("cp_bil").value, alb=+$("cp_alb").value, inr=+$("cp_inr").value, asc=$("cp_asc").value, enc=$("cp_enc").value;
+  if(!(bil>0 && alb>0 && inr>0 && asc && enc)) return null;
+  const pts = (bil<2?1:bil<=3?2:3) + (alb>3.5?1:alb>=2.8?2:3) + (inr<1.7?1:inr<=2.3?2:3) + (+asc) + (+enc);
+  const c = pts<=6?"A":pts<=9?"B":"C";
+  return {pts, c, sv:{A:"100 %",B:"80 %",C:"45 %"}[c]};
+}
+function pcfDe(d){
+  const own = PCF[d.n] || {}; let cls = {};
+  for(const [re, x] of PCF_CLASE) if((d.t||[]).some(t=>re.test(t))){ cls = x; break; }
+  return {r: own.r || cls.r, h: own.h || cls.h, d: own.d};
+}
+const sref = d => d.src ? d.src : d.lom ? "2,6" : 6;
+const dref = d => d.src ? d.src : d.lom ? 2 : 6;
+function evalRenal(d, v){
+  if(!d.r) return {e:"sin", t:"Sin regla cargada: consulte la ficha técnica."};
+  const val = d.m==="tfg" ? v.tfgU : v.crclU;
+  const p = pcfDe(d), g5 = !!v.dial || (v.tfgU!=null && v.tfgU<15), g4 = v.tfgU!=null && v.tfgU<30;
+  if(val==null && !v.dial) return {e:"sin", t:"Ingrese edad y creatinina en la pestaña Paciente."};
+  const tier = v.dial ? d.r[d.r.length-1] : d.r.find(x => val >= x[0]);
+  const out = {e:tier[1], t:tier[2]+`<sup>${sref(d)}</sup>`, pct:tier[3]};
+  if(p.r && (g5 || g4)){
+    const pe = PCF_EST[p.r[0]];
+    if(g5 && RANK[pe] > RANK[out.e]) out.e = pe;
+    out.n = `<b>${g5?"ERC G5 o diálisis":"Referencia para G5 (TFG < 15)"}:</b> ${esc(p.r[1])}<sup>1</sup>`;
+  }
+  if(v.dial){
+    const lab = v.dial==="HD" ? "hemodiálisis" : "diálisis peritoneal";
+    if(p.d) out.n = (out.n?out.n+"<br>":"") + `<b>En ${lab}:</b> ${esc(p.d)}<sup>1</sup>`;
+    if(DIAL[d.n]) out.n = (out.n?out.n+"<br>":"") + `<b>Diálisis:</b> ${esc(DIAL[d.n])}<sup>${sref(d)}</sup>`;
+    else if(!p.d) out.n = (out.n?out.n+"<br>":"") + `<b>Diálisis:</b> sin datos específicos; usar el esquema de CrCl &lt; 10.`;
+  }
+  return out;
+}
+function evalHep(d, cp){
+  if(!cp) return {e:"sin", t:"Complete Child-Pugh en la pestaña Paciente."};
+  const p = pcfDe(d), h = d.h || ["sin","Sin datos específicos; titular con precaución."];
+  const hs = `<sup>${d.h?sref(d):6}</sup>`;
+  if(cp.c==="A"){
+    if(h[0]==="evitar" && /contraindicad|cualquier|activa/i.test(h[1])) return {e:"evitar", t:esc(h[1])+hs};
+    return {e:"ok", t:"Child-Pugh A: dosis habitual; vigilar." + (h[0]!=="ok" ? ` Si progresa: ${esc(h[1])}`+hs : "")};
+  }
+  const bio = BIO[d.n] ? `<br><b>Vía oral:</b> ${BIO_T[BIO[d.n]]}<sup>1</sup>` : "";
+  if(cp.c==="B"){
+    const out = {e:h[0], t:esc(h[1])+hs+bio, pct:h[2]};
+    if(p.h) out.n = `<b>Referencia para Child-Pugh C:</b> ${esc(p.h[1])}<sup>1</sup>`;
+    return out;
+  }
+  if(p.h){
+    const pe = PCF_EST[p.h[0]];
+    return {e: RANK[pe] >= RANK[h[0]] ? pe : h[0], t:esc(p.h[1])+"<sup>1</sup>"+bio, n: h[1] ? esc(h[1])+hs : ""};
+  }
+  return {e:h[0]==="ok"?"ok":h[0], t:esc(h[1])+hs+bio, pct:h[2]};
+}
+function interacciones(sel){
+  const out=[], vis=new Set();
+  for(let i=0;i<sel.length;i++) for(let j=i+1;j<sel.length;j++){
+    const A=sel[i].t||[], B=sel[j].t||[];
+    for(const r of INTER) if((A.includes(r.a)&&B.includes(r.b)) || (A.includes(r.b)&&B.includes(r.a))){
+      const k=sel[i].n+"|"+sel[j].n+"|"+r.a+r.b; if(!vis.has(k)){vis.add(k); out.push({par:sel[i].n+" + "+sel[j].n, ...r});}
+    }
+  }
+  return out;
+}
+
+/* ---------- Interfaz ---------- */
+function verTab(n){
+  [1,2].forEach(i => { $("p"+i).classList.toggle("on", i===n); $("t"+i).classList.toggle("on", i===n); });
+  $("fab").style.display = n===2 ? "none" : "";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function agregar(n){
+  if(n && !lista.includes(n)) lista.unshift(n);
+  $("buscar").value=""; $("sug").style.display="none"; $("famsel").value="";
+  render();
+}
+function quitar(n){ lista = lista.filter(x => x!==n); render(); }
+function limpiar(){ lista=[]; dosisPac={}; render(); }
+function pool(){ return todos().filter(d => !$("soloLom").checked || d.lom); }
+function sugerir(){
+  const q = norm($("buscar").value.trim());
+  if(q.length<2){ $("sug").style.display="none"; return; }
+  const r = pool().filter(d => norm(d.n+" "+(d.f||"")+" "+(d.p||"")).includes(q)).slice(0,12);
+  $("sug").innerHTML = r.length ? r.map(d => `<div data-n="${esc(d.n)}">${esc(d.n)}${d.lom?'<span class="lom">CCSS</span>':''}<small>${esc(d.f||"")}</small></div>`).join("") : `<div style="cursor:default">Sin resultados</div>`;
+  $("sug").style.display="block";
+  $("sug").querySelectorAll("[data-n]").forEach(x => x.onclick = () => agregar(x.dataset.n));
+}
+function construirSelect(){
+  const g = {};
+  for(const d of pool()) (g[d.f||"Otros"] = g[d.f||"Otros"] || []).push(d.n);
+  $("famsel").innerHTML = '<option value="">— Elija un medicamento —</option>' + Object.keys(g).sort((a,b)=>a.localeCompare(b,"es")).map(f =>
+    `<optgroup label="${esc(f)}">` + g[f].sort((a,b)=>a.localeCompare(b,"es")).map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("") + `</optgroup>`).join("");
+}
+function bloque(tit, x, id){
+  const pct = x.pct!=null ? `<span class="pct">≈ ${x.pct} % de la dosis</span>` : "";
+  const calc = x.pct!=null ? `<div class="calc">Dosis actual <input type="text" inputmode="decimal" placeholder="mg o UI" data-c="${id}" value="${esc(dosisPac[id]||"")}"><span id="r_${id}">${dosisPac[id]?calcTxt(dosisPac[id],x.pct):""}</span></div>` : "";
+  return `<div class="blk ${x.e}"><div class="bt"><span>${tit} · ${ETQ[x.e]}</span>${pct}</div><p>${x.t}</p>${x.n?`<div class="nt">${x.n}</div>`:""}${calc}</div>`;
+}
+function desp(d, cp){
+  if(!$("stopp").checked) return "";
+  const hep = cp && cp.c!=="A";
+  let t = "", ref = 9;
+  if(hep && HEPSTOP[d.n]){ t = HEPSTOP[d.n]; ref = 1; }
+  else if(hep && STOP_N[d.n]==="antiHTA"){ t = HEP_ANTIHTA; ref = 1; }
+  else if(STOP_N[d.n]) t = STOP[STOP_N[d.n]];
+  return t ? `<div class="blk" style="border-color:var(--pri2);background:var(--soft)"><div class="bt" style="color:var(--pri)"><span>Desprescripción</span></div><p>${esc(t)}<sup>${ref}</sup></p></div>` : "";
+}
+function calcTxt(val, pct){ const y = val*pct/100; return `→ ${pct} % = <b>${+y.toFixed(y<10?2:1)}</b>`; }
+function render(){
+  const v = valores(), cp = childPugh();
+  $("kpi").innerHTML = `<div class="kpi"><small>TFG</small><b>${fmt(v.tfg)}</b><small>mL/min/1.73 m²</small></div>
+    <div class="kpi"><small>CrCl</small><b>${fmt(v.crcl)}</b><small>mL/min</small></div>
+    <div class="kpi"><small>TFG usada</small><b>${fmt(v.tfgU)}</b><small>${$("tfgman").value?"manual":v.tfgC!=null?"con cistatina":"creatinina"}</small></div>`;
+  $("estadio").innerHTML = estadioERC(v);
+  $("kpiHep").innerHTML = cp ? `<div class="kpi"><small>Child-Pugh</small><b>${cp.pts} pts · ${cp.c}</b></div><div class="kpi"><small>Sobrevida a 1 año</small><b>${cp.sv}</b></div>`
+                             : `<div class="kpi" style="grid-column:1/-1"><small>Child-Pugh</small><b>—</b><small>complete los 5 datos</small></div>`;
+  const rTxt = v.dial ? (v.dial==="HD"?"Hemodiálisis":"Diálisis peritoneal") : v.tfgU!=null ? `TFG ${fmt(v.tfgU)}${v.crcl!=null?" · CrCl "+fmt(v.crcl):""}` : "Sin datos renales";
+  $("tsub1").textContent = rTxt + (cp ? ` · Child-Pugh ${cp.c}` : "");
+  $("ctx").innerHTML = `<b>Paciente:</b> ${rTxt} · ${cp ? `Child-Pugh ${cp.c} (${cp.pts} pts)` : "sin Child-Pugh"} <a href="#" onclick="verTab(1);return false" style="color:var(--pri);margin-left:4px">editar</a>`;
+  const sel = lista.map(buscarD).filter(Boolean);
+  $("tsub2").textContent = `${sel.length} en la lista`; $("fabn").textContent = sel.length;
+  $("acc").style.display = sel.length ? "" : "none";
+  $("lista").innerHTML = sel.length ? sel.map((d,i) => {
+    const r = evalRenal(d, v), h = evalHep(d, cp);
+    return `<div class="drug"><div class="dh"><div><b>${esc(d.n)}</b>${d.lom?'<span class="lom">CCSS</span>':''}<small>${esc(d.f||"")}${d.p?" · "+esc(d.p):""}</small></div><button class="x" onclick="quitar('${esc(d.n).replace(/'/g,"\\'")}')" aria-label="Quitar">✕</button></div>
+      <div class="dose"><b>Dosis habitual:</b> ${esc(d.d||"Consulte la ficha técnica.")}<sup>${dref(d)}</sup></div>
+      ${SC[d.n] ? `<div class="dose" style="background:${SC[d.n][0]?"var(--soft)":"var(--nab)"}"><b>${SC[d.n][0]?"Vía SC:":"Vía SC:"}</b> ${esc(SC[d.n][1])}<sup>${SC[d.n][0]?"1,10":sref(d)}</sup></div>` : ""}
+      ${TAB_N.includes(d.n) ? `<div class="dose" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>Tabaco:</b><select data-tab="${esc(d.n)}" style="width:auto;padding:5px 8px;font-size:14px"><option value="">no aplica</option><option value="f"${tabaco[d.n]==="f"?" selected":""}>fuma</option><option value="d"${tabaco[d.n]==="d"?" selected":""}>dejó de fumar</option></select>${tabaco[d.n]==="f"?`<span style="flex-basis:100%">El tabaco induce el CYP1A2: niveles y efecto ↓; puede requerir dosis mayores<sup>1</sup>.</span>`:tabaco[d.n]==="d"?`<span style="flex-basis:100%">Al dejar de fumar cesa la inducción (1–2 semanas): niveles ↑ y riesgo de toxicidad${d.n==="Metadona"?", descrita con metadona y otros opioides":""}; considerar reducir la dosis<sup>1</sup>.</span>`:""}</div>` : ""}
+      ${AD_EFECTOS[d.n] ? `<div class="dose"><b>Efectos adversos:</b> ${AD_EFECTOS[d.n].f.length?"Frecuentes: "+AD_EFECTOS[d.n].f.join(", ")+". ":""}${AD_EFECTOS[d.n].p.length?"Posibles: "+AD_EFECTOS[d.n].p.join(", ")+".":""}<sup>1</sup></div>` : ""}
+      ${desp(d, cp)}
+      ${bloque("Riñón", r, "r"+i)}${bloque("Hígado", h, "h"+i)}</div>`;
+  }).join("") : `<div class="empty">Agregue medicamentos para ver la dosis habitual y el ajuste renal y hepático.</div>`;
+  document.querySelectorAll("[data-c]").forEach(inp => inp.oninput = () => {
+    const id = inp.dataset.c, i = +id.slice(1), d = sel[i], x = id[0]==="r" ? evalRenal(d,v) : evalHep(d,cp);
+    dosisPac[id] = inp.value; $("r_"+id).innerHTML = inp.value>0 ? calcTxt(+inp.value, x.pct) : "";
+  });
+  if(sel.length){
+    const acb = sel.reduce((s,d)=>s+(ACB[d.n]||0),0), qt = sel.filter(d=>(d.t||[]).includes("QT") || QT_CONOCIDO.includes(d.n)), qtk = qt.filter(d=>QT_CONOCIDO.includes(d.n));
+    const edadP = +$("edad").value, fac = [edadP>70?"edad > 70 años":"", $("sexo").value==="F"?"sexo femenino":"", sel.some(d=>d.n==="Furosemida")?"diurético de asa (alteración electrolítica)":"", (v.tfgU!=null&&v.tfgU<30)||v.dial?"insuficiencia renal":"", cp&&cp.c!=="A"?"insuficiencia hepática":""].filter(Boolean);
+    const snc = sel.filter(d=>(d.t||[]).some(x=>SNC_TAGS.includes(x)) || SNC_N.includes(d.n));
+    const lv = x => x ? "ajuste" : "ok";
+    $("carga").innerHTML = `<div class="card"><h2>Carga de la lista</h2>
+      <div class="blk ${acb>=3?"evitar":acb>0?"ajuste":"ok"}" style="margin:0 0 8px"><div class="bt"><span>Carga anticolinérgica (ACB)<sup>8</sup></span><span class="pct">${acb} pts</span></div><p>${acb>=3?"≥ 3: mayor riesgo de delirium, caídas y deterioro cognitivo; revisar los de 3 puntos.":acb>0?"Carga baja.":"Sin carga anticolinérgica."}${acb?` <span style="color:var(--mut)">(${sel.filter(d=>ACB[d.n]).map(d=>esc(d.n)+" "+ACB[d.n]).join(", ")})</span>`:""}</p></div>
+      <div class="blk ${qt.length>=2||(qtk.length&&fac.length>=2)||(+$("qtc").value>500)||(+$("kpot").value>0&&+$("kpot").value<3.5)||(+$("mgn").value>0&&+$("mgn").value<1.7)?"evitar":lv(qt.length)}" style="margin:0 0 8px"><div class="bt"><span>Prolongan el QT</span><span class="pct">${qt.length}</span></div><p>${qtk.length?`<b>Riesgo conocido<sup>1</sup>:</b> ${qtk.map(d=>esc(d.n)).join(", ")}. `:""}${qt.length>qtk.length?`<b>Riesgo posible:</b> ${qt.filter(d=>!qtk.includes(d)).map(d=>esc(d.n)).join(", ")}.`:""}${qt.length?"":"Ninguno."}</p>${qt.length?`<div class="nt">${fac.length?`<b>Factores de riesgo del paciente:</b> ${fac.join(", ")}. `:""}Evitar combinar dos o más; dosis mínima eficaz. Con cardiopatía o factores de riesgo: ECG antes de iniciar y al estado estable (≈ 5 vidas medias), y potasio, calcio y magnesio en rango. QTc > 500 ms o aumento > 60 ms: riesgo serio de torsade de pointes. En los últimos días, el beneficio de haloperidol o levomepromazina supera el riesgo y no se requiere ECG<sup>1</sup>.</div>`:""}</div>
+      ${(()=>{const sg=sel.filter(d=>SER_GRAVE[d.n]), si=sel.filter(d=>SER_INCIERTO.includes(d.n)); if(!sg.length && !si.length) return "";
+        const mec = new Set(sg.map(d=>SER_GRAVE[d.n])), riesgo = sg.length>=2;
+        return `<div class="blk ${riesgo?"evitar":"ajuste"}" style="margin:0 0 8px"><div class="bt"><span>Toxicidad serotoninérgica<sup>1</sup></span><span class="pct">${sg.length}</span></div><p>${sg.length?`<b>Implicados:</b> ${sg.map(d=>esc(d.n)).join(", ")}. `:""}${si.length?`<b>Asociación incierta:</b> ${si.map(d=>esc(d.n)).join(", ")}.`:""}</p>${riesgo?`<div class="nt">${mec.size>=2?"Combinación de mecanismos distintos: riesgo de toxicidad grave. ":"Mismo mecanismo: más probable toxicidad leve a moderada. "}Vigilar agitación, temblor, mioclonías, clonus, hiperreflexia, diaforesis, taquicardia, hipertermia. Con varios serotoninérgicos o dosis altas, preferir alfentanilo, buprenorfina o morfina como opioide.</div>`:""}</div>`;})()}
+      <div class="blk ${snc.length>=3?"evitar":lv(snc.length)}" style="margin:0"><div class="bt"><span>Depresores del SNC</span><span class="pct">${snc.length}</span></div><p>${snc.length>=3?"Tres o más: riesgo de sedación excesiva y depresión respiratoria. ":""}${snc.map(d=>esc(d.n)).join(", ")||"Ninguno."}</p></div></div>`;
+  } else $("carga").innerHTML = "";
+  const hayQT = sel.some(d=>(d.t||[]).includes("QT"));
+  $("qtbox").style.display = hayQT ? "" : "none";
+  const qtc=+$("qtc").value, kp=+$("kpot").value, mg=+$("mgn").value;
+  const qal = [qtc>500?"QTc > 500 ms: alto riesgo de torsade de pointes; suspender o sustituir los fármacos que prolongan el QT si es posible":qtc>=470?"QTc prolongado (≥ 470 ms): evitar añadir otros fármacos que prolongan el QT":"", kp>0&&kp<3.5?"hipopotasemia: corregir":"", mg>0&&mg<1.7?"hipomagnesemia: corregir":""].filter(Boolean);
+  $("qtres").innerHTML = qal.length ? `<div class="blk evitar" style="margin:8px 0 0"><p>${qal.join("; ")}.<sup>1</sup></p></div>` : (qtc>0 ? `<div class="blk ok" style="margin:8px 0 0"><p>QTc ${qtc} ms sin prolongación significativa.</p></div>` : "Llenar si hay ECG o electrolitos recientes.");
+  const g5 = !!v.dial || (v.tfgU!=null && v.tfgU<15), hc = cp && cp.c==="C";
+  const BOXC = `<b>Dolor:</b> fentanilo 12.5–25 mcg SC p.r.n. o alfentanilo 50–100 mcg SC p.r.n.; si ≥ 3 dosis/24 h, ICSC. Sin ellos: oxicodona 1–2 mg SC p.r.n.<br><b>Disnea:</b> el mismo opioide; con ansiedad, midazolam 2.5 mg SC p.r.n.<br><b>Estertores:</b> butilbromuro de hioscina 20 mg SC p.r.n.; si ≥ 3 dosis/24 h, ICSC 40–120 mg/24 h.<br><b>Náusea y vómito:</b> haloperidol 0.5–1 mg SC p.r.n. (ICSC 1.5–3 mg/24 h) o levomepromazina 6.25 mg SC p.r.n. o ICSC/24 h.<br><b>Agitación, inquietud, mioclonías:</b> midazolam 2.5 mg SC p.r.n.; si ≥ 3 dosis/24 h, ICSC 5–10 mg/24 h.<br><b>Delirium:</b> haloperidol o levomepromazina ± midazolam, a dosis similares.<br><b>Prurito:</b> emoliente ± levomentol 0.5–5 % c/6 h; si es refractario, midazolam 2.5 mg SC p.r.n.<br><span style="color:var(--mut)">Dosis p.r.n. c/1 h. Tras suspender la diálisis, la sobrevida media es de 8–10 días.</span>`;
+  const BOXD = `<b>Dolor:</b> fentanilo 12.5–25 mcg SC c/1 h p.r.n. o morfina 2.5 mg SC c/1 h p.r.n. (fentanilo de elección si hay además insuficiencia renal).<br><b>Disnea:</b> fentanilo; con ansiedad, midazolam 1–2.5 mg SC c/1 h p.r.n.<br><b>Estertores:</b> butilbromuro de hioscina 20 mg SC c/1 h p.r.n.<br><b>Náusea y vómito:</b> haloperidol 0.5–1 mg SC c/1 h p.r.n.<br><b>Agitación, inquietud, mioclonías:</b> midazolam 1–2.5 mg SC c/1 h p.r.n.<br><b>Delirium:</b> haloperidol ± midazolam a dosis similares.<br><span style="color:var(--mut)">Titular con bolos SC p.r.n. antes de pasar a ICSC; vigilar encefalopatía.</span>`;
+  const fv = (k,tit,txt) => `<details class="fdv" data-k="${k}" ${fdvAbierto[k]?"open":""}><summary>Final de vida · ${tit}</summary><div class="fdvb">${txt}<sup>1</sup></div></details>`;
+  const fvKey = (g5?"c":"") + (hc?"d":"");
+  if($("anticip").dataset.k !== fvKey){ $("anticip").dataset.k = fvKey; $("anticip").innerHTML = (g5 ? fv("c","prescripción anticipada en ERC G5 o diálisis",BOXC) : "") + (hc ? fv("d","prescripción anticipada en hepatopatía grave (Child-Pugh C)",BOXD) : ""); }
+
+  document.querySelectorAll("[data-tab]").forEach(x => x.onchange = () => { tabaco[x.dataset.tab] = x.value; render(); });
+  const al = interacciones(sel).concat(cypInter(sel));
+  $("alerta").innerHTML = al.length ? `<div class="alert"><h3>⚠ Interacciones a considerar</h3><ul>${al.map(a => `<li><b>${esc(a.par)}</b> (${esc(a.nivel)}${a.ref?"<sup>1</sup>":""}): ${esc(a.efecto)}<br><span style="color:#5a5266">Manejo: ${esc(a.manejo)}</span></li>`).join("")}</ul></div>` : "";
+}
+function copiar(){
+  const v = valores(), cp = childPugh(), sel = lista.map(buscarD).filter(Boolean);
+  const plano = s => String(s||"").replace(/<sup>.*?<\/sup>/g,"").replace(/<br>/g," ").replace(/<[^>]+>/g,"").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+  const L = [`Función renal: ${v.dial ? (v.dial==="HD"?"hemodiálisis":"diálisis peritoneal") : v.tfgU!=null ? "TFG "+fmt(v.tfgU)+(v.tfgC!=null?" (con cistatina C)":"")+(v.crcl!=null?" · CrCl "+fmt(v.crcl):"") : "sin datos"}`,
+             `Función hepática: ${cp ? "Child-Pugh "+cp.c+" ("+cp.pts+" pts)" : "sin datos"}`, ""];
+  sel.forEach(d => {
+    const r = evalRenal(d,v), h = evalHep(d,cp);
+    L.push(`• ${d.n}: ${ETQ[r.e].toLowerCase()} renal — ${plano(r.t)}${r.pct!=null?" ("+r.pct+" %)":""} | Hígado: ${ETQ[h.e].toLowerCase()} — ${plano(h.t)}`);
+    if(tabaco[d.n]) L.push(`  Tabaco: ${tabaco[d.n]==="f"?"fuma (inducción CYP1A2)":"dejó de fumar (riesgo de toxicidad)"}`);
+    if($("stopp").checked && STOP_N[d.n]) L.push(`  Desprescripción: ${STOP[STOP_N[d.n]]}`);
+  });
+  const txt = L.join("\n");
+  const ok = () => { $("msg").textContent = "Resumen copiado."; verTab(2); };
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(ok, () => prompt("Copie el resumen:", txt)); else prompt("Copie el resumen:", txt);
+}
+$("buscar").addEventListener("input", sugerir);
+$("buscar").addEventListener("keydown", e => { if(e.key==="Enter"){ const f = $("sug").querySelector("[data-n]"); if(f) agregar(f.dataset.n); }});
+document.addEventListener("click", e => { if(!e.target.closest(".search")) $("sug").style.display="none"; });
+$("famsel").addEventListener("change", e => agregar(e.target.value));
+$("soloLom").addEventListener("change", () => { construirSelect(); sugerir(); });
+$("p1").addEventListener("input", render); ["qtc","kpot","mgn"].forEach(id => $(id).addEventListener("input", render)); $("stopp").addEventListener("change", render); $("p1").addEventListener("change", render);
+construirSelect(); render();
+/* Aceptar coma o punto decimal en todos los campos numéricos */
+document.addEventListener("input", e => {
+  const t = e.target;
+  if(t.tagName==="INPUT" && t.inputMode==="decimal"){
+    const v = t.value.replace(/,/g,".").replace(/[^0-9.]/g,"").replace(/(\..*)\./g,"$1");
+    if(v!==t.value) t.value = v;
+  }
+}, true);
+</script>
+<script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>

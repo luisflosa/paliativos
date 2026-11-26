@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b4f7c">
+<title>Calculadora de Opioides - Dr. Luis Diego Flores Salazar</title>
+<style>
+  :root{
+    --bg:#eef2f6; --card:#fff; --ink:#1b2430; --muted:#66707f; --line:#e3e8ef;
+    --pri:#0b4f7c; --pri2:#1677b3; --soft:#e8f2fa;
+    --ok:#1e8a52; --okbg:#e6f5ec; --aj:#b26a00; --ajbg:#fff4de; --ev:#c0392b; --evbg:#fdeceb; --gr:#7a8291;
+    --r:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;font-size:15px}
+  sup{font-size:.65em;color:var(--pri2)}
+  /* encabezado */
+  header{background:linear-gradient(135deg,#0b4f7c,#1677b3);color:#fff;padding:18px 16px 54px;text-align:center}
+  header h1{margin:0;font-size:1.35rem;letter-spacing:.2px}
+  header p{margin:4px 0 0;font-size:.8rem;opacity:.85}
+  .tabs{position:sticky;top:0;z-index:20;background:linear-gradient(rgba(238,242,246,.0),rgba(238,242,246,0));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;gap:6px;overflow-x:auto;padding:8px 12px;margin:-42px auto 0;max-width:760px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;border:none;background:rgba(255,255,255,.92);color:var(--pri);font-weight:600;font-size:.88rem;padding:9px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(11,79,124,.15);cursor:pointer}
+  .tab.on{background:var(--pri);color:#fff}
+  main{max-width:760px;margin:0 auto;padding:4px 12px 40px}
+  .panel{display:none}
+  .panel.on, body.todo .panel{display:block}
+  body.todo .panel + .panel{margin-top:8px}
+  .sub{display:none}
+  .sub.on, body.todo .sub{display:block}
+  .xbtn{width:100%;margin-top:4px}
+  body.todo .xbtn{display:none}
+  .ptitle{display:none;font-size:1.05rem;color:var(--pri);margin:22px 4px 8px}
+  body.todo .ptitle{display:block}
+  /* tarjetas */
+  .card{background:var(--card);border-radius:var(--r);padding:16px;margin:12px 0;box-shadow:0 2px 10px rgba(20,40,60,.06)}
+  .card h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 10px}
+  label.f{display:block;font-size:.82rem;font-weight:600;color:#3d4757;margin:10px 0 5px}
+  .hint{font-size:.78rem;color:var(--muted);font-weight:400}
+  input,select{width:100%;font:inherit;font-size:16px;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:#fbfcfe;color:var(--ink);appearance:none;-webkit-appearance:none}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2366707f' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+  input:focus,select:focus{outline:none;border-color:var(--pri2);background:#fff}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:420px){.row{grid-template-columns:1fr}}
+  /* interruptores */
+  .toggles{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .tg{position:relative}
+  .tg input{position:absolute;opacity:0;width:0;height:0}
+  .tg span{display:inline-block;font-size:.82rem;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fbfcfe;color:#3d4757;cursor:pointer}
+  .tg input:checked + span{background:var(--soft);border-color:var(--pri2);color:var(--pri);font-weight:600}
+  /* resultado OME */
+  .ome{background:linear-gradient(135deg,#0b4f7c,#1677b3);color:#fff;border-radius:var(--r);padding:16px;margin:12px 0;text-align:center}
+  .ome small{display:block;font-size:.75rem;opacity:.85;text-transform:uppercase;letter-spacing:.6px}
+  .ome b{display:block;font-size:2rem;line-height:1.15;margin:2px 0}
+  .ome .hint{color:#d9ecfa}
+  /* avisos */
+  .alert{border-radius:12px;padding:11px 13px;margin:8px 0;font-size:.86rem;border-left:5px solid}
+  .a-r{background:var(--evbg);border-color:var(--ev);color:#7d1d14}
+  .a-y{background:var(--ajbg);border-color:#e0a100;color:#5c3d00}
+  .a-b{background:var(--soft);border-color:var(--pri2);color:#123a57}
+  /* tarjeta de resultado */
+  .hero{border:2px solid var(--soft)}
+  .hero .name{font-size:1rem;font-weight:700;color:var(--pri)}
+  .hero .ref{font-size:.75rem;color:var(--muted)}
+  .big{font-size:2.1rem;font-weight:800;color:var(--ink);line-height:1.1;margin:8px 0 2px}
+  .big span{font-size:1rem;font-weight:600;color:var(--muted)}
+  .lines{list-style:none;padding:0;margin:10px 0}
+  .lines li{padding:8px 10px;background:#f6f9fc;border-radius:10px;margin-bottom:6px;font-size:.92rem}
+  .lines li b{color:var(--pri)}
+  .prn{background:var(--evbg)!important;color:#7d1d14}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.74rem;font-weight:700}
+  .b-s{background:var(--okbg);color:var(--ok)}.b-p{background:var(--ajbg);color:var(--aj)}.b-e{background:var(--evbg);color:var(--ev)}.b-x{background:#eef0f3;color:var(--gr)}
+  .btns{display:flex;gap:8px;margin-top:10px}
+  .btn{flex:1;border:none;border-radius:12px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
+  .btn-p{background:var(--pri);color:#fff}
+  .btn-s{background:var(--soft);color:var(--pri)}
+  /* detalles plegables */
+  details{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
+  .card>details:first-child{border-top:none;margin-top:0;padding-top:0}
+  details>summary{cursor:pointer;font-weight:600;color:var(--pri2);font-size:.88rem;list-style:none;padding:4px 0}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▸ ";}
+  details[open]>summary::before{content:"▾ ";}
+  .det{font-size:.86rem;color:#2c3644;margin-top:6px}
+  .sug{display:block;font-weight:700;color:var(--pri);margin-top:8px}
+  .rescue{display:block;margin-top:8px;padding:7px 10px;border-radius:10px;background:var(--evbg);color:#7d1d14;font-weight:600}
+  .inf{display:block;margin-top:6px;color:#33506b}
+  .organ{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:.84rem}
+  /* lista completa */
+  .group{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:16px 4px 6px}
+  .item{background:#fff;border-radius:14px;margin:8px 0;box-shadow:0 1px 6px rgba(20,40,60,.06);overflow:hidden}
+  .item>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 14px;font-weight:600;color:var(--ink);border:none}
+  .item>summary::before,.item[open]>summary::before{content:none}
+  .item[open]>summary{background:var(--soft)}
+  .item .dose{font-weight:800;color:var(--pri);white-space:nowrap}
+  .item .body{padding:4px 14px 14px;font-size:.86rem}
+  .item{border-top:none;margin-top:8px;padding-top:0}
+  /* compatibilidad */
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .pair{padding:10px 12px;border-radius:12px;margin:7px 0;font-size:.88rem;border-left:5px solid}
+  .c-G{background:var(--okbg);border-color:var(--ok)}.c-A{background:var(--ajbg);border-color:#e0a100}.c-R{background:var(--evbg);border-color:var(--ev)}.c-K{background:#eef0f3;border-color:var(--gr)}.c-Q{background:#f7f8fa;border-color:#c9ced6}
+  .refs{font-size:.76rem;color:var(--muted)}
+  .refs ol{padding-left:18px;margin:6px 0 0}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1b2430;color:#fff;padding:10px 16px;border-radius:999px;font-size:.85rem;opacity:0;transition:opacity .25s;pointer-events:none}
+  .toast.on{opacity:1}
+  footer{text-align:center;font-size:.75rem;color:var(--muted);padding:10px}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paliativos LDFS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>header{position:relative;padding-top:calc(env(safe-area-inset-top) + 18px)!important}.inicio{display:block;width:max-content;margin:0 0 10px;color:#fff;text-decoration:none;font-size:.85rem;font-weight:600;background:rgba(255,255,255,.18);padding:6px 12px;border-radius:999px}</style>
+</head>
+<body>
+<header>
+  <a class="inicio" href="index.html">‹ Inicio</a>
+  <h1>Calculadora de Opioides</h1>
+  <p>Dr. Luis Diego Flores Salazar</p>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-t="conv">Conversión</button>
+  <button class="tab" data-t="comp">Compatibilidad</button>
+  <button class="tab" data-t="todo">Ver todo</button>
+</nav>
+
+<main>
+<!-- ===================== CONVERSIÓN ===================== -->
+<section class="panel on" id="p-conv">
+  <h3 class="ptitle">Conversión</h3>
+  <div class="card">
+    <h2>Opioide actual</h2>
+    <select id="origin" onchange="calc()"></select>
+    <label class="f">Dosis total en 24 h <span class="hint" id="unitHint"></span></label>
+    <div class="row3">
+      <input type="number" id="dose" value="60" min="0" step="any" inputmode="decimal" oninput="calc()">
+      <select id="unit" onchange="calc()"></select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Contexto clínico</h2>
+    <div class="row">
+      <div><label class="f">Función renal</label>
+        <select id="renal" onchange="calc()">
+          <option value="n">TFG ≥ 30</option>
+          <option value="g4">TFG 15–29 (G4)</option>
+          <option value="g5">TFG &lt; 15 o diálisis</option>
+        </select></div>
+      <div><label class="f">Función hepática</label>
+        <select id="hep" onchange="calc()">
+          <option value="n">Normal o Child-Pugh A</option>
+          <option value="b">Child-Pugh B</option>
+          <option value="c">Child-Pugh C</option>
+        </select></div>
+    </div>
+    <div class="toggles">
+      <label class="tg"><input type="checkbox" id="frail" onchange="calc()"><span>Frágil o edad avanzada</span></label>
+      <label class="tg"><input type="checkbox" id="rapid" onchange="calc()"><span>Escalamiento rápido</span></label>
+      <label class="tg"><input type="checkbox" id="intol" onchange="calc()"><span>Efectos intolerables (delirium)</span></label>
+    </div>
+    <label class="f">Reducción al rotar (%) <span class="hint">0 = equivalencia directa</span></label>
+    <input type="number" id="reduction" value="0" min="0" max="75" inputmode="numeric" oninput="calc()">
+  </div>
+
+  <div class="ome"><small>Morfina oral equivalente</small><b id="morphineEq">—</b><div class="hint" id="omeNote"></div></div>
+  <div id="alerts"></div>
+
+  <div id="convOut">
+    <div class="card hero">
+      <h2>Convertir a</h2>
+      <select id="dest" onchange="calc()"></select>
+      <div id="heroBody"></div>
+    </div>
+    <button class="btn btn-s" style="width:100%" id="btnAll" onclick="toggleAll()">Ver todos los opioides</button>
+    <div id="allList" style="display:none"></div>
+  </div>
+
+  <button class="btn btn-s xbtn" id="b-met" onclick="desplegar('met')">Cambio a metadona ▾</button>
+  <div class="sub" id="p-met">
+  <div class="card">
+    <h2>Cambio a metadona</h2>
+    <div class="hint" style="margin-bottom:6px">Usa la morfina oral equivalente calculada arriba: <b id="metOme">—</b></div>
+    <div id="metHero"></div>
+    <details><summary>Ver protocolos completos</summary><div class="det" id="metDet"></div></details>
+  </div>
+  <div class="card">
+    <h2>Primer opioide fuerte o adyuvante</h2>
+    <ul class="lines"><li><b>Inicio PO:</b> <span id="metInicio"></span></li></ul>
+    <details><summary>Titulación, indicaciones y uso como adyuvante</summary><div class="det">
+      <b>Indicaciones:</b> segundo opioide fuerte si hay neurotoxicidad por morfina que no cede al reducir la dosis, o en ERC G5 (no de primera elección); adyuvante en dolor poco sensible a morfina (p. ej., mixto nociceptivo-neuropático), la indicación más frecuente en cuidados paliativos<sup>1</sup>.<br><br>
+      <b>Titulación:</b> subir la dosis regular una vez por semana según el uso de p.r.n.; en general no más de 5 mg/24 h. Con dosis ≥ 15 mg c/12 h, no más de 10 mg/24 h y sin cambiar la p.r.n. Con dosis ≥ 30 mg c/12 h, considerar p.r.n. de 1/10–1/6 de la dosis de 24 h. La mayoría responde con ≤ 10 mg/24 h. SC o ICSC: la mitad de las dosis PO.<br><br>
+      <b>Como adyuvante de otro opioide fuerte:</b> mismo inicio. Antes, reducir el opioide original si hay toxicidad o escalamiento rápido e ineficaz. Mantener el opioide original para rescates. El beneficio suele verse en 1–2 semanas o con ≤ 15 mg/24 h; algunos centros la suspenden si no hay beneficio con 20–30 mg/24 h. Si el dolor mejora, considerar reducir el opioide original.<br><br>
+      <b>Reacción cutánea con ICSC:</b> diluir más (jeringa de 20–30 mL), rotar el sitio a diario, hidrocortisona 1 % tópica alrededor de la aguja o agregar dexametasona 0.66 mg si la compatibilidad lo permite.
+    </div></details>
+  </div>
+  </div>
+  <button class="btn btn-s xbtn" id="b-ket" onclick="desplegar('ket')">Ketamina como adyuvante ▾</button>
+  <div class="sub" id="p-ket">
+  <div class="card">
+    <h2>Ketamina como adyuvante</h2>
+    <label class="f">Peso del paciente (kg)</label>
+    <input type="number" id="weight" placeholder="kg" inputmode="decimal" oninput="calc()">
+    <div id="ketHero"></div>
+  </div>
+  <div class="card" id="ketMore"></div>
+  </div>
+
+  <div class="card">
+    <details><summary>¿Cómo calcula?</summary>
+      <div class="det">Convierte la dosis de origen a morfina oral equivalente (OME) y de ahí al destino<sup>1</sup>. Cuando la razón es un rango (fentanilo SC/IV 100–150:1, buprenorfina SC/IV 30–40:1) usa el extremo más seguro en cada dirección y muestra el rango. Rescate: 1/10–1/6 de la dosis de 24 h. Las razones de conversión nunca son más que una guía aproximada: vigile de cerca para evitar la subdosificación y la sobredosificación, sobre todo al rotar a dosis altas, tras un escalamiento rápido o hacia metadona. Redondee a la presentación disponible.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ===================== COMPATIBILIDAD ===================== -->
+<section class="panel" id="p-comp">
+  <h3 class="ptitle">Compatibilidad</h3>
+  <div class="card">
+    <h2>Mezcla en jeringa · ICSC 24 h en agua para inyección</h2>
+    <div class="hint" style="margin-bottom:8px">Toque los fármacos de la jeringa; se evalúa cada par<sup>1</sup>.</div>
+    <div class="chips" id="chips"></div>
+    <div id="compatRes" style="margin-top:10px"></div>
+    <details><summary>Clave de colores</summary><div class="det">
+      <span class="badge b-s">Verde</span> compatibilidad reportada (datos observacionales, físicos o químicos).<br>
+      <span class="badge b-p">Ámbar</span> usar con precaución: depende del orden de mezcla o de la concentración.<br>
+      <span class="badge b-e">Rojo</span> no usar: incompatible a concentraciones habituales.<br>
+      <span class="badge b-x">Gris</span> no aplica o no se recomienda en general.<br>
+      <b>?</b> sin datos.<br><br>
+      Vigile siempre la mezcla, aun en verde. Tres o más fármacos: que cada par sea compatible no garantiza la mezcla completa.
+    </div></details>
+  </div>
+</section>
+
+<div class="card refs">
+  <b>Referencias</b>
+  <ol>
+    <li>Wilcock A, Howard P, Charlesworth S (eds). Palliative Care Formulary, 8.ª ed. Pharmaceutical Press 2022.</li>
+    <li>Organización Mundial de la Salud. WHO guidelines for the pharmacological and radiotherapeutic management of cancer pain in adults and adolescents, Anexo 6. 2018.</li>
+    <li>Mercadante S, et al. J Clin Oncol 2001; 19: 2898.</li>
+    <li>Bell RF, et al. Cochrane Database Syst Rev 2017; 6: CD003351. doi: 10.1002/14651858.CD003351.pub3</li>
+    <li>Mercadante S, et al. J Pain Symptom Manage 2000; 20: 246.</li>
+    <li>Loveday BA, et al. J Adv Pract Oncol 2015; 6: 555.</li>
+    <li>Kannan TR, et al. J Pain Symptom Manage 2002; 23: 60.</li>
+    <li>Kozhevnikov D, et al. Palliat Med Rep 2024; 5. doi: 10.1089/pmr.2024.0049</li>
+  </ol>
+</div>
+<footer>Herramienta de apoyo clínico. No reemplaza el juicio clínico.</footer>
+</main>
+<div class="toast" id="toast">Indicación copiada</div>
+
+<script>
+/* =========================================================
+   DATOS — PCF8 Apéndice 2
+   f = [fmin, fmax]: mg de morfina oral (OME) por unidad base
+   unidad base: mg/24h, mcg/24h (fentanilo SC) o mcg/h (parches)
+   ========================================================= */
+const D = {
+  morPO:  {n:"Morfina PO",                  base:"mg",    f:[1,1],      tipo:"po",  sch:["ir","er"], ref:"Referencia"},
+  codPO:  {n:"Codeína PO",                  base:"mg",    f:[0.1,0.1],  tipo:"po",  sch:["ir6"],     ref:"Razón 10:1"},
+  tramPO: {n:"Tramadol PO",                 base:"mg",    f:[0.1,0.1],  tipo:"po",  sch:["ir6","er"],ref:"Razón 10:1"},
+  tapPO:  {n:"Tapentadol PO",               base:"mg",    f:[1/3,1/3],  tipo:"po",  sch:["ir6","er"],      ref:"Razón 3:1", flag:true},
+  oxyPO:  {n:"Oxicodona PO",                base:"mg",    f:[1.5,1.5],  tipo:"po",  sch:["ir","er"], ref:"Razón 1.5:1 (fabricante 2:1)"},
+  hmPO:   {n:"Hidromorfona PO",             base:"mg",    f:[5,5],      tipo:"po",  sch:["ir","er"], ref:"Razón 5:1 (fabricante 7.5:1)"},
+  morSC:  {n:"Morfina SC/IV",               base:"mg",    f:[2,2],      tipo:"sc",  ref:"Morfina PO → SC/IV 2:1"},
+  oxySC:  {n:"Oxicodona SC/IV",             base:"mg",    f:[2,2],      tipo:"sc",  ref:"Morfina PO → oxicodona SC/IV 2:1"},
+  hmSC:   {n:"Hidromorfona SC/IV",          base:"mg",    f:[10,10],    tipo:"sc",  ref:"Morfina PO → hidromorfona SC/IV 10:1"},
+  fenSC:  {n:"Fentanilo SC/IV",             base:"mcg",   f:[0.1,0.15], tipo:"sc",  ref:"Morfina PO → fentanilo SC/IV 100–150:1"},
+  alfSC:  {n:"Alfentanilo SC/IV",           base:"mg",    f:[30,30],    tipo:"sc",  ref:"Morfina PO → alfentanilo SC/IV 30:1"},
+  bupSC:  {n:"Buprenorfina SC/IV",          base:"mg",    f:[60,80],    tipo:"sc",  ref:"Morfina SC → buprenorfina SC/IV 30–40:1"},
+  fenTD:  {n:"Fentanilo parche TD",         base:"mcg/h", f:[2.4,2.4],  tipo:"td",  ref:"Razón 100:1 (fabricante 100 o 150:1)"},
+  bupTD:  {n:"Buprenorfina parche TD",      base:"mcg/h", f:[2.4,2.4],  tipo:"td",  ref:"Razón 100:1 (fabricante 75–115:1)"},
+  metPO:  {n:"Metadona PO",                 base:"mg",    f:null,       tipo:"met", ref:"Sin razón única: dosis de carga y p.r.n."}
+};
+
+/* Box B (Durogesic DTrans): OME mg/24h → mcg/h */
+const BOXB_ROT = [[90,12],[135,25],[225,50],[315,75],[405,100],[495,125],[585,150],[675,175],[765,200],[855,225],[945,250],[1035,275],[1125,300]]; // ~150:1
+const BOXB_EST = [[45,12],[90,25],[150,50],[210,75],[270,100],[330,125],[390,150],[450,175],[510,200],[570,225],[630,250],[690,275],[750,300]]; // ~100:1
+function boxB(tabla, ome){ for(const [lim,p] of tabla) if(ome < lim) return p; return null; }
+
+/* PCF8 cap. 17 Tabla 7 (ERC G5/diálisis) y cap. 18 Tabla 4 (insuficiencia hepática grave)
+   s = generalmente seguro, p = usar con precaución, e = evitar si es posible */
+const ORG = {
+  morPO:{r:["e","Si es inevitable: PO/SC iniciar 1.25–2.5 mg p.r.n.; controlado el dolor, pasar a dosis equivalente de buprenorfina o fentanilo TD."],
+         h:["p","PO: iniciar 5 mg c/6–8 h y c/2–4 h p.r.n. Evitar liberación prolongada."]},
+  morSC:{r:["e","Si es inevitable: SC iniciar 1.25–2.5 mg p.r.n."],
+         h:["p","SC: iniciar 2.5 mg c/2–4 h p.r.n.; ICSC: iniciar 10 mg/24 h."]},
+  codPO:{r:["e","Si es inevitable: PO máximo 30 mg c/6 h."],
+         h:["e","Profármaco: biotransformación reducida, efecto impredecible."]},
+  tramPO:{r:["e","PO: iniciar 50 mg c/12 h; máximo 200 mg/24 h. Posible remoción en HD."],
+         h:["e","Profármaco: efecto reducido e impredecible."]},
+  tapPO:{r:null,h:null},
+  oxyPO:{r:["p","PO: iniciar 1–2 mg c/6–8 h y p.r.n.; controlado el dolor, considerar buprenorfina o fentanilo TD."],
+         h:["e","Si es inevitable: PO iniciar 2.5 mg c/8 h y c/2–4 h p.r.n. Evitar liberación prolongada."]},
+  oxySC:{r:["p","Usar con precaución; dosis bajas y titulación lenta."],
+         h:["e","Si es inevitable: SC iniciar 1.5 mg c/2–4 h p.r.n.; ICSC iniciar 5 mg/24 h."]},
+  hmPO:{r:["p","PO: iniciar 1.3 mg c/6 h y p.r.n. Posible remoción en HD."],
+        h:["e","Si es inevitable: espaciar la liberación inmediata a c/8 h (metabolito neurotóxico)."]},
+  hmSC:{r:["p","SC: iniciar 0.25–0.5 mg c/6 h y p.r.n.; ICSC iniciar 1 mg/24 h."],
+        h:["e","Si es inevitable: espaciar la liberación inmediata a c/8 h."]},
+  fenSC:{r:["s","Dosis menores pueden bastar. SC: iniciar 12.5–25 mcg p.r.n.; ICSC: iniciar 100–150 mcg/24 h."],
+         h:["s","Dosis menores pueden bastar. SC: 12.5–25 mcg c/1 h p.r.n.; ICSC: 100–150 mcg/24 h."]},
+  alfSC:{r:["s","Dosis menores pueden bastar. SC: 50–100 mcg p.r.n.; ICSC: 0.5–1 mg/24 h."],
+         h:["e","Si es inevitable: SC 50–100 mcg c/1 h p.r.n.; ICSC 0.5–1 mg/24 h."]},
+  bupSC:{r:["s","SL/SC/ICSC: reducir la dosis inicial 25–50 %."],
+         h:["p","SL/SC: reducir la dosis inicial 25–50 %."]},
+  fenTD:{r:["s","Solo con dolor estable; usar dosis equivalente al opioide previo."],
+         h:["e","Evitar productos TD en insuficiencia hepática grave."]},
+  bupTD:{r:["s","Solo con dolor estable; iniciar 5 mcg/h o dosis equivalente al opioide previo."],
+         h:["e","Evitar productos TD en insuficiencia hepática grave."]},
+  metPO:{r:["s","Iniciar con 50 % de la dosis habitual; titulación muy cuidadosa y lenta. Se acumula aun sin insuficiencia renal. No es primera elección en ERC G5."],
+         h:["e","Evitar si es posible; titulación cuidadosa y lenta. Se acumula aun sin hepatopatía."]}
+};
+
+/* ===================== Utilidades ===================== */
+const $ = id => document.getElementById(id);
+const num = id => parseFloat($(id).value) || 0;
+const fx = (x,d=1) => (x==null||!isFinite(x)) ? "—" : (+x.toFixed(d)).toString();
+const ETQ = {s:"Seguro",p:"Precaución",e:"Evitar"};
+const BCLS = {s:"b-s",p:"b-p",e:"b-e"};
+
+const UNITS = {
+  "mg":   [["mg24","mg/24 h"],["mgh","mg/h"]],
+  "mcg":  [["mcg24","mcg/24 h"],["mcgh","mcg/h"],["mg24","mg/24 h"]],
+  "mcg/h":[["mcgh","mcg/h (parche)"]]
+};
+
+/* convierte la dosis ingresada a la unidad base del fármaco */
+function aBase(val, unit, base){
+  if(base==="mg"){ if(unit==="mgh") return val*24; return val; }
+  if(base==="mcg"){ if(unit==="mcgh") return val*24; if(unit==="mg24") return val*1000; return val; }
+  return val; // mcg/h
+}
+
+function llenarUnidades(){
+  const o = D[$("origin").value];
+  const prev = $("unit").value;
+  $("unit").innerHTML = UNITS[o.base].map(([v,t]) => `<option value="${v}">${t}</option>`).join("");
+  if([...$("unit").options].some(op => op.value===prev)) $("unit").value = prev;
+}
+
+/* ===================== Esquemas ===================== */
+function esquema(id, d, dosis, ome){
+  const u = d.base==="mcg" ? "mcg" : "mg";
+  const r = (x) => `${fx(x, x<10?2:1)} ${u}`;
+  let h = "";
+  const resc = `<span class="rescue">Rescate p.r.n.: ${r(dosis/10)}–${r(dosis/6)} (1/10–1/6 de 24 h), misma vía, c/1–2 h según necesidad</span>`;
+
+  if(d.tipo==="po"){
+    if(d.sch.includes("ir"))  h += `<span class="sug">Liberación inmediata:</span>• ${r(dosis/6)} c/4 h`;
+    if(d.sch.includes("ir6")) h += `<span class="sug">Liberación inmediata:</span>• ${r(dosis/4)} c/6 h`;
+    if(d.sch.includes("er"))  h += `<span class="sug">Liberación prolongada:</span>• ${r(dosis/2)} c/12 h`;
+    h += resc;
+  } else if(d.tipo==="sc"){
+    h += `<span class="sug">Infusión SC continua (ICSC):</span>• ${r(dosis)}/24 h = ${r(dosis/24)}/h`;
+    h += `<br>• o bolos SC ${r(dosis/6)} c/4 h`;
+    h += resc;
+    if(id==="fenSC" && dosis > 500) h += `<span class="inf">Más de 500 mcg/24 h: el volumen puede impedir usar la jeringa; considerar alfentanilo. Puede usarse la misma razón que para el parche (tabla del fabricante).</span>`;
+  } else if(id==="fenTD"){
+    const est = boxB(BOXB_EST, ome), rot = boxB(BOXB_ROT, ome);
+    h += `<span class="sug">Según el fabricante:</span>• Paciente estable y bien tolerado (~100:1): <b>${est ? est+" mcg/h" : "fuera de tabla (>749 mg)"}</b><br>• Rotación por efectos adversos o menos estable (~150:1): <b>${rot ? rot+" mcg/h" : "fuera de tabla (>1124 mg)"}</b>`;
+    h += `<span class="inf">Sin tolerancia a opioides no se recomienda la vía TD; si no hay alternativa, iniciar 12 mcg/h. Retirar el opioide previo de forma gradual desde el primer parche y evaluar el efecto tras 24 h.</span>`;
+    h += `<span class="rescue">Rescate: morfina PO IR ${fx(ome/10)}–${fx(ome/6)} mg p.r.n. (1/10–1/6 de la OME)</span>`;
+  } else if(id==="bupTD"){
+    h += `<span class="sug">Parche:</span>• ${fx(dosis)} mcg/h calculado. Combinar tamaños disponibles (5, 10, 15, 20 mcg/h de 7 días; 35, 52.5, 70 mcg/h de 96 h), redondeando según la clínica.`;
+    h += `<span class="inf">Según el fabricante<sup>1</sup>: parche de 7 días (5–20 mcg/h) iniciar con 5 mcg/h y mantener analgésicos de acción corta durante la titulación. Parche de 96 h (35, 52.5, 70 mcg/h): desde opioide débil iniciar 35 mcg/h; desde opioide fuerte iniciar 35 mcg/h, o 52.5 mcg/h si la morfina previa era ~120 mg/24 h. Dar el analgésico previo en la misma dosis las primeras 12 h y luego rescates según necesidad. Evaluar el efecto tras 24 h.</span>`;
+    h += `<span class="rescue">Rescate: morfina PO IR ${fx(ome/10)}–${fx(ome/6)} mg p.r.n. (1/10–1/6 de la OME)</span>`;
+  }
+  return h;
+}
+
+function organoHTML(id){
+  const o = ORG[id]; if(!o) return "";
+  const ren = $("renal").value, hep = $("hep").value;
+  let h = "";
+  if(ren!=="n" && o.r){
+    const pre = ren==="g4" ? "Referencia G5 (aplicar con criterio en G4): " : "";
+    h += `<div class="organ"><span class="badge ${BCLS[o.r[0]]}">Riñón: ${ETQ[o.r[0]]}</span>${pre}${o.r[1]}</div>`;
+  } else if(ren!=="n" && !o.r){
+    h += `<div class="organ"><span class="badge b-x">Riñón: sin datos</span></div>`;
+  }
+  if(hep!=="n" && o.h){
+    const pre = hep==="b" ? "Datos para hepatopatía grave (referencia en Child B): " : "";
+    h += `<div class="organ"><span class="badge ${BCLS[o.h[0]]}">Hígado: ${ETQ[o.h[0]]}</span>${pre}${o.h[1]}</div>`;
+  } else if(hep!=="n" && !o.h){
+    h += `<div class="organ"><span class="badge b-x">Hígado: sin datos</span></div>`;
+  }
+  return h;
+}
+
+/* ===================== Metadona: cambio desde morfina PO ("stop and go") ===================== */
+const r5 = x => Math.max(0.5, Math.round(x*2)/2);   // redondeo a 0.5 mg
+function merc(ome){ const r = ome < 90 ? 4 : (ome <= 300 ? 8 : 12); const dia = ome / r; return {r, dia, c8: dia/3, resc: dia/6}; }
+function metDosis(ome){
+  const carga = Math.min(ome/10, 30), prn = Math.min(ome/30, 30), m = merc(ome);
+  return `<b>A) Dosis de carga:</b> carga ${fx(carga)} mg PO<div class="hint">p.r.n.: ${fx(r5(prn))} mg c/3 h</div>
+          <b>B) Dosis fija:</b> ${fx(m.dia)} mg/24 h<div class="hint">${fx(m.c8)} mg c/8 h (razón 1:${m.r})</div>`;
+}
+function metEsquema(ome){
+  const carga = Math.min(ome/10, 30), prn = Math.min(ome/30, 30);
+  const tope = (ome/10 > 30 || ome/30 > 30) ? `<span class="inf">Dosis limitadas al máximo de 30 mg (el cálculo daba carga ${fx(ome/10)} mg y p.r.n. ${fx(ome/30)} mg).</span>` : "";
+  const m = merc(ome);
+  const merca = `<span class="sug">B) Método de dosis fija ("stop and go")<sup>3</sup>:</span>
+    • Suspender la morfina y sustituir de inmediato por metadona.<br>
+    • Razón morfina PO : metadona PO según la dosis de morfina: 4:1 si &lt; 90 mg/24 h; 8:1 si 90–300 mg/24 h; 12:1 si &gt; 300 mg/24 h. Aquí: <b>1:${m.r}</b>.<br>
+    • Metadona <b>${fx(m.dia)} mg/24 h</b>, repartida en <b>${fx(m.c8)} mg c/8 h</b>.<br>
+    • Rescate: 1/6 de la dosis diaria = <b>${fx(m.resc)} mg</b>, hasta 3 rescates al día.<br>
+    • Titular a diario según el número de rescates, buscando el equilibrio entre analgesia y efectos adversos.<br>
+    <span class="inf">En el estudio (50 pacientes), el cambio fue eficaz en 80 % en unos 3.7 días; la mitad necesitó subir la metadona ~20 % sobre la dosis calculada (~33 % si el motivo era dolor no controlado). Excluyó metástasis cerebrales, deterioro cognitivo e insuficiencia renal o hepática.</span><br><br>`;
+  return merca + `<span class="sug">A) Método de dosis de carga<sup>1</sup>:</span>
+    • Suspender la morfina de forma abrupta al iniciar la metadona.<br>
+    • Primera dosis de metadona: con morfina de liberación inmediata, ≥ 2 h tras la última dosis si hay dolor (4 h si no hay dolor); con liberación prolongada de 12 h, ≥ 6 h (12 h sin dolor); con producto de 24 h, ≥ 12 h (24 h sin dolor).<br>
+    • Dosis única de carga: 1/10 de la morfina PO de 24 h = <b>${fx(carga)} mg PO</b> (máximo 30 mg).<br>
+    • p.r.n.: 1/30 de la morfina PO de 24 h = <b>${fx(r5(prn))} mg PO c/3 h</b> (máximo 30 mg por dosis), redondeado a la presentación disponible.<br>
+    • <b>Día 6:</b> sumar la metadona tomada en los 2 días previos y dividir entre 4 = dosis regular c/12 h; p.r.n. 1/10–1/6 de la dosis de 24 h c/3 h. Ej.: 80 mg en 48 h → 20 mg c/12 h y 5 mg c/3 h p.r.n.<br>
+    • Si persisten ≥ 2 p.r.n. al día, aumentar la dosis regular una vez por semana, según el uso de p.r.n.<br>
+    • SC o IV: la mitad de las dosis PO; puede darse SC c/8–12 h.
+    ${tope}
+    <span class="inf">Si hubo escalamiento rápido reciente, calcule con la dosis previa al escalamiento. Dolor intenso que requiere analgesia antes de 3 h: dar el opioide previo c/1 h p.r.n. (50–100 % de su dosis p.r.n. previa) o, si hubo neurotoxicidad, otro opioide fuerte. Sobresedación: reducir la dosis 33–50 %. Síntomas de abstinencia: p.r.n. del opioide previo. La dosis final de metadona suele ser 5–10 veces menor que la de morfina, a veces 20–30 veces menor; el cambio es exitoso en ~75 %. Vigilar QT y sedación.</span>`;
+}
+
+/* ===================== Resumen breve por destino ===================== */
+const GRUPOS = [["po","Vía oral"],["sc","SC / IV"],["td","Parche transdérmico"],["met","Metadona"]];
+function un(d){ return d.base==="mcg/h" ? "mcg/h" : d.base+"/24 h"; }
+function rr(x,u){ return `${fx(x, x<10?2:1)} ${u}`; }
+function dosisDe(d, omeRed){ return {dosis: omeRed/d.f[1], max: omeRed/d.f[0]}; }
+
+function resumen(id, d, dosis, ome){
+  const u = d.base==="mcg" ? "mcg" : "mg";
+  const L = [], C = [];
+  let prn = `${fx(dosis/10, dosis/10<10?2:1)}–${rr(dosis/6,u)} c/1–2 h p.r.n.`;
+  if(d.tipo==="po"){
+    if(d.sch.includes("ir"))  { L.push(`<b>Liberación inmediata:</b> ${rr(dosis/6,u)} c/4 h`); C.push(`${rr(dosis/6,u)} c/4 h`); }
+    if(d.sch.includes("ir6")) { L.push(`<b>Liberación inmediata:</b> ${rr(dosis/4,u)} c/6 h`); C.push(`${rr(dosis/4,u)} c/6 h`); }
+    if(d.sch.includes("er"))  { L.push(`<b>Liberación prolongada:</b> ${rr(dosis/2,u)} c/12 h`); C.push(`LP ${rr(dosis/2,u)} c/12 h`); }
+  } else if(d.tipo==="sc"){
+    L.push(`<b>ICSC:</b> ${rr(dosis,u)}/24 h (${rr(dosis/24,u)}/h)`); C.push(`ICSC ${rr(dosis,u)}/24 h`);
+    L.push(`<b>Bolos SC:</b> ${rr(dosis/6,u)} c/4 h`);
+  } else if(id==="fenTD"){
+    const est = boxB(BOXB_EST, ome), rot = boxB(BOXB_ROT, ome);
+    L.push(`<b>Paciente estable:</b> ${est ? est+" mcg/h" : "fuera de tabla"}`);
+    L.push(`<b>Rotación o menos estable:</b> ${rot ? rot+" mcg/h" : "fuera de tabla"}`);
+    C.push(`parche ${est||rot} mcg/h c/72 h`);
+    prn = `morfina PO ${fx(ome/10)}–${fx(ome/6)} mg p.r.n.`;
+  } else if(id==="bupTD"){
+    L.push(`<b>Parche:</b> ${fx(dosis)} mcg/h calculado; redondear a los tamaños disponibles`);
+    C.push(`parche ${fx(dosis)} mcg/h`);
+    prn = `morfina PO ${fx(ome/10)}–${fx(ome/6)} mg p.r.n.`;
+  }
+  return {L, prn, copy:`${d.n}: ${C.join(" o ")}; rescate ${prn}`};
+}
+function badgesOrg(id){
+  const o = ORG[id]; if(!o) return "";
+  const ren = $("renal").value, hep = $("hep").value; let h = "";
+  if(ren!=="n") h += o.r ? `<span class="badge ${BCLS[o.r[0]]}">Riñón: ${ETQ[o.r[0]]}</span>` : `<span class="badge b-x">Riñón: sin datos</span>`;
+  if(hep!=="n") h += o.h ? `<span class="badge ${BCLS[o.h[0]]}">Hígado: ${ETQ[o.h[0]]}</span>` : `<span class="badge b-x">Hígado: sin datos</span>`;
+  return h ? `<div class="badges">${h}</div>` : "";
+}
+
+/* ===================== Cálculo principal ===================== */
+let OME = 0, OME_RED = 0, COPY = "";
+function calc(){
+  llenarUnidades();
+  const oid = $("origin").value, o = D[oid];
+  const val = num("dose"), unit = $("unit").value;
+  const red = Math.min(Math.max(num("reduction"),0),75)/100;
+  $("unitHint").textContent = "· " + o.ref;
+  const al = [];
+
+  if(o.tipo==="met"){
+    OME = 0; OME_RED = 0;
+    $("morphineEq").textContent = "No calculable"; $("omeNote").textContent = "";
+    al.push(`<div class="alert a-b"><b>Metadona como opioide de origen:</b> no hay una razón de conversión única hacia otro opioide, por su vida media larga y variable (5–130 h). Rote con dosis bajas del nuevo opioide, titulando según respuesta, y vigile la recurrencia del dolor durante varios días.</div>`);
+    $("alerts").innerHTML = al.join(""); $("convOut").style.display = "none";
+    metKet(); return;
+  }
+  $("convOut").style.display = "block";
+  if(o.flag) al.push(`<div class="alert a-b"><b>Tapentadol:</b> factor de conversión 3:1<sup>2</sup>. No está en la LOM de la CCSS.</div>`);
+
+  const base = aBase(val, unit, o.base);
+  OME = base * o.f[0];
+  const omeMax = base * o.f[1];
+  OME_RED = OME * (1 - red);
+  $("morphineEq").textContent = `${fx(OME)} mg/24 h`;
+  $("omeNote").textContent = omeMax!==OME ? `Rango ${fx(OME)}–${fx(omeMax)} mg (se usa el menor)` : (red>0 ? `Con reducción del ${fx(red*100,0)} %: ${fx(OME_RED)} mg/24 h` : "");
+
+  // avisos
+  const mot = [];
+  if(OME >= 1000) mot.push("dosis ≥ 1 g/24 h");
+  if($("frail").checked) mot.push("paciente frágil o de edad avanzada");
+  if($("intol").checked) mot.push("efectos adversos intolerables");
+  if($("rapid").checked) mot.push("escalamiento rápido reciente");
+  if(OME > 0) al.push(mot.length
+    ? `<div class="alert a-r"><b>Reducir al menos 50 % al rotar</b><sup>1</sup> (${mot.join("; ")}): ${fx(OME*0.5)} mg/24 h OME. Cubra el déficit con p.r.n. mientras retitula.</div>`
+    : `<div class="alert a-y"><b>Reducción sugerida al rotar: 25–50 %</b><sup>1</sup> → ${fx(OME*0.75)}–${fx(OME*0.5)} mg/24 h OME. Sin reducción en paciente joven con dolor intenso a dosis bajas; más reducción en mayores, con delirium o a dosis altas.</div>`);
+  if(OME >= 90) al.push(`<div class="alert a-b"><b>Dosis alta (≥ 90 mg/24 h OME).</b> Revise toxicidad y adyuvantes (sección Ketamina, abajo).</div>`);
+  if($("renal").value==="g5") al.push(`<div class="alert a-b"><b>G5 o diálisis:</b> en general sin cambios adicionales en DP o HD; precaución con buprenorfina, fentanilo, hidromorfona y tramadol. Si se pierde la analgesia cerca de la diálisis, dar una dosis adicional<sup>1</sup>.</div>`);
+  if($("hep").value==="c") al.push(`<div class="alert a-b"><b>Child-Pugh C:</b> evitar liberación prolongada y parches; titular más lento y vigilar de cerca<sup>1</sup>.</div>`);
+  $("alerts").innerHTML = al.join("");
+
+  // selector de destino
+  const sel = $("dest"), prev = sel.value;
+  sel.innerHTML = GRUPOS.map(([t,g]) => {
+    const ops = Object.entries(D).filter(([k,d]) => d.tipo===t && k!==oid);
+    return ops.length ? `<optgroup label="${g}">${ops.map(([k,d]) => `<option value="${k}">${d.n}</option>`).join("")}</optgroup>` : "";
+  }).join("");
+  if([...sel.options].some(x => x.value===prev)) sel.value = prev;
+  else sel.value = oid==="oxyPO" ? "morPO" : "oxyPO";
+
+  $("heroBody").innerHTML = tarjeta(sel.value, true);
+  if($("allList").style.display !== "none") pintarTodos();
+  metKet();
+}
+
+function tarjeta(id, hero){
+  const d = D[id];
+  if(d.tipo==="met"){
+    return `${hero?`<div class="name" style="margin-top:12px">${d.n}</div>`:""}
+      <ul class="lines"><li>${metDosis(OME_RED)}</li></ul>${badgesOrg(id)}
+      <div class="hint">Protocolos completos en «Cambio a metadona», abajo.</div>
+      <details><summary>Riñón e hígado</summary><div class="det">${organoHTML(id) || "Sin ajuste seleccionado."}</div></details>`;
+  }
+  const {dosis, max} = dosisDe(d, OME_RED);
+  const rango = max!==dosis ? `<div class="hint">Rango ${fx(dosis, dosis<10?2:1)}–${fx(max, max<10?2:1)} ${un(d)}</div>` : "";
+  const R = resumen(id, d, dosis, OME_RED);
+  if(hero) COPY = R.copy;
+  return `${hero?`<div class="ref" style="margin-top:10px">${d.ref}</div>`:""}
+    <div class="big">${fx(dosis, dosis<10?2:1)} <span>${un(d)}</span></div>${rango}
+    ${badgesOrg(id)}
+    <ul class="lines">${R.L.map(l=>`<li>${l}</li>`).join("")}<li class="prn"><b style="color:#7d1d14">Rescate:</b> ${R.prn}</li></ul>
+    ${hero?`<div class="btns"><button class="btn btn-p" onclick="copiar()">Copiar indicación</button></div>`:""}
+    <details><summary>Ver detalles${$("renal").value!=="n"||$("hep").value!=="n"?" y ajuste por órgano":""}</summary><div class="det">${esquema(id,d,dosis,OME_RED)}${organoHTML(id)}</div></details>`;
+}
+
+function pintarTodos(){
+  const oid = $("origin").value;
+  $("allList").innerHTML = GRUPOS.map(([t,g]) => {
+    const ops = Object.entries(D).filter(([k,d]) => d.tipo===t && k!==oid);
+    if(!ops.length) return "";
+    return `<div class="group">${g}</div>` + ops.map(([k,d]) => {
+      const resumenDosis = d.tipo==="met" ? "ver" : `${fx(dosisDe(d,OME_RED).dosis, dosisDe(d,OME_RED).dosis<10?2:1)} ${un(d)}`;
+      return `<details class="item"><summary><span>${d.n}</span><span class="dose">${resumenDosis}</span></summary><div class="body">${tarjeta(k,false)}</div></details>`;
+    }).join("");
+  }).join("");
+}
+function toggleAll(){
+  const v = $("allList"), on = v.style.display === "none";
+  v.style.display = on ? "block" : "none";
+  $("btnAll").textContent = on ? "Ocultar la lista" : "Ver todos los opioides";
+  if(on) pintarTodos();
+}
+function copiar(){
+  const t = COPY;
+  const ok = () => { $("toast").classList.add("on"); setTimeout(()=>$("toast").classList.remove("on"),1600); };
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(ok).catch(()=>{prompt("Copie la indicación:",t);});
+  else prompt("Copie la indicación:", t);
+}
+
+/* ===================== Metadona y ketamina ===================== */
+function metKet(){
+  $("metOme").textContent = OME_RED>0 ? `${fx(OME_RED)} mg/24 h` : "—";
+  $("metHero").innerHTML = OME_RED>0 ? `<ul class="lines"><li>${metDosis(OME_RED)}</li></ul>` : `<div class="hint">Ingrese un opioide de origen arriba.</div>`;
+  $("metDet").innerHTML = OME_RED>0 ? metEsquema(OME_RED) : "";
+  const bajo = $("frail").checked || $("renal").value==="g5";
+  $("metInicio").innerHTML = bajo ? "1–2 mg c/12 h y 1–2 mg c/3 h p.r.n. (edad avanzada o ERC G5)" : "2.5 mg c/12 h y 2.5 mg c/3 h p.r.n.";
+
+  const w = num("weight");
+  if(w > 0){
+    const infMax = Math.min(w*0.2, 20);
+    $("ketHero").innerHTML = `<ul class="lines" style="margin-top:12px">
+      <li><b>Bolo IV lento</b><sup>5</sup>: ${fx(w*0.25)} mg (0.25 mg/kg) o ${fx(w*0.5)} mg (0.5 mg/kg)</li>
+      <li><b>Infusión IV</b><sup>6</sup>: inicio ${fx(w*0.1)} mg/h · máximo ${fx(infMax)} mg/h</li>
+      <li><b>Vía oral</b><sup>7</sup>: ${fx(w*0.5)} mg c/8 h · o 10 mg c/6 h<sup>8</sup></li></ul>`;
+  } else $("ketHero").innerHTML = `<div class="hint" style="margin-top:8px">Ingrese el peso para calcular las dosis.</div>`;
+  $("ketMore").innerHTML = `
+    <h2>Indicación y evidencia</h2>
+    <div class="det">Dolor refractario a la escalada de opioides o escalada limitada por efectos adversos; dolor neuropático, hiperalgesia o alodinia. Evidencia insuficiente y de muy baja calidad<sup>4</sup>; la escalada rápida a dosis altas (hasta 500 mg/24 h SC) no mostró beneficio y aumentó los efectos adversos: preferir dosis bajas.</div>
+    <details><summary>Bolo IV</summary><div class="det">0.25 o 0.5 mg/kg en bolo lento. Ambas reducen el dolor; 0.5 mg/kg da más analgesia, pero más alucinaciones, somnolencia y deterioro cognitivo transitorio<sup>5</sup>.</div></details>
+    <details><summary>Infusión IV continua</summary><div class="det">Iniciar 0.1 mg/kg/h. Si persiste el dolor, subir 2 mg/h cada 2 h hasta 0.2 mg/kg/h o 20 mg/h, lo que sea menor. Mantener la dosis eficaz ~24 h y luego reducir; suspender cuando baje de 10 mg/h. Vigilar TA &gt; 160/100 mm Hg, FC &gt; 110 lpm, FR ≤ 8 rpm, alucinaciones, disforia o agitación; oximetría continua y O₂ si SpO₂ ≤ 90 %<sup>6</sup>.</div></details>
+    <details><summary>Vía oral</summary><div class="det">0.5 mg/kg c/8 h: en dolor neuropático respondieron 7 de 9 pacientes, con somnolencia frecuente las 2 primeras semanas<sup>7</sup>. Alternativa: 10 mg c/6 h, titulando cada semana; dosis total usada de 30–320 mg/24 h<sup>8</sup>.</div></details>
+    <details><summary>Efectos adversos y opioide</summary><div class="det">Alucinaciones, disforia, somnolencia, alteración de la atención y la memoria, leve aumento de FC y TA. Manejo: lorazepam 0.5–1 mg, haloperidol en dosis baja o diazepam 1–2 mg IV. La naloxona no revierte el efecto de la ketamina. Se metaboliza por CYP3A4. Al mejorar el dolor, reducir el opioide de forma gradual; los estudios no fijan un porcentaje.</div></details>`;
+}
+
+/* =========================================================
+   COMPATIBILIDAD — PCF8 Apéndice 3, Chart 1 (dos fármacos en agua para inyección)
+   Fila i contiene los cruces con los fármacos 0..i-1.
+   G verde, A ámbar, R rojo, K gris, Q sin datos; letra = ámbar con nota.
+   ========================================================= */
+const CF = ["Alfentanilo","Clonazepam","Ciclizina","Dexametasona","Diamorfina","Glicopirronio","Granisetrón","Haloperidol","Hidromorfona","Butilbromuro de hioscina","Bromhidrato de hioscina","Ketamina","Ketorolaco","Levomepromazina","Metoclopramida","Midazolam","Sulfato de morfina","Tartrato de morfina","Octreótido","Ondansetrón","Oxicodona"];
+const CROWS = [
+ "",
+ "G",
+ "a b",
+ "A A c",
+ "K G d A",
+ "G G Q R G",
+ "Q Q Q A Q Q",
+ "G G G i l G Q",
+ "K Q e j K G Q n",
+ "G G f A G K Q G G",
+ "Q G G A G K Q G G K",
+ "Q Q Q Q Q Q Q Q G Q Q",
+ "Q Q R Q G R Q R p Q Q Q",
+ "G Q K k G G K K G G G Q R",
+ "G Q K A G G K G G K K G Q K",
+ "G K g R m G Q G G G G G R G G",
+ "K G G Q K G Q o K G G G R G G m",
+ "K Q G Q K Q Q Q K Q Q G Q G Q Q K",
+ "G Q b b G Q Q Q Q G Q Q Q b G G G Q",
+ "G Q K Q G Q K Q Q Q Q Q Q K K Q Q Q G",
+ "K G h A K G Q G K G G Q Q G G G K K G Q"
+].map(r => r ? r.split(" ") : []);
+
+const NOTAS = {
+ a:"alfentanilo 0.24 mg/mL + ciclizina 8.8 mg/mL.",
+ b:"algunos reportes observacionales de incompatibilidad de fuentes diversas.",
+ c:"ciclizina 8.33 mg/mL + fosfato sódico de dexametasona 0.33 mg/mL.",
+ d:"ciclizina hasta 20 mg/mL + diamorfina hasta 20 mg/mL, o ciclizina máx. 10 mg/mL + diamorfina >20 mg/mL, o ciclizina >20 mg/mL + diamorfina máx. 15 mg/mL.",
+ e:"ciclizina 8.82 mg/mL + hidromorfona 5.8 mg/mL; un reporte de incompatibilidad a concentraciones menores.",
+ f:"en general se considera incompatible; un reporte de compatibilidad a bajas concentraciones en infusión de 12 h (ciclizina 3.7 mg/mL + butilbromuro de hioscina 1.5 mg/mL).",
+ g:"ciclizina 8.82 mg/mL + midazolam 0.88 mg/mL.",
+ h:"ciclizina 3 mg/mL + oxicodona 9 mg/mL; ciclizina 3–8 mg/mL puede usarse si la oxicodona se diluye a menos de 3 mg/mL con agua para inyección.",
+ i:"fosfato sódico de dexametasona 0.15 mg/mL + haloperidol 0.38 mg/mL.",
+ j:"fosfato sódico de dexametasona 2 mg/mL + hidromorfona 20 mg/mL, o dexametasona >2 mg/mL + hidromorfona 10 mg/mL.",
+ k:"fosfato sódico de dexametasona 0.11 mg/mL + levomepromazina 2.78 mg/mL.",
+ l:"diamorfina hasta 50 mg/mL + haloperidol 4 mg/mL, o diamorfina 50–100 mg/mL + haloperidol 3 mg/mL.",
+ m:"diamorfina o sulfato de morfina + midazolam: en general compatibles; un reporte de incompatibilidad con diamorfina; puede haber precipitación microscópica con morfina.",
+ n:"reportes variables a concentraciones altas: haloperidol 2.5 mg/mL + hidromorfona 5 mg/mL compatible; haloperidol 3 mg/mL + hidromorfona 20 mg/mL compatible; haloperidol 2 mg/mL + hidromorfona 10 mg/mL incompatible.",
+ o:"haloperidol <1 mg/mL + sulfato de morfina <10 mg/mL.",
+ p:"hidromorfona 0.5 mg/mL + ketorolaco 15 mg/mL."
+};
+const NOTA_DEX = "Dexametasona: en general puede darse una vez al día en bolo SC. Si va en la infusión, agréguela de última a una jeringa diluida al máximo para reducir el riesgo de incompatibilidad.";
+const NOTA_CLZ = "Clonazepam: usar tubuladura sin PVC; el PVC adsorbe hasta 50 % de la dosis.";
+const NOTA_AMB = "Usar con precaución: la compatibilidad depende del orden de mezcla o de la concentración.";
+const NOTA_OXY = "Oxicodona: datos solo para la formulación de 10 mg/mL; la de 50 mg/mL tiene otros datos de compatibilidad.";
+
+function cruce(i,j){ if(i===j) return null; const [a,b] = i>j ? [i,j] : [j,i]; return CROWS[a][b]; }
+const CTXT = {G:"Compatibilidad reportada.",R:"No usar: incompatible a concentraciones habituales.",K:"No aplica o no se recomienda en general; consultar a especialista.",Q:"Sin datos."};
+
+function compat(){
+  const sel = [...document.querySelectorAll(".cf:checked")].map(x => +x.value);
+  const out = $("compatRes");
+  if(sel.length < 2){ out.innerHTML = '<p class="hint">Toque al menos dos fármacos.</p>'; return; }
+  let h = "";
+  for(let x=0;x<sel.length;x++) for(let y=x+1;y<sel.length;y++){
+    const i = sel[x], j = sel[y], c = cruce(i,j);
+    let cls, txt;
+    if(c==="G"||c==="R"||c==="K"||c==="Q"){ cls=c; txt=CTXT[c]; }
+    else if(c==="A"){ cls="A"; txt=NOTA_AMB; }
+    else { cls="A"; txt=`Algunos reportes de incompatibilidad, pero puede ser compatible a estas concentraciones finales máximas: ${NOTAS[c]}`; }
+    h += `<div class="pair c-${cls}"><b>${CF[i]} + ${CF[j]}:</b> ${txt}</div>`;
+  }
+  if(sel.includes(3)) h += `<div class="hint">${NOTA_DEX}</div>`;
+  if(sel.includes(1)) h += `<div class="hint">${NOTA_CLZ}</div>`;
+  if(sel.includes(20)) h += `<div class="hint">${NOTA_OXY}</div>`;
+  if(sel.length > 2) h += `<div class="hint">Mezcla de ${sel.length} fármacos: confirme la mezcla completa en la fuente.</div>`;
+  out.innerHTML = h;
+}
+
+
+/* ===================== Inicio ===================== */
+function desplegar(t){
+  const on = $("p-"+t).classList.toggle("on");
+  const nom = {met:"Cambio a metadona", ket:"Ketamina como adyuvante"}[t];
+  $("b-"+t).textContent = nom + (on ? " ▴" : " ▾");
+  if(on) $("p-"+t).scrollIntoView({behavior:"smooth", block:"start"});
+}
+function verTab(t){
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t===t));
+  document.body.classList.toggle("todo", t==="todo");
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id==="p-"+t));
+  window.scrollTo({top:0});
+}
+(function init(){
+  $("origin").innerHTML = GRUPOS.map(([t,g]) => `<optgroup label="${g}">${Object.entries(D).filter(([k,d])=>d.tipo===t).map(([k,d]) => `<option value="${k}">${d.n}</option>`).join("")}</optgroup>`).join("");
+  $("origin").value = "morPO";
+  $("chips").innerHTML = CF.map((n,i) => `<label class="tg"><input type="checkbox" class="cf" value="${i}" onchange="compat()"><span>${n}</span></label>`).join("");
+  document.querySelectorAll(".tab").forEach(b => b.onclick = () => verTab(b.dataset.t));
+  calc(); compat();
+})();
+</script>
+<script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>

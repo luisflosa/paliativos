@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1d6b4a">
+<title>Valoración Pronóstica Paliativa - Dr. Luis Diego Flores Salazar</title>
+<style>
+  :root{
+    --bg:#eef3f0; --card:#fff; --ink:#1b2430; --muted:#66707f; --line:#e3e8ef;
+    --pri:#1d6b4a; --pri2:#2e9466; --soft:#e6f4ec;
+    --ok:#1e8a52; --okbg:#e6f5ec; --aj:#b26a00; --ajbg:#fff4de; --ev:#c0392b; --evbg:#fdeceb; --gr:#7a8291;
+    --r:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;font-size:15px}
+  sup{font-size:.65em;color:var(--pri2)}
+  /* encabezado */
+  header{background:linear-gradient(135deg,#1d6b4a,#2e9466);color:#fff;padding:18px 16px 54px;text-align:center}
+  header h1{margin:0;font-size:1.35rem;letter-spacing:.2px}
+  header p{margin:4px 0 0;font-size:.8rem;opacity:.85}
+  .tabs{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:8px 12px;margin:-42px auto 0;max-width:760px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;border:none;background:rgba(255,255,255,.92);color:var(--pri);font-weight:600;font-size:.88rem;padding:9px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(29,107,74,.15);cursor:pointer}
+  .tab.on{background:var(--pri);color:#fff}
+  main{max-width:760px;margin:0 auto;padding:4px 12px 40px}
+  .panel{display:none}
+  .panel.on, body.todo .panel{display:block}
+  body.todo .panel + .panel{margin-top:8px}
+  .ptitle{display:none;font-size:1.05rem;color:var(--pri);margin:22px 4px 8px}
+  body.todo .ptitle{display:block}
+  /* tarjetas */
+  .card{background:var(--card);border-radius:var(--r);padding:16px;margin:12px 0;box-shadow:0 2px 10px rgba(20,40,60,.06)}
+  .card h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 10px}
+  label.f{display:block;font-size:.82rem;font-weight:600;color:#3d4757;margin:10px 0 5px}
+  .hint{font-size:.78rem;color:var(--muted);font-weight:400}
+  input,select{width:100%;font:inherit;font-size:16px;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:#fbfcfe;color:var(--ink);appearance:none;-webkit-appearance:none}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2366707f' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+  input:focus,select:focus{outline:none;border-color:var(--pri2);background:#fff}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+  @media(max-width:420px){.row{grid-template-columns:1fr}}
+  /* interruptores */
+  .toggles{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .tg{position:relative}
+  .tg input{position:absolute;opacity:0;width:0;height:0}
+  .tg span{display:inline-block;font-size:.82rem;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fbfcfe;color:#3d4757;cursor:pointer}
+  .tg input:checked + span{background:var(--soft);border-color:var(--pri2);color:var(--pri);font-weight:600}.tg input:checked + span::before{content:'✓ ';font-weight:800}
+  /* resultado OME */
+  .ome{background:linear-gradient(135deg,#1d6b4a,#2e9466);color:#fff;border-radius:var(--r);padding:16px;margin:12px 0;text-align:center}
+  .ome small{display:block;font-size:.75rem;opacity:.85;text-transform:uppercase;letter-spacing:.6px}
+  .ome b{display:block;font-size:2rem;line-height:1.15;margin:2px 0}
+  .ome .hint{color:#d7f0e2}
+  /* avisos */
+  .alert{border-radius:12px;padding:11px 13px;margin:8px 0;font-size:.86rem;border-left:5px solid}
+  .a-r{background:var(--evbg);border-color:var(--ev);color:#7d1d14}
+  .a-y{background:var(--ajbg);border-color:#e0a100;color:#5c3d00}
+  .a-b{background:var(--soft);border-color:var(--pri2);color:#14402c}
+  /* tarjeta de resultado */
+  .hero{border:2px solid var(--soft)}
+  .hero .name{font-size:1rem;font-weight:700;color:var(--pri)}
+  .hero .ref{font-size:.75rem;color:var(--muted)}
+  .big{font-size:2.1rem;font-weight:800;color:var(--ink);line-height:1.1;margin:8px 0 2px}
+  .big span{font-size:1rem;font-weight:600;color:var(--muted)}
+  .lines{list-style:none;padding:0;margin:10px 0}
+  .lines li{padding:8px 10px;background:#f6f9fc;border-radius:10px;margin-bottom:6px;font-size:.92rem}
+  .lines li b{color:var(--pri)}
+  .prn{background:var(--evbg)!important;color:#7d1d14}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.74rem;font-weight:700}
+  .b-s{background:var(--okbg);color:var(--ok)}.b-p{background:var(--ajbg);color:var(--aj)}.b-e{background:var(--evbg);color:var(--ev)}.b-x{background:#eef0f3;color:var(--gr)}
+  .btns{display:flex;gap:8px;margin-top:10px}
+  .btn{flex:1;border:none;border-radius:12px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
+  .btn-p{background:var(--pri);color:#fff}
+  .btn-s{background:var(--soft);color:var(--pri)}
+  /* detalles plegables */
+  details{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
+  details>summary{cursor:pointer;font-weight:600;color:var(--pri2);font-size:.88rem;list-style:none;padding:4px 0}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▸ ";}
+  details[open]>summary::before{content:"▾ ";}
+  .det{font-size:.86rem;color:#2c3644;margin-top:6px}
+  .sug{display:block;font-weight:700;color:var(--pri);margin-top:8px}
+  .rescue{display:block;margin-top:8px;padding:7px 10px;border-radius:10px;background:var(--evbg);color:#7d1d14;font-weight:600}
+  .inf{display:block;margin-top:6px;color:#2f5a45}
+  .organ{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:.84rem}
+  /* lista completa */
+  .group{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:16px 4px 6px}
+  .item{background:#fff;border-radius:14px;margin:8px 0;box-shadow:0 1px 6px rgba(20,40,60,.06);overflow:hidden}
+  .item>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 14px;font-weight:600;color:var(--ink);border:none}
+  .item>summary::before{content:none}
+  .item[open]>summary{background:var(--soft)}
+  .item .dose{font-weight:800;color:var(--pri);white-space:nowrap}
+  .item .body{padding:4px 14px 14px;font-size:.86rem}
+  .item{border-top:none;margin-top:8px;padding-top:0}
+  /* compatibilidad */
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .pair{padding:10px 12px;border-radius:12px;margin:7px 0;font-size:.88rem;border-left:5px solid}
+  .c-G{background:var(--okbg);border-color:var(--ok)}.c-A{background:var(--ajbg);border-color:#e0a100}.c-R{background:var(--evbg);border-color:var(--ev)}.c-K{background:#eef0f3;border-color:var(--gr)}.c-Q{background:#f7f8fa;border-color:#c9ced6}
+  .refs{font-size:.76rem;color:var(--muted)}
+  .refs ol{padding-left:18px;margin:6px 0 0}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1b2430;color:#fff;padding:10px 16px;border-radius:999px;font-size:.85rem;opacity:0;transition:opacity .25s;pointer-events:none}
+  .toast.on{opacity:1}
+  footer{text-align:center;font-size:.75rem;color:var(--muted);padding:10px}
+  .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .tile{background:#fff;border-radius:14px;padding:12px;box-shadow:0 1px 6px rgba(20,40,60,.06);border-left:5px solid #c9ced6;cursor:pointer}
+  .tile small{display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .tile b{display:block;font-size:1.25rem;margin:2px 0}
+  .tile span{font-size:.78rem;color:#3d4757}
+  .res{border-radius:14px;padding:12px 14px;margin:10px 0;border-left:5px solid #c9ced6;background:#f7f8fa;font-size:.9rem}
+  .res .rh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+  .res .rh span{font-weight:700;color:var(--pri)}
+  .res .rh b{font-size:1.2rem;white-space:nowrap}
+  .l-ok{background:var(--okbg)!important;border-color:var(--ok)!important}
+  .l-aj{background:var(--ajbg)!important;border-color:#e0a100!important}
+  .l-ev{background:var(--evbg)!important;border-color:var(--ev)!important}
+  .l-in{background:var(--soft)!important;border-color:var(--pri2)!important}
+  .falta{font-size:.8rem;color:var(--aj);margin-top:4px}
+  .surv{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px;margin-top:8px}
+  .surv div{border-radius:10px;padding:7px 4px;text-align:center;font-size:.78rem}
+  .surv b{display:block;font-size:1rem}
+  .opt{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+  .q{font-size:.84rem;font-weight:600;color:#3d4757;margin:12px 0 6px}
+  .checks{display:grid;gap:6px}
+  .ck{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fbfcfe;font-size:.88rem;cursor:pointer}
+  .ck input{width:22px;height:22px;flex:none;margin:0;padding:0;border:2px solid #9aa8a0;border-radius:6px;background:#fff;display:grid;place-content:center;cursor:pointer}.ck input::before{content:'';width:12px;height:12px;transform:scale(0);transition:transform .12s;background:#fff;clip-path:polygon(14% 44%,0 65%,50% 100%,100% 16%,80% 0,43% 62%)}.ck input:checked{background:var(--pri);border-color:var(--pri)}.ck input:checked::before{transform:scale(1)}
+  .ck:has(input:checked){background:var(--soft);border-color:var(--pri2)}
+  .big2{font-size:2.6rem;font-weight:800;text-align:center;color:var(--pri);margin:6px 0}
+  .tabs2{display:grid;grid-template-columns:1fr 1fr;overflow:visible}
+  .tabs2 .tab{text-align:center}
+  .intro{font-size:.84rem;color:var(--muted);margin:14px 4px 4px}
+  .sec{background:#fff;border-radius:var(--r);margin:12px 0;box-shadow:0 2px 10px rgba(20,40,60,.06);border-top:none;padding:0;overflow:hidden}
+  .sec>summary{display:flex;align-items:center;gap:12px;padding:14px 16px;list-style:none;cursor:pointer}
+  .sec>summary::before,.sec[open]>summary::before{content:none}
+  .sec>summary::after{content:"▾";margin-left:auto;color:var(--muted);transition:transform .2s}
+  .sec[open]>summary::after{transform:rotate(180deg)}
+  .sec[open]>summary{background:var(--soft)}
+  .sec .n{flex:none;width:32px;height:32px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center;font-weight:800}
+  .sec .st{display:flex;flex-direction:column;min-width:0}
+  .sec .st b{font-size:1rem;color:var(--ink)}
+  .sec .st small{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sec .sb{padding:2px 12px 14px;background:var(--bg)}
+  .sec .sb .card{margin:10px 0}
+  .nx{width:100%;margin-top:6px}
+  .fab{position:fixed;right:14px;bottom:16px;z-index:30;border:none;border-radius:999px;padding:12px 18px;font:inherit;font-weight:700;background:var(--pri);color:#fff;box-shadow:0 6px 18px rgba(29,107,74,.35);cursor:pointer}
+  body.enres .fab{display:none}
+  main{padding-bottom:80px}
+  .prog{background:linear-gradient(135deg,#1d6b4a,#2e9466);color:#fff;border-radius:var(--r);padding:16px;margin:12px 0}
+  .prog small{display:block;font-size:.75rem;opacity:.85;text-transform:uppercase;letter-spacing:.6px}
+  .prog b{display:block;font-size:1.7rem;line-height:1.15;margin:4px 0}
+  .prog .why{font-size:.84rem;opacity:.95}
+  .ev{list-style:none;padding:0;margin:8px 0 0}
+  .ev li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+  .ev li span:last-child{font-weight:700;text-align:right}.ev .pn{display:block;font-weight:400;font-size:.74rem;color:#6b7a72;margin-top:2px}
+  .path{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px}
+  .sub{font-size:.95rem;font-weight:700;color:var(--pri);margin:4px 0 8px}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  @media(max-width:340px){.grid2{grid-template-columns:1fr}}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paliativos LDFS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>header{position:relative;padding-top:calc(env(safe-area-inset-top) + 18px)!important}.inicio{display:block;width:max-content;margin:0 0 10px;color:#fff;text-decoration:none;font-size:.85rem;font-weight:600;background:rgba(255,255,255,.18);padding:6px 12px;border-radius:999px}</style>
+</head>
+<body>
+<header>
+  <a class="inicio" href="index.html">‹ Inicio</a>
+  <h1>Valoración Pronóstica Paliativa</h1>
+  <p>Dr. Luis Diego Flores Salazar</p>
+</header>
+
+<nav class="tabs tabs2">
+  <button class="tab on" data-t="eval">Evaluación</button>
+  <button class="tab" data-t="res">Resumen</button>
+</nav>
+
+<main>
+<section class="panel on" id="p-eval">
+  <div class="intro">Complete las secciones en orden; puede omitir las que no apliquen. Toque el título para abrir o cerrar.</div>
+
+  <details class="sec" id="s1" open>
+    <summary><span class="n">1</span><span class="st"><b>Paciente y funcionalidad</b><small id="h1">Tipo de paciente, edad, síntomas, PPS</small></span></summary>
+    <div class="sb">
+  <div class="card">
+    <h2>Tipo de paciente</h2>
+    <div class="opt">
+      <label class="tg"><input type="radio" name="tipo" value="onc" checked><span>Oncológico</span></label>
+      <label class="tg"><input type="radio" name="tipo" value="non"><span>No oncológico</span></label>
+    </div>
+    <div id="patBox" style="display:none">
+      <div class="q">Patología</div>
+      <div class="path">
+      <label class="tg"><input type="radio" name="pat" value="cro" checked><span>Crónica avanzada</span></label>
+      <label class="tg"><input type="radio" name="pat" value="dem"><span>Demencia</span></label>
+      <label class="tg"><input type="radio" name="pat" value="ic"><span>Insuficiencia cardíaca</span></label>
+      <label class="tg"><input type="radio" name="pat" value="epoc"><span>EPOC</span></label>
+      <label class="tg"><input type="radio" name="pat" value="hep"><span>Hepatopatía</span></label>
+      <label class="tg"><input type="radio" name="pat" value="ren"><span>Renal</span></label>
+    </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Datos del paciente</h2>
+    <label class="f">Edad (años)</label>
+    <input type="number" id="edad" inputmode="numeric" placeholder="Ej: 75">
+    <div class="q">Síntomas actuales <span class="hint">(se usan en PPI, PaP, PALIAR y caquexia)</span></div>
+    <label class="f" style="margin-top:0">Ingesta oral</label>
+    <select id="s_ingesta"><option value="0">Normal</option><option value="1">Moderadamente reducida</option><option value="2.5">Severamente reducida</option></select>
+    <div class="toggles">
+      <label class="tg"><input type="checkbox" id="s_edema"><span>Edema</span></label>
+      <label class="tg"><input type="checkbox" id="s_disnea"><span>Disnea en reposo</span></label>
+      <label class="tg"><input type="checkbox" id="s_delirium"><span>Delirium</span></label>
+      <label class="tg"><input type="checkbox" id="s_anorexia"><span>Anorexia</span></label>
+    </div>
+  </div>
+  
+  
+  <div class="card">
+    <h2>Pregunta sorpresa</h2>
+    <div class="q" style="margin-top:0">Plazo</div>
+    <div class="opt">
+      <label class="tg"><input type="radio" name="sqp" value="12m" checked><span>12 meses</span></label>
+      <label class="tg"><input type="radio" name="sqp" value="30d"><span>30 días</span></label>
+      <label class="tg"><input type="radio" name="sqp" value="7d"><span>7 días</span></label>
+      <label class="tg" id="sq3"><input type="radio" name="sqp" value="3d"><span>3 días</span></label>
+    </div>
+    <div class="hint" id="sqTxt" style="margin:8px 0">¿Le sorprendería que este paciente falleciera en los próximos 12 meses?</div>
+    <div class="opt">
+      <label class="tg"><input type="radio" name="sq" value="" checked><span>Sin responder</span></label>
+      <label class="tg"><input type="radio" name="sq" value="si"><span>Sí, me sorprendería</span></label>
+      <label class="tg"><input type="radio" name="sq" value="no"><span>No me sorprendería</span></label>
+    </div>
+    <div id="o-sq"></div>
+  </div>
+  
+  <div class="card">
+    <h2>PPS · KPS · ECOG</h2>
+    <select id="func">
+      <option value="">— Seleccionar —</option>
+      <option value="100|100|0">100 % · Normal, sin evidencia de enfermedad</option>
+      <option value="90|90|0">90 % · Actividad normal, alguna evidencia de enfermedad</option>
+      <option value="80|80|1">80 % · Actividad normal con esfuerzo</option>
+      <option value="70|70|1">70 % · Deambulación reducida; no puede trabajar</option>
+      <option value="60|60|2">60 % · No puede hacer tareas domésticas; ayuda ocasional</option>
+      <option value="50|50|2">50 % · Principalmente sentado o acostado; ayuda considerable</option>
+      <option value="40|40|3">40 % · Principalmente en cama; básicamente asistido</option>
+      <option value="30|30|3">30 % · Totalmente encamado; dependiente</option>
+      <option value="20|20|4">20 % · Encamado; ingesta a sorbos</option>
+      <option value="10|10|4">10 % · Encamado; solo cuidados de boca</option>
+    </select>
+    <div id="o-func"></div>
+  </div>
+  <div class="card">
+    <h2>Clinical Frailty Scale</h2>
+    <select id="cfs">
+      <option value="">— Seleccionar —</option>
+      <option value="1">1 · Muy en forma: robusto, activo, con ejercicio regular</option>
+      <option value="2">2 · En forma: sin síntomas activos; actividad ocasional</option>
+      <option value="3">3 · Bien controlado: problemas médicos controlados; poco activo más allá de caminar</option>
+      <option value="4">4 · Fragilidad muy leve: independiente, pero los síntomas limitan actividades</option>
+      <option value="5">5 · Fragilidad leve: necesita ayuda en actividades instrumentales</option>
+      <option value="6">6 · Fragilidad moderada: ayuda en todas las actividades externas y en el baño</option>
+      <option value="7">7 · Fragilidad grave: dependiente para el cuidado personal</option>
+      <option value="8">8 · Fragilidad muy grave: totalmente dependiente, cerca del final de la vida</option>
+      <option value="9">9 · Enfermedad terminal: expectativa de vida &lt; 6 meses</option>
+    </select>
+    <div class="hint" style="margin-top:8px">Mide la fragilidad global (funcionalidad, dependencia y comorbilidad). No estima días de vida: orienta qué tan intensivo ser con hospitalización, UCI o quimioterapia. CFS ≥ 7: fragilidad grave, con alta mortalidad al año. CFS 9: enfermo terminal, expectativa &lt; 6 meses. Validada en ≥ 65 años; aporta más en no oncológicos y en adultos mayores con cáncer.</div>
+    <div id="o-cfs"></div>
+  </div>
+
+  
+
+      <button class="btn btn-p nx" data-n="s2">Siguiente: Pronóstico →</button>
+    </div>
+  </details>
+
+  <details class="sec" id="s2">
+    <summary><span class="n">2</span><span class="st"><b>Pronóstico</b><small id="h2">Según el tipo de paciente</small></span></summary>
+    <div class="sb">
+      <div id="bOnc">
+  <div class="card"><h2>PPI · Índice pronóstico paliativo</h2><div class="hint">Usa el PPS y los síntomas de Funcionalidad.</div><div id="o-ppi"></div></div>
+  <div class="card">
+    <h2>PaP y D-PaP</h2>
+    <label class="f" style="margin-top:0">Predicción clínica de sobrevida</label>
+    <select id="p_cps"><option value="">— Seleccionar —</option><option value="0">&gt; 12 semanas</option><option value="2">11–12 semanas</option><option value="2.5">7–10 semanas</option><option value="4.5">5–6 semanas</option><option value="6">3–4 semanas</option><option value="8.5">1–2 semanas</option></select>
+    <div class="hint" style="margin-top:6px">Usa leucocitos y % de linfocitos de Nutrición; el D-PaP suma el delirium.</div>
+    <div id="o-pap"></div>
+  </div>
+  <div class="card">
+    <h2>PRONOPALL · cáncer en tratamiento anticanceroso</h2>
+    <div class="checks">
+      <label class="ck"><input type="checkbox" id="pr_c1"><span>Adulto con cáncer sólido incurable de pulmón, mama, colon, páncreas, próstata, ovario o riñón</span></label>
+      <label class="ck"><input type="checkbox" id="pr_c2"><span>Tratamiento propuesto distinto de hormonoterapia (quimioterapia, inhibidor de tirosina quinasa o anticuerpo monoclonal)</span></label>
+      <label class="ck"><input type="checkbox" id="pr_c3"><span>Al menos uno: ECOG ≥ 2, sobrevida estimada por oncología &lt; 6 meses o progresión con la quimioterapia previa</span></label>
+    </div>
+    <div class="row">
+      <div><label class="f">Sitios metastásicos</label><select id="pr_mets"><option value="">—</option><option value="0">0 o 1</option><option value="2">2 o más</option></select></div>
+      <div><label class="f">LDH (UI/L)</label><input type="number" id="pr_ldh" inputmode="decimal" placeholder="Ej: 450"></div>
+    </div>
+    <div class="hint" style="margin-top:6px">Usa el ECOG de Funcionalidad y la albúmina de Nutrición.</div>
+    <div id="o-pro"></div>
+  </div>
+</div>
+      <div id="bNon">
+  <div class="card"><h2>PPI en condiciones no oncológicas</h2><div id="o-ppin"></div></div>
+  
+
+  <div class="pat" data-p="cro">
+    <div class="card">
+      <h2>PALIAR · mortalidad a 6 meses</h2>
+      <div class="hint" style="margin-bottom:8px">Edad, anorexia, ECOG y albúmina se toman de las otras pestañas.</div>
+      <div class="checks">
+        <label class="ck"><input type="checkbox" id="pa_dis"><span>Disnea NYHA IV o mMRC 4</span></label>
+        <label class="ck"><input type="checkbox" id="pa_upp"><span>Úlcera(s) por presión</span></label>
+      </div>
+      <div id="o-paliar"></div>
+    </div>
+    <div class="card">
+      <h2>PROFUND · mortalidad a 12 meses en pluripatológicos</h2>
+      <div class="hint" style="margin-bottom:8px">La edad se toma de Funcionalidad.</div>
+      <div class="checks">
+        <label class="ck"><input type="checkbox" id="pf_neo"><span>Neoplasia activa <b>+6</b></span></label>
+        <label class="ck"><input type="checkbox" id="pf_dem"><span>Demencia <b>+3</b></span></label>
+        <label class="ck"><input type="checkbox" id="pf_nyha"><span>NYHA o mMRC III–IV <b>+3</b></span></label>
+        <label class="ck"><input type="checkbox" id="pf_del"><span>Delirium en el último ingreso <b>+3</b></span></label>
+        <label class="ck"><input type="checkbox" id="pf_hb"><span>Hemoglobina &lt; 10 g/dL <b>+3</b></span></label>
+        <label class="ck"><input type="checkbox" id="pf_bar"><span>Índice de Barthel &lt; 60 <b>+4</b></span></label>
+        <label class="ck"><input type="checkbox" id="pf_cui"><span>Sin cuidador, o cuidador distinto del cónyuge <b>+2</b></span></label>
+        <label class="ck"><input type="checkbox" id="pf_ing"><span>≥ 4 ingresos hospitalarios en 12 meses <b>+3</b></span></label>
+      </div>
+      <div id="o-profund"></div>
+    </div>
+    <div class="card">
+      <h2>Índice de Charlson ajustado por edad · comorbilidad</h2>
+      <div class="hint">La edad se toma de Funcionalidad.</div>
+      <div class="q">Comorbilidades</div>
+      <div class="checks" id="charlson"></div>
+      <div id="o-cha"></div>
+    </div>
+  </div>
+
+  <div class="pat" data-p="dem">
+    <div class="card">
+      <h2>FAST · estadio funcional de la demencia</h2>
+      <select id="fast">
+        <option value="">— Seleccionar —</option>
+        <option value="1">1 · Sin dificultades</option>
+        <option value="2">2 · Olvidos subjetivos</option>
+        <option value="3">3 · Dificultad en el trabajo o en entornos nuevos</option>
+        <option value="4">4 · Dificultad en tareas complejas (finanzas, compras)</option>
+        <option value="5">5 · Necesita ayuda para elegir la ropa</option>
+        <option value="6a">6a · Necesita ayuda para vestirse</option>
+        <option value="6b">6b · Necesita ayuda para bañarse</option>
+        <option value="6c">6c · Necesita ayuda en el inodoro</option>
+        <option value="6d">6d · Incontinencia urinaria</option>
+        <option value="6e">6e · Incontinencia fecal</option>
+        <option value="7a">7a · Habla limitada a menos de 6 palabras al día</option>
+        <option value="7b">7b · Una sola palabra inteligible al día</option>
+        <option value="7c">7c · No camina de forma independiente</option>
+        <option value="7d">7d · No se sienta de forma independiente</option>
+        <option value="7e">7e · No sonríe</option>
+        <option value="7f">7f · No sostiene la cabeza</option>
+      </select>
+      <div class="q">Complicaciones en el último año</div>
+      <div class="checks">
+        <label class="ck"><input type="checkbox" class="fcx"><span>Neumonía por aspiración</span></label>
+        <label class="ck"><input type="checkbox" class="fcx"><span>Pielonefritis u otra infección urinaria alta</span></label>
+        <label class="ck"><input type="checkbox" class="fcx"><span>Septicemia</span></label>
+        <label class="ck"><input type="checkbox" class="fcx"><span>Úlceras por presión múltiples, estadio 3–4</span></label>
+        <label class="ck"><input type="checkbox" class="fcx"><span>Fiebre recurrente tras antibióticos</span></label>
+        <label class="ck"><input type="checkbox" class="fcx"><span>Ingesta insuficiente con pérdida de peso &gt; 10 % en 6 meses o albúmina &lt; 2.5 g/dL</span></label>
+      </div>
+      <div id="o-fast"></div>
+    </div>
+  </div>
+
+  <div class="pat" data-p="ic">
+    <div class="card">
+      <h2>NYHA · clase funcional</h2>
+      <select id="nyha">
+        <option value="">— Seleccionar —</option>
+        <option value="1">I · Sin limitación de la actividad física</option>
+        <option value="2">II · Limitación leve; síntomas con la actividad ordinaria</option>
+        <option value="3">III · Limitación marcada; síntomas con actividad menor a la ordinaria</option>
+        <option value="4">IV · Síntomas en reposo; incapaz de actividad sin molestias</option>
+      </select>
+      <div id="o-nyha"></div>
+    </div>
+  </div>
+
+  <div class="pat" data-p="epoc">
+    <div class="card">
+      <h2>BODE · EPOC</h2>
+      <div class="grid2">
+        <div><label class="f">IMC (kg/m²)</label><input type="number" id="b_imc" step="0.1" inputmode="decimal"></div>
+        <div><label class="f">FEV1 (% del predicho)</label><input type="number" id="b_fev" inputmode="decimal"></div>
+        <div><label class="f">Caminata de 6 min (m)</label><input type="number" id="b_6m" inputmode="decimal"></div>
+        <div><label class="f">Disnea mMRC</label><select id="b_mrc"><option value="">—</option><option value="0">0 · Solo con ejercicio intenso</option><option value="1">1 · Al andar rápido o subir una pendiente</option><option value="2">2 · Anda más lento que otros o debe parar en llano</option><option value="3">3 · Para tras ~100 m o pocos minutos</option><option value="4">4 · No sale de casa; disnea al vestirse</option></select></div>
+      </div>
+      <div id="o-bode"></div>
+    </div>
+    <div class="card">
+      <h2>EPOC tras hospitalización por exacerbación</h2>
+      <div class="hint" style="margin-bottom:8px">La edad &gt; 70 años se toma de Funcionalidad.</div>
+      <div class="checks">
+        <label class="ck"><input type="checkbox" class="epx"><span>Insuficiencia cardíaca derecha</span></label>
+        <label class="ck"><input type="checkbox" class="epx"><span>Deterioro del estado funcional</span></label>
+        <label class="ck"><input type="checkbox" class="epx"><span>Necesidad de atención domiciliaria al alta</span></label>
+        <label class="ck"><input type="checkbox" class="epx"><span>Desnutrición</span></label>
+        <label class="ck"><input type="checkbox" class="epx"><span>Creatinina &gt; 2 mg/dL</span></label>
+        <label class="ck"><input type="checkbox" class="epx"><span>Reingresos en los 2 meses previos</span></label>
+        <label class="ck"><input type="checkbox" class="epx"><span>Antecedente de intubación o ventilación mecánica</span></label>
+      </div>
+      <div id="o-epx"></div>
+    </div>
+  </div>
+
+  <div class="pat" data-p="hep">
+    <div class="card">
+      <h2>Child-Pugh y MELD-Na</h2>
+      <div class="grid2">
+        <div><label class="f">Bilirrubina (mg/dL)</label><input type="number" id="h_bil" step="0.1" inputmode="decimal"></div>
+        <div><label class="f">INR</label><input type="number" id="h_inr" step="0.1" inputmode="decimal"></div>
+        <div><label class="f">Creatinina (mg/dL)</label><input type="number" id="h_cr" step="0.1" inputmode="decimal"></div>
+        <div><label class="f">Sodio (mmol/L)</label><input type="number" id="h_na" inputmode="decimal"></div>
+        <div><label class="f">Ascitis</label><select id="h_asc"><option value="">—</option><option value="1">Ausente</option><option value="2">Fácil de controlar</option><option value="3">Mal controlada</option></select></div>
+        <div><label class="f">Encefalopatía</label><select id="h_enc"><option value="">—</option><option value="1">Ausente</option><option value="2">Grado 1–2</option><option value="3">Grado 3–4</option></select></div>
+      </div>
+      <div class="toggles"><label class="tg"><input type="checkbox" id="h_dial"><span>Diálisis ≥ 2 veces en la última semana</span></label></div>
+      <div class="hint" style="margin-top:6px">La albúmina se toma de Nutrición.</div>
+      <div id="o-child"></div><div id="o-meld"></div>
+      <div class="q">Complicaciones de la hepatopatía terminal</div>
+      <div class="checks">
+        <label class="ck"><input type="checkbox" class="hx" value="enc"><span>Encefalopatía grave o refractaria</span></label>
+        <label class="ck"><input type="checkbox" class="hx" value="asc"><span>Ascitis refractaria</span></label>
+        <label class="ck"><input type="checkbox" class="hx" value="shr2"><span>Síndrome hepatorrenal tipo 2</span></label>
+        <label class="ck"><input type="checkbox" class="hx" value="shr1"><span>Síndrome hepatorrenal tipo 1</span></label>
+      </div>
+      <div id="o-hx"></div>
+    </div>
+  </div>
+
+  <div class="pat" data-p="ren">
+    <div class="card">
+      <h2>Modelo de Cohen · hemodiálisis, mortalidad a 6 meses</h2>
+      <div class="hint" style="margin-bottom:8px">Solo para pacientes en hemodiálisis crónica. Edad y albúmina se toman de las otras pestañas.</div>
+      <div class="q" style="margin-top:0">¿Le sorprendería que falleciera en los próximos 6 meses?</div>
+      <div class="opt">
+        <label class="tg"><input type="radio" name="csq" value="si" checked><span>Sí, me sorprendería</span></label>
+        <label class="tg"><input type="radio" name="csq" value="no"><span>No me sorprendería</span></label>
+      </div>
+      <div class="checks">
+        <label class="ck"><input type="checkbox" id="co_dem"><span>Demencia</span></label>
+        <label class="ck"><input type="checkbox" id="co_evp"><span>Enfermedad vascular periférica</span></label>
+      </div>
+      <div id="o-cohen"></div>
+    </div>
+    <div class="card">
+      <h2>Charlson modificado · diálisis, mortalidad anual</h2>
+      <div class="hint" style="margin-bottom:8px">Incluye 2 puntos por enfermedad renal en diálisis y 1 punto por cada década sobre los 40 años (edad de Funcionalidad).</div>
+      <div class="checks">
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Enfermedad coronaria <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Insuficiencia cardíaca <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Enfermedad vascular periférica <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Demencia <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Enfermedad pulmonar crónica <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Enfermedad del tejido conectivo <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Úlcera péptica <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Hepatopatía leve <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="1"><span>Diabetes <b>+1</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="2"><span>Hemiplejía <b>+2</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="2"><span>Diabetes con daño de órgano <b>+2</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="2"><span>Cáncer (incluye leucemia o linfoma) <b>+2</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="3"><span>Hepatopatía moderada o grave <b>+3</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="6"><span>Tumor sólido metastásico <b>+6</b></span></label>
+        <label class="ck"><input type="checkbox" class="chd" value="6"><span>SIDA <b>+6</b></span></label>
+      </div>
+      <div id="o-chd"></div>
+    </div>
+  </div>
+</div>
+      <button class="btn btn-p nx" data-n="s3">Siguiente: Nutrición →</button>
+    </div>
+  </details>
+
+  <details class="sec" id="s3">
+    <summary><span class="n">3</span><span class="st"><b>Nutrición</b><small id="h3">Laboratorio y caquexia</small></span></summary>
+    <div class="sb">
+  
+  <div class="card">
+    <h2>Laboratorio</h2>
+    <div class="grid2">
+      <div><label class="f">Leucocitos (/mm³)</label><input type="number" id="l_wbc" inputmode="decimal" placeholder="9500"></div>
+      <div><label class="f">Linfocitos (%)</label><input type="number" id="l_lin" inputmode="decimal" placeholder="15"></div>
+      <div><label class="f">Albúmina (g/dL)</label><input type="number" id="l_alb" step="0.1" inputmode="decimal" placeholder="3.2"></div>
+      <div><label class="f">Colesterol (mg/dL)</label><input type="number" id="l_col" inputmode="decimal" placeholder="160"></div>
+      <div><label class="f">PCR (mg/L)</label><input type="number" id="l_pcr" step="0.1" inputmode="decimal" placeholder="12"></div>
+    </div>
+    <div id="o-conut"></div><div id="o-pni"></div><div id="o-gps"></div>
+  </div>
+  <div class="card">
+    <h2>Síndrome anorexia-caquexia</h2>
+    <div class="row">
+      <div><label class="f">Pérdida de peso en 6 meses</label><select id="s_peso"><option value="0">≤ 2 %</option><option value="1">&gt; 2 % y ≤ 5 %</option><option value="2">&gt; 5 %</option></select></div>
+      <div><label class="f">Enfermedad de base</label><select id="s_enf"><option value="0">Estable o responde</option><option value="1">Progresiva o refractaria</option></select></div>
+    </div>
+    <div class="toggles">
+      <label class="tg"><input type="checkbox" id="s_imc"><span>IMC &lt; 20</span></label>
+      <label class="tg"><input type="checkbox" id="s_sarco"><span>Sarcopenia</span></label>
+    </div>
+    <div class="hint" style="margin-top:6px">La anorexia se marca en Funcionalidad.</div>
+    <div id="o-fearon"></div>
+  </div>
+
+      <button class="btn btn-p nx" data-n="s4">Siguiente: Síntomas →</button>
+    </div>
+  </details>
+
+  <details class="sec" id="s4">
+    <summary><span class="n">4</span><span class="st"><b>Síntomas y final de vida</b><small id="h4">Dolor, Menten y Hui</small></span></summary>
+    <div class="sb">
+  
+  <div class="card">
+    <h2>Escala</h2>
+    <div class="opt">
+      <label class="tg"><input type="radio" name="dtipo" value="eva" checked><span>Comunicativo (EVA/ENA)</span></label>
+      <label class="tg"><input type="radio" name="dtipo" value="painad"><span>No comunicativo (PAINAD)</span></label>
+    </div>
+    <div id="d-eva"><label class="f">Intensidad (0–10)</label><input type="number" id="eva" min="0" max="10" inputmode="numeric" placeholder="0–10"></div>
+    <div id="d-painad" style="display:none"></div>
+    <div id="o-dol"></div>
+  </div>
+
+  
+  <div class="card">
+    <h2>Criterios de Menten</h2>
+    <div class="hint" style="margin-bottom:8px">Marque los signos presentes en la exploración<sup>10</sup>.</div>
+    <div class="checks" id="menten"></div>
+    <div id="o-men"></div>
+  </div>
+  <div class="card">
+    <h2>Signos de Hui · muerte en ≤ 3 días</h2>
+    <div class="hint" style="margin-bottom:8px">Signos de alta especificidad (&gt; 95 %)<sup>24</sup>.</div>
+    <div class="checks" id="hui"></div>
+    <div id="o-hui"></div>
+  </div>
+
+      <button class="btn btn-p nx" data-n="res">Ver resumen →</button>
+    </div>
+  </details>
+  <button class="btn btn-s" style="width:100%;margin-top:6px" id="abrirTodo">Abrir todas las secciones</button>
+</section>
+
+<section class="panel" id="p-res">
+  <div id="prog"></div>
+  <div class="card"><h2>Resultados</h2><div class="tiles" id="tiles"></div></div>
+  <div id="recom"></div>
+  <button class="btn btn-s" style="width:100%" onclick="limpiar()">Nuevo paciente (limpiar)</button>
+
+</section>
+
+<button class="fab" id="fab">Ver resumen</button>
+<div class="card refs">
+  <b>Referencias</b>
+  <ol>
+    <li>Anderson F, et al. J Palliat Care 1996; 12: 5.</li>
+    <li>Lau F, et al. J Pain Symptom Manage 2009; 38: 134. doi: 10.1016/j.jpainsymman.2008.05.017</li>
+    <li>Morita T, et al. Support Care Cancer 1999; 7: 128. doi: 10.1007/s005200050242</li>
+    <li>Hui D. Cancer Control 2015; 22: 489.</li>
+    <li>Mendis R, et al. Palliat Care 2015; 9: 7. doi: 10.4137/PCRT.S24411</li>
+    <li>Maltoni M, et al. J Pain Symptom Manage 1999; 17: 240. doi: 10.1016/s0885-3924(98)00146-8</li>
+    <li>Bourgeois H, et al. Ann Oncol 2017; 28: 1612. doi: 10.1093/annonc/mdx172</li>
+    <li>de Ulíbarri JI, et al. Nutr Hosp 2005; 20: 38.</li>
+    <li>Fearon K, et al. Lancet Oncol 2011; 12: 489. doi: 10.1016/S1470-2045(10)70218-7</li>
+    <li>Alpízar Rodríguez D, et al. Med Leg Costa Rica 2016; 33: 57 (criterios de Menten y Hufkens, 2004).</li>
+    <li>Charlson ME, et al. J Chronic Dis 1987; 40: 373.</li>
+    <li>Warden V, et al. J Am Med Dir Assoc 2003; 4: 9.</li>
+    <li>Scarpi E, et al. Oncologist 2011; 16: 1793. doi: 10.1634/theoncologist.2011-0130</li>
+    <li>Bernabeu-Wittel M, et al. J Pain Symptom Manage 2014; 47: 551. doi: 10.1016/j.jpainsymman.2013.04.011</li>
+    <li>Bernabeu-Wittel M, et al. Eur J Intern Med 2011; 22: 311.</li>
+    <li>Reisberg B. Psychopharmacol Bull 1988; 24: 653.</li>
+    <li>Celli BR, et al. N Engl J Med 2004; 350: 1005.</li>
+    <li>Wilcock A, et al. (eds). Palliative Care Formulary, 8.ª ed. Pharmaceutical Press 2022.</li>
+    <li>Kim WR, et al. N Engl J Med 2008; 359: 1018.</li>
+    <li>Cohen LM, et al. Clin J Am Soc Nephrol 2010; 5: 72. doi: 10.2215/CJN.03860609</li>
+    <li>Rockwood K, et al. Can Geriatr J 2020; 23: 210.</li>
+    <li>Onodera T, et al. Nihon Geka Gakkai Zasshi 1984; 85: 1001.</li>
+    <li>McMillan DC. Cancer Treat Rev 2013; 39: 534.</li>
+    <li>Hui D, et al. Cancer 2015; 121: 960.</li>
+    <li>Bruera E, Higginson IJ, von Gunten CF, Morita T (eds). Textbook of Palliative Medicine and Supportive Care, 3.ª ed. CRC Press 2021.</li>
+    <li>Hamano J, et al. Oncologist 2015; 20: 839. doi: 10.1634/theoncologist.2015-0015</li>
+    <li>Ikari T, et al. Cancer Med 2021; 10: 1018. doi: 10.1002/cam4.3689</li>
+    <li>Downar J, et al. CMAJ 2017; 189: E484. doi: 10.1503/cmaj.160775</li>
+  </ol>
+</div>
+<footer>Herramienta de apoyo clínico. No reemplaza el juicio clínico.</footer>
+</main>
+
+<script>
+{
+const $ = id => document.getElementById(id);
+const v = id => $(id).value;
+const n = id => { const x = $(id).value; return x === "" ? NaN : parseFloat(x); };
+const ck = id => $(id).checked;
+const f1 = x => (+x.toFixed(1)).toString();
+const rad = nm => document.querySelector(`input[name=${nm}]:checked`).value;
+
+/* ---------- datos ---------- */
+const PAINAD = [
+  ["Respiración",["Normal","Ocasionalmente dificultosa, hiperventilación breve","Ruidosa, Cheyne-Stokes, hiperventilación prolongada"]],
+  ["Vocalización negativa",["Ninguna","Quejidos ocasionales, habla baja o negativa","Llamadas de auxilio, quejidos fuertes, llanto"]],
+  ["Expresión facial",["Sonriente o inexpresiva","Triste, asustada, ceño fruncido","Mueca de dolor"]],
+  ["Lenguaje corporal",["Relajado","Tenso, inquieto, deambula","Rígido, puños cerrados, rodillas flexionadas"]],
+  ["Consolabilidad",["No necesita consuelo","Se distrae o tranquiliza con voz o tacto","Inconsolable"]]
+];
+const MENTEN = ["Nariz fría o pálida","Extremidades frías","Livideces","Cianosis de labios","Estertores premortem","Apneas de más de 15 segundos en 1 minuto","Oliguria (menos de 300 mL/24 h)","Somnolencia (más de 15 h de sueño al día)"];
+const HUI = ["Pupilas no reactivas","Respuesta disminuida a estímulos verbales","Respuesta disminuida a estímulos visuales","Incapacidad para cerrar los párpados","Caída del surco nasolabial","Hiperextensión del cuello","Gruñido de las cuerdas vocales","Hemorragia digestiva alta"];
+const CHARLSON = [["Infarto de miocardio",1],["Insuficiencia cardíaca",1],["Enfermedad vascular periférica",1],["ACV o AIT",1],["Demencia",1],["EPOC",1],["Enfermedad del tejido conectivo",1],["Úlcera péptica",1],["Hepatopatía leve",1],["Diabetes sin daño de órgano",1],["Diabetes con daño de órgano",2],["Hemiplejía",2],["Enfermedad renal moderada o grave",2],["Tumor sólido sin metástasis",2],["Leucemia o linfoma",2],["Hepatopatía moderada o grave",3],["Tumor sólido metastásico",6],["SIDA",6]];
+const DIAS = [1,3,5,7,14,30,45,60,90,180,365];
+const LAU = {70:[99,97,96,95,87,77,62,51,35,16,7],60:[99,97,95,92,83,64,49,41,29,12,5],50:[97,93,87,82,67,47,36,28,19,8,4],40:[94,82,73,null,46,27,19,15,null,4,1],30:[84,63,48,40,23,12,null,6,4,2,1],20:[56,28,15,9,4,2,2,1,1,0,0],10:[34,13,5,3,1,0,0,0,0,0,0]};
+const CASOS = {70:150,60:487,50:1055,40:1647,30:1420,20:737,10:570};
+
+/* ---------- construir controles ---------- */
+$("d-painad").innerHTML = PAINAD.map(([t,ops],i) => `<div class="q">${i+1}. ${t}</div><div class="checks">${ops.map((o,k)=>`<label class="ck"><input type="radio" name="pa${i}" value="${k}" ${k===0?"checked":""}><span><b>${k}</b> · ${o}</span></label>`).join("")}</div>`).join("");
+$("menten").innerHTML = MENTEN.map(t=>`<label class="ck"><input type="checkbox" class="men"><span>${t}</span></label>`).join("");
+$("hui").innerHTML = HUI.map(t=>`<label class="ck"><input type="checkbox" class="hui"><span>${t}</span></label>`).join("");
+$("charlson").innerHTML = CHARLSON.map(([t,p])=>`<label class="ck"><input type="checkbox" class="cha" value="${p}"><span>${t} <b>+${p}</b></span></label>`).join("");
+
+/* ---------- salida ---------- */
+const LV = {ok:"l-ok",aj:"l-aj",ev:"l-ev",in:"l-in",na:""};
+const card = (t, val, txt, lv="na", falta="") => `<div class="res ${LV[lv]}"><div class="rh"><span>${t}</span><b>${val}</b></div><div>${txt}</div>${falta?`<div class="falta">Falta: ${falta}</div>`:""}</div>`;
+const colSv = p => p==null ? "background:#eef0f3;color:#7a8291" : p>=50 ? "background:var(--okbg);color:var(--ok)" : p>=20 ? "background:var(--ajbg);color:var(--aj)" : "background:var(--evbg);color:var(--ev)";
+
+/* ---------- cálculo ---------- */
+function calc(){
+  const T = {}; let corto = false;
+  const fv = v("func"); let pps=NaN,kps=NaN,ecog=NaN;
+  if(fv) [pps,kps,ecog] = fv.split("|").map(Number);
+  const edad=n("edad"), wbc=n("l_wbc"), lin=n("l_lin"), alb=n("l_alb"), col=n("l_col"), pcr=n("l_pcr");
+  const linAbs = wbc*lin/100;
+
+  // Funcionalidad
+  if(fv){
+    if(pps<=40) corto = true;
+    let h = card("Funcionalidad", `PPS ${pps} %`, `KPS ${kps} % · ECOG ${ecog}. ${ecog>=3?"Dependencia importante: priorizar confort; las medidas invasivas pueden ser fútiles.":"Funcionalidad conservada en parte: mantener manejo activo de síntomas."}`, ecog>=3?"ev":pps<=60?"aj":"ok");
+    h += LAU[pps]
+      ? `<div class="q">Probabilidad de sobrevida por día<sup>2</sup></div><div class="surv">${DIAS.map((d,k)=>LAU[pps][k]==null?"":`<div style="${colSv(LAU[pps][k])}">Día ${d}<b>${LAU[pps][k]} %</b></div>`).join("")}</div>`
+      : `<div class="hint">La tabla de sobrevida cubre PPS 10–70 %. Con PPS ≤ 50 %, solo ~10 % vive más de 6 meses<sup>1</sup>.</div>`;
+    $("o-func").innerHTML = h;
+    T.func = [`PPS ${pps} %`, ecog>=3?`ECOG ${ecog} · dependiente`:`ECOG ${ecog} · autonomía parcial`, ecog>=3?"ev":pps<=60?"aj":"ok"];
+  } else { $("o-func").innerHTML = card("Funcionalidad","—","Seleccione el nivel de PPS.","na"); T.func=["—","Sin datos","na"]; }
+
+  // CFS
+  const cfs = parseInt(v("cfs"));
+  if(cfs){
+    const [t,lv] = cfs<=3?["Sin fragilidad","ok"]:cfs===4?["Fragilidad muy leve","aj"]:cfs<=6?["Fragilidad leve a moderada","aj"]:cfs<=8?["Fragilidad grave a muy grave","ev"]:["Enfermedad terminal","ev"];
+    const cfsUso = cfs>=9 ? " Expectativa de vida &lt; 6 meses." : cfs>=7 ? " Alta mortalidad al año: valore la proporcionalidad de hospitalización, UCI o quimioterapia." : cfs>=5 ? " Considere la fragilidad al indicar tratamientos intensivos." : "";
+    const cfsEd = (!isNaN(edad) && edad<65) ? `<div class="hint">Validada en ≥ 65 años: interprete con cautela a los ${edad} años.</div>` : "";
+    $("o-cfs").innerHTML = card("Clinical Frailty Scale", `${cfs} / 9`, `${t}<sup>21</sup>.${cfsUso}${cfsEd}`, lv);
+    T.cfs = [`CFS ${cfs} / 9`, t, lv];
+  } else { $("o-cfs").innerHTML = ""; T.cfs = ["—","Sin datos","na"]; }
+
+  // PPI (oncológico y no oncológico)
+  if(fv){
+    const ppi = parseFloat(v("s_ingesta")) + (ck("s_edema")?1:0) + (ck("s_disnea")?3.5:0) + (ck("s_delirium")?4:0) + (pps<=20?4:pps<=50?2.5:0);
+    if(ppi>4) corto = true;
+    const g = ppi<2 ? "A: sobrevida 4–5 meses" : ppi<4 ? "B: sobrevida ~3 meses" : "C";
+    let txt, lv;
+    if(ppi>6){ txt="Sobrevida estimada &lt; 3 semanas (VPP 86 %, VPN 76 %)"; lv="ev"; }
+    else if(ppi>4){ txt="Sobrevida estimada &lt; 6 semanas (VPP 91 %, VPN 64 %)"; lv="aj"; }
+    else { txt="Sobrevida estimada &gt; 6 semanas (VPP 83 %, VPN 71 %)"; lv="ok"; }
+    $("o-ppi").innerHTML = card("PPI", `${f1(ppi)} pts`, `Grupo ${g}. ${txt}<sup>3,4</sup>. Herramienta de grupo, no una probabilidad individual.`, lv);
+    T.ppi = [`${f1(ppi)} pts`, lv==="ev"?"Sobrevida &lt; 3 semanas":lv==="aj"?"Sobrevida &lt; 6 semanas":"Sobrevida &gt; 6 semanas", lv];
+    const m = ppi===0?[13,167]:ppi<=2?[23,157]:ppi<=9.5?[39,135]:[68,83];
+    const lvn = m[0]>=39?"ev":m[0]>=23?"aj":"ok";
+    $("o-ppin").innerHTML = card("PPI no oncológico", `${f1(ppi)} pts`, `Mortalidad ${m[0]} %, sobrevida media ${m[1]} días<sup>5</sup>.`, lvn);
+  } else {
+    $("o-ppi").innerHTML = card("PPI","—","Requiere el PPS (Funcionalidad).","na","PPS");
+    $("o-ppin").innerHTML = card("PPI no oncológico","—","Requiere el PPS (Funcionalidad).","na","PPS");
+    T.ppi=["—","Sin datos","na"];
+  }
+
+  // PaP y D-PaP
+  const cps = n("p_cps"), falP = [];
+  if(isNaN(cps)) falP.push("predicción clínica"); if(!fv) falP.push("PPS/KPS"); if(isNaN(wbc)) falP.push("leucocitos"); if(isNaN(lin)) falP.push("% linfocitos");
+  if(!falP.length){
+    const pap = cps + (kps<=20?2.5:0) + (ck("s_anorexia")?1.5:0) + (ck("s_disnea")?1:0) + (wbc<8500?0:wbc<=11000?0.5:1.5) + (lin>20?0:lin>=12?1:2.5);
+    const dpap = pap + (ck("s_delirium")?2:0);
+    if(pap>11 || dpap>12.5) corto = true;
+    const [g,lv] = pap<=5.5?["A: sobrevida a 30 días &gt; 70 %","ok"]:pap<=11?["B: sobrevida a 30 días 30–70 %","aj"]:["C: sobrevida a 30 días &lt; 30 %","ev"];
+    const [gd,lvd] = dpap<=7?["A: sobrevida a 30 días &gt; 70 %","ok"]:dpap<=12.5?["B: sobrevida a 30 días 30–70 %","aj"]:["C: sobrevida a 30 días &lt; 30 %","ev"];
+    $("o-pap").innerHTML = card("PaP", `${f1(pap)} / 17.5`, `Grupo ${g}<sup>6</sup>.`, lv) + card("D-PaP", `${f1(dpap)} / 19.5`, `Grupo ${gd}<sup>13</sup>. Delirium ${ck("s_delirium")?"presente (+2)":"ausente"}.`, lvd);
+    T.pap = [`${f1(pap)} · ${f1(dpap)}`, `Sobrevida a 30 días ${gd[0]==="A"?"&gt; 70 %":gd[0]==="B"?"30–70 %":"&lt; 30 %"}`, lvd];
+  } else { $("o-pap").innerHTML = card("PaP y D-PaP","—","Faltan datos para calcular.","na",falP.join(", ")); T.pap=["—","Incompleto","na"]; }
+
+  // PRONOPALL
+  const eleg = ck("pr_c1")&&ck("pr_c2")&&ck("pr_c3"), mets=v("pr_mets"), ldh=n("pr_ldh"), falR=[];
+  if(!fv) falR.push("ECOG"); if(mets==="") falR.push("metástasis"); if(isNaN(ldh)) falR.push("LDH"); if(isNaN(alb)) falR.push("albúmina");
+  if(!eleg){ $("o-pro").innerHTML = card("PRONOPALL","No aplica","Marque los tres criterios si el paciente es candidato; solo está validada en esa población.","na"); T.pro=["—","No aplica","na"]; }
+  else if(falR.length){ $("o-pro").innerHTML = card("PRONOPALL","—","Faltan datos para calcular.","na",falR.join(", ")); T.pro=["—","Incompleto","na"]; }
+  else {
+    const pE=ecog<=1?0:ecog<=3?2:4, pM=parseInt(mets), pL=ldh>=600?1:0, pA=alb*10<33?3:0, t=pE+pM+pL+pA;
+    const [g,lv] = t>=8?["A (mal pronóstico): sobrevida a 2 meses 24 %, a 6 meses 5 %; mediana 35 días","ev"]:t>=4?["B (intermedio): sobrevida a 2 meses 66 %, a 6 meses 27 %; mediana 78 días","aj"]:["C (buen pronóstico): sobrevida a 2 meses 92 %, a 6 meses 66 %; mediana 301 días","ok"];
+    $("o-pro").innerHTML = card("PRONOPALL", `${t} / 10`, `Grupo ${g}<sup>7</sup>. Orienta la decisión de tratamiento oncológico; no estima la fase final.<div class="hint">ECOG ${pE} · metástasis ${pM} · LDH ${pL} · albúmina ${pA} pts.</div>`, lv);
+    T.pro = [`${t} / 10`, `Mediana ${t>=8?35:t>=4?78:301} días`, lv];
+  }
+
+  // No oncológico: patología visible
+  const pat = rad("pat"), tipo = rad("tipo");
+  const PATN = {cro:"Crónica avanzada",dem:"Demencia",ic:"Insuficiencia cardíaca",epoc:"EPOC",hep:"Hepatopatía",ren:"Renal"};
+  const PATS = {cro:["paliar","profund"],dem:["fast"],ic:["nyha"],epoc:["bode","epx"],hep:["child","meld","hx"],ren:["cohen","chd"]};
+  const enPat = k => PATS[pat].includes(k);
+  document.querySelectorAll(".pat").forEach(p => p.style.display = p.dataset.p===pat ? "block" : "none");
+  $("patBox").style.display = tipo==="non" ? "block" : "none";
+  $("bOnc").style.display = tipo==="onc" ? "block" : "none";
+  $("bNon").style.display = tipo==="non" ? "block" : "none";
+  const ed85 = edad>=85;
+
+  // PALIAR
+  {
+    const falt=[]; if(isNaN(edad)) falt.push("edad"); if(!fv) falt.push("ECOG"); if(isNaN(alb)) falt.push("albúmina");
+    const p = (ed85?3:0) + (ck("pa_dis")?3.5:0) + (ck("s_anorexia")?3.5:0) + (ck("pa_upp")?3:0) + (alb<2.5?4:0) + (ecog>=3?4:0);
+    const [m,lv] = p===0?["20–21.5 %","ok"]:p<=3.5?["30.5–33 %","aj"]:p<=7?["43–46 %","aj"]:["61–67 %","ev"];
+    $("o-paliar").innerHTML = card("PALIAR", `${f1(p)} / 21`, `Mortalidad a 6 meses: ${m}<sup>14</sup>.`, falt.length?"na":lv, falt.join(", "));
+    T.paliar = falt.length?["—","Incompleto","na"]:[`${f1(p)} / 21`, `Mortalidad a 6 meses ${m}`, lv];
+  }
+  // PROFUND
+  {
+    const p = (ed85?3:0)+(ck("pf_neo")?6:0)+(ck("pf_dem")?3:0)+(ck("pf_nyha")?3:0)+(ck("pf_del")?3:0)+(ck("pf_hb")?3:0)+(ck("pf_bar")?4:0)+(ck("pf_cui")?2:0)+(ck("pf_ing")?3:0);
+    const [m,lv] = p<=2?["12–15 %","ok"]:p<=6?["21.5–31.5 %","aj"]:p<=10?["45–50 %","ev"]:["61–68 %","ev"];
+    $("o-profund").innerHTML = card("PROFUND", `${p} / 30`, `Mortalidad a 12 meses: ${m}<sup>15</sup>.`, isNaN(edad)?"na":lv, isNaN(edad)?"edad":"");
+    T.profund = isNaN(edad)?["—","Incompleto","na"]:[`${p} / 30`, `Mortalidad a 12 meses ${m}`, lv];
+  }
+  // FAST
+  {
+    const f = v("fast"), cx = document.querySelectorAll(".fcx:checked").length;
+    if(!f){ $("o-fast").innerHTML = ""; T.fast=["—","Sin datos","na"]; }
+    else {
+      const orden = ["1","2","3","4","5","6a","6b","6c","6d","6e","7a","7b","7c","7d","7e","7f"], i = orden.indexOf(f), terminal = i>=orden.indexOf("7c");
+      let txt, lv;
+      if(terminal && cx){ txt = "Cumple criterios de demencia terminal (estadio ≥ 7c con al menos una complicación en el último año): sobrevida estimada &lt; 6 meses."; lv="ev"; corto=true; }
+      else if(terminal){ txt = "Estadio ≥ 7c sin complicaciones registradas en el último año: demencia muy avanzada; aún no cumple el segundo criterio."; lv="aj"; }
+      else if(i>=orden.indexOf("7a")){ txt = "Estadio 7: demencia grave."; lv="aj"; }
+      else if(i>=orden.indexOf("6a")){ txt = "Demencia moderadamente grave."; lv="aj"; }
+      else { txt = "Demencia leve o sin deterioro funcional relevante."; lv="ok"; }
+      $("o-fast").innerHTML = card("FAST", f, txt+"<sup>16</sup> Para el estadio 7c deben estar presentes las características de 6a a 7c." + (i>=orden.indexOf("7a") ? " En estadio 7 la mediana de sobrevida es de unos 4 meses (media 6,9 meses)<sup>25</sup>." : ""), lv);
+      T.fast = [`Estadio ${f}`, terminal&&cx?"Demencia terminal (&lt; 6 meses)":terminal?"Muy avanzada, sin complicaciones":i>=5?"Moderadamente grave":"Leve", lv];
+    }
+  }
+  // NYHA
+  {
+    const c = parseInt(v("nyha"));
+    if(!c){ $("o-nyha").innerHTML=""; T.nyha=["—","Sin datos","na"]; }
+    else {
+      const txt = ["","Sin limitación.","Limitación leve.","Limitación marcada; criterio de enfermedad avanzada para PALIAR y PROFUND (III–IV).","Síntomas en reposo: insuficiencia cardíaca avanzada; suma en PALIAR (marque la disnea NYHA IV en Crónica avanzada)."][c];
+      const lv = c<=1?"ok":c===2?"aj":"ev";
+      $("o-nyha").innerHTML = card("NYHA", ["","I","II","III","IV"][c], txt, lv);
+      T.nyha = [`Clase ${["","I","II","III","IV"][c]}`, ["","Sin limitación","Limitación leve","Limitación marcada","Síntomas en reposo"][c], lv];
+    }
+  }
+  // BODE
+  {
+    const imc=n("b_imc"), fev=n("b_fev"), m6=n("b_6m"), mrc=v("b_mrc"), falt=[];
+    if(isNaN(imc)) falt.push("IMC"); if(isNaN(fev)) falt.push("FEV1"); if(isNaN(m6)) falt.push("caminata"); if(mrc==="") falt.push("mMRC");
+    if(falt.length && falt.length<4){ $("o-bode").innerHTML = card("BODE","—","Faltan datos.","na",falt.join(", ")); T.bode=["—","Incompleto","na"]; }
+    else if(falt.length===4){ $("o-bode").innerHTML=""; T.bode=["—","Sin datos","na"]; }
+    else {
+      const p = (imc>21?0:1) + (fev>=65?0:fev>=50?1:fev>=36?2:3) + (m6>=350?0:m6>=250?1:m6>=150?2:3) + [0,0,1,2,3][+mrc];
+      const [s,lv] = p<=2?["80 %","ok"]:p<=4?["67 %","aj"]:p<=6?["57 %","aj"]:["18 %","ev"];
+      $("o-bode").innerHTML = card("BODE", `${p} / 10`, `Sobrevida aproximada a 4 años: ${s}<sup>17</sup>.`, lv);
+      T.bode = [`${p} / 10`, `Sobrevida a 4 años ${s}`, lv];
+    }
+  }
+  // Child-Pugh y MELD-Na
+  {
+    const bil=n("h_bil"), inr=n("h_inr"), cr=n("h_cr"), na=n("h_na"), asc=v("h_asc"), enc=v("h_enc");
+    if(!isNaN(bil)&&!isNaN(inr)&&!isNaN(alb)&&asc&&enc){
+      const p = (bil<2?1:bil<=3?2:3) + (alb>3.5?1:alb>=3?2:3) + (inr<1.7?1:inr<=2.3?2:3) + (+asc) + (+enc);
+      const [c,s,lv] = p<=6?["A","100 %","ok"]:p<=9?["B","80 %","aj"]:["C","45 %","ev"];
+      $("o-child").innerHTML = card("Child-Pugh", `${p} pts · ${c}`, `Sobrevida a 1 año: ${s}<sup>18</sup>.`, lv);
+      T.child = [`Clase ${c} (${p})`, `Sobrevida a 1 año ${s}`, lv];
+    } else { $("o-child").innerHTML = card("Child-Pugh","—","Faltan datos.","na","bilirrubina, INR, albúmina, ascitis o encefalopatía"); T.child=["—","Incompleto","na"]; }
+    if(!isNaN(bil)&&!isNaN(inr)&&(!isNaN(cr)||ck("h_dial"))&&!isNaN(na)){
+      const c1 = x => Math.max(1,x);
+      const crU = ck("h_dial") ? 4 : Math.min(4, c1(cr));
+      let m = 0.957*Math.log(crU) + 0.378*Math.log(c1(bil)) + 1.120*Math.log(c1(inr)) + 0.643;
+      m = Math.round(m*10)/10*10;   // MELD(i) redondeado a la décima y multiplicado por 10
+      if(m>11){ const nac = Math.min(137, Math.max(125, na)); m = m + 1.32*(137-nac) - 0.033*m*(137-nac); }
+      m = Math.min(40, Math.round(m));
+      const [mo,lv] = m>=40?["71.3 %","ev"]:m>=30?["52.6 %","ev"]:m>=20?["19.6 %","aj"]:m>=10?["6.0 %","aj"]:["1.9 %","ok"];
+      $("o-meld").innerHTML = card("MELD-Na", `${m}`, `Mortalidad estimada a 3 meses: ${mo}<sup>19</sup>.`, lv);
+      T.meld = [`${m}`, `Mortalidad a 3 meses ${mo}`, lv];
+    } else { $("o-meld").innerHTML = card("MELD-Na","—","Faltan datos.","na","creatinina, bilirrubina, INR o sodio"); T.meld=["—","Incompleto","na"]; }
+  }
+  // Cohen
+  {
+    const falt=[]; if(isNaN(edad)) falt.push("edad"); if(isNaN(alb)) falt.push("albúmina");
+    if(falt.length){ $("o-cohen").innerHTML = card("Cohen","—","Faltan datos.","na",falt.join(", ")); T.cohen=["—","Incompleto","na"]; }
+    else if(edad<16||edad>92||alb<1.7||alb>5){ $("o-cohen").innerHTML = card("Cohen","No aplica","El modelo solo es válido con edad de 16 a 92 años y albúmina de 1.7 a 5.0 g/dL.","na"); T.cohen=["—","No aplica","na"]; }
+    else {
+      const albT = Math.min(4.5, Math.max(3.0, alb));
+      const xb = (rad("csq")==="no"?Math.log(2.71):0) + Math.log(0.27)*albT + Math.log(1.36)/10*edad + (ck("co_dem")?Math.log(2.24):0) + (ck("co_evp")?Math.log(1.88):0);
+      const mort = 100*(1 - Math.pow(0.58, Math.exp(xb)));
+      const lv = mort>=30?"ev":mort>=10?"aj":"ok";
+      if(mort>=50) corto = true;
+      $("o-cohen").innerHTML = card("Cohen", `${f1(mort)} %`, `Probabilidad estimada de muerte en 6 meses en hemodiálisis<sup>20</sup>.<div class="hint">En la validación externa discriminó solo de forma moderada (c = 0,70) y tiende a sobreestimar la mortalidad: no lo use como único criterio para decisiones de alto riesgo, como retirar la diálisis<sup>25</sup>.</div>`, lv);
+      T.cohen = [`${f1(mort)} %`, "Mortalidad a 6 meses en hemodiálisis", lv];
+    }
+  }
+
+  // CONUT
+  if(![alb,col,wbc,lin].some(isNaN)){
+    const p = (alb>=3.5?0:alb>=3?2:alb>=2.5?4:6) + (linAbs>=1600?0:linAbs>=1200?1:linAbs>=800?2:3) + (col>=180?0:col>=140?1:col>=100?2:3);
+    const [t,lv] = p<=1?["Estado nutricional normal","ok"]:p<=4?["Desnutrición leve","aj"]:p<=8?["Desnutrición moderada","aj"]:["Desnutrición grave","ev"];
+    $("o-conut").innerHTML = card("CONUT", `${p} / 12`, `${t}<sup>8</sup>. Linfocitos absolutos: ${Math.round(linAbs)} /mm³.`, lv);
+    T.conut = [`${p} / 12`, t, lv];
+  } else { $("o-conut").innerHTML = card("CONUT","—","Ingrese albúmina, colesterol, leucocitos y % de linfocitos.","na"); T.conut=["—","Incompleto","na"]; }
+  // PNI
+  if(!isNaN(alb)&&!isNaN(linAbs)){
+    const pni = 10*alb + 0.005*linAbs, lv = pni>=45?"ok":"ev";
+    $("o-pni").innerHTML = card("PNI (Onodera)", f1(pni), (pni>=45?"Sin riesgo inmunonutricional (≥ 45).":"Riesgo inmunonutricional (&lt; 45): peor pronóstico.")+"<sup>22</sup>", lv);
+    T.pni = [f1(pni), pni>=45?"Sin riesgo inmunonutricional":"Riesgo inmunonutricional", lv];
+  } else { $("o-pni").innerHTML = ""; T.pni=["—","Incompleto","na"]; }
+  // mGPS
+  if(!isNaN(pcr)&&!isNaN(alb)){
+    const g = pcr<=10 ? 0 : (alb*10<35 ? 2 : 1), lv = ["ok","aj","ev"][g];
+    $("o-gps").innerHTML = card("mGPS", `${g}`, ["PCR ≤ 10 mg/L: sin inflamación sistémica.","PCR &gt; 10 mg/L con albúmina ≥ 3.5 g/dL.","PCR &gt; 10 mg/L con albúmina &lt; 3.5 g/dL: peor pronóstico."][g]+"<sup>23</sup>", lv);
+    T.gps = [`${g} / 2`, ["Sin inflamación sistémica","Inflamación sistémica","Inflamación con hipoalbuminemia"][g], lv];
+  } else { $("o-gps").innerHTML = ""; T.gps=["—","Incompleto","na"]; }
+
+  // Fearon
+  const pP=parseInt(v("s_peso")), imc=ck("s_imc"), sar=ck("s_sarco"), enf=v("s_enf")==="1", ano=ck("s_anorexia");
+  let fe;
+  if(enf && fv && pps<=40) fe=["Caquexia refractaria","Enfermedad progresiva sin respuesta al tratamiento, bajo desempeño y expectativa de vida probablemente &lt; 3 meses. La nutrición artificial suele ser fútil: priorizar alivio sintomático y apoyo a la familia.","ev"];
+  else if(pP===2 || (pP===1 && (imc||sar))) fe=["Caquexia","Pérdida de peso &gt; 5 %, o &gt; 2 % con IMC &lt; 20 o sarcopenia. Manejo multimodal: optimizar nutrición y valorar apoyo farmacológico si la expectativa de vida lo permite.","aj"];
+  else if(ano || pP===1) fe=["Precaquexia","Anorexia o cambios metabólicos con pérdida de peso ≤ 5 %. Ventana para intervenir: vigilar peso, educación y suplementación calórico-proteica.","aj"];
+  else fe=["Sin caquexia","Sin criterios de caquexia en este momento.","ok"];
+  $("o-fearon").innerHTML = card("Fearon", fe[0], fe[1]+"<sup>9</sup>", fe[2]);
+  T.fearon = [fe[0], {"Caquexia refractaria":"Priorizar confort","Caquexia":"Manejo multimodal","Precaquexia":"Intervención nutricional precoz","Sin caquexia":"Vigilar peso e ingesta"}[fe[0]], fe[2]];
+
+  // Dolor
+  const dt = rad("dtipo");
+  $("d-eva").style.display = dt==="eva"?"block":"none"; $("d-painad").style.display = dt==="painad"?"block":"none";
+  if(dt==="eva"){
+    const e = n("eva");
+    if(isNaN(e)){ $("o-dol").innerHTML = card("EVA","—","Ingrese la intensidad.","na"); T.dol=["—","Sin datos","na"]; }
+    else { const [t,lv] = e>=7?["Dolor intenso: rescates oportunos y considerar rotación de opioide o vía SC.","ev"]:e>=4?["Dolor moderado: ajustar la dosis basal.","aj"]:["Dolor leve o controlado.","ok"];
+      $("o-dol").innerHTML = card("EVA", `${e} / 10`, t, lv); T.dol=[`EVA ${e}/10`, e>=7?"Intenso: rescates y rotación":e>=4?"Moderado: ajustar dosis basal":"Controlado", lv]; }
+  } else {
+    let p=0; for(let i=0;i<5;i++) p += +rad("pa"+i);
+    const lv = p>=4?"ev":p>=1?"aj":"ok";
+    $("o-dol").innerHTML = card("PAINAD", `${p} / 10`, (p>=4?"Dolor significativo en paciente no comunicativo: abordaje inmediato y valorar infusión continua.":"Sin evidencia clara de dolor con esta escala.")+"<sup>12</sup>", lv);
+    T.dol=[`PAINAD ${p}/10`, p>=4?"Dolor significativo":"Sin evidencia de dolor", lv];
+  }
+
+  // Menten
+  const men = document.querySelectorAll(".men:checked").length;
+  let me;
+  if(men>=4){ corto=true; me=["Situación agónica: con 4 o más signos, ~90 % fallece en las siguientes 96 horas. Confort estricto, retirar medicación fútil, vía SC, plan de últimos días y acompañamiento a la familia.","ev"]; }
+  else if(men>=1) me=["Situación preagónica (1 a 3 signos). Reevaluar a diario.","aj"];
+  else me=["Sin signos presentes.","ok"];
+  $("o-men").innerHTML = `<div class="big2">${men} / 8</div>` + card("Menten", men>=4?"Agónica":men>=1?"Preagónica":"—", me[0]+"<sup>10</sup>", me[1]);
+  T.men = [`${men} / 8`, men>=4?"Agónica: ~90 % fallece en 96 h":men>=1?"Preagónica: reevaluar a diario":"Sin signos de agonía", me[1]];
+
+  // Hui
+  const hui = document.querySelectorAll(".hui:checked").length;
+  if(hui){ corto = true; }
+  $("o-hui").innerHTML = card("Signos de Hui", `${hui} / 8`, hui ? "Al menos un signo presente: alta probabilidad de muerte en los próximos 3 días<sup>24</sup>." : "Ningún signo presente. Su ausencia no descarta la muerte inminente: son específicos, pero poco sensibles<sup>24</sup>.", hui?"ev":"na");
+  T.hui = [`${hui} / 8`, hui?"Muerte probable en ≤ 3 días":"Sin signos de muerte inminente", hui?"ev":"na"];
+
+  // Charlson
+  if(!isNaN(edad)){
+    let pts=0; document.querySelectorAll(".cha:checked").forEach(c=>pts+=+c.value);
+    const tot = pts + Math.max(0, Math.floor((edad-40)/10));
+    const sv = ["98 %","96 %","90 %","77 %","53 %"][tot] || "21 %";
+    const txt = corto ? `Supervivencia estimada a 10 años: ${sv}<sup>11</sup>. <b>Sin aplicabilidad:</b> el paciente ya cumple criterios de mortalidad a corto plazo.` : `Supervivencia estimada a 10 años: ${sv}<sup>11</sup>. Útil para planificar en pacientes sin riesgo de mortalidad a corto plazo.`;
+    const lv = corto?"in":tot>=5?"ev":tot>=3?"aj":"ok";
+    $("o-cha").innerHTML = card("Charlson", `${tot} pts`, txt, lv);
+    T.cha = [`${tot} pts`, corto?"Sin aplicabilidad: riesgo a corto plazo":`Supervivencia a 10 años ${sv}`, lv];
+  } else { $("o-cha").innerHTML = card("Charlson","—","Ingrese la edad en Funcionalidad.","na"); T.cha=["—","Sin datos","na"]; }
+
+  // Pregunta sorpresa
+  const sq = rad("sq"), SQP = {"12m":["12 meses",7,37,93,28],"30d":["30 días",4,58,90,26],"7d":["7 días",2,30,96,26],"3d":["3 días",1,54,84,27]};
+  let sqp = rad("sqp");
+  const sq3ok = fv && pps<=20;
+  $("sq3").style.display = sq3ok ? "" : "none";
+  if(sqp==="3d" && !sq3ok){ document.querySelector('input[name=sqp][value="12m"]').checked = true; sqp = "12m"; }
+  const [sqN,sqLv,sqVPP,sqVPN,sqRef] = SQP[sqp];
+  $("sqTxt").textContent = `¿Le sorprendería que este paciente falleciera en los próximos ${sqN}?` + (sqp==="3d" ? " (validada con PPS ≤ 20 %)" : "");
+  if(sq==="no") $("o-sq").innerHTML = card("Pregunta sorpresa", `${sqN}`, `«No me sorprendería»: muerte posible en ese plazo, con muchos falsos positivos (VPP ${sqVPP} %)<sup>${sqRef}</sup>. ${sqp==="12m"?"Indica necesidad de atención paliativa.":"Prepare a la familia y reevalúe con frecuencia."}`, "aj");
+  else if(sq==="si") $("o-sq").innerHTML = card("Pregunta sorpresa", `${sqN}`, `«Sí me sorprendería»: la muerte en ese plazo es poco probable (VPN ${sqVPN} %)<sup>${sqRef}</sup>.`, "ok");
+  else $("o-sq").innerHTML = "";
+
+  // EPOC tras exacerbación
+  {
+    const nE = document.querySelectorAll(".epx:checked").length + (edad>70?1:0);
+    if(!isNaN(edad) || nE){
+      const lv = nE>=3?"ev":nE>=1?"aj":"ok";
+      $("o-epx").innerHTML = card("EPOC tras exacerbación", `${nE} / 8`, (nE>=3?"≥ 3 factores: mediana de sobrevida ≤ 6 meses":"Menos de 3 factores: no cumple el criterio de mediana ≤ 6 meses")+`<sup>25</sup>.`+(edad>70?`<div class="hint">Incluye edad &gt; 70 años.</div>`:""), lv);
+      T.epx = [`${nE} / 8 factores`, nE>=3?"Mediana ≤ 6 meses":"&lt; 3 factores", lv];
+    } else { $("o-epx").innerHTML = ""; T.epx = ["—","Sin datos","na"]; }
+  }
+  // Charlson modificado en diálisis
+  {
+    if(!isNaN(edad)){
+      let pts = 2; document.querySelectorAll(".chd:checked").forEach(c=>pts+=+c.value);
+      pts += Math.max(0, Math.ceil((edad-40)/10));
+      const [g,m,lv] = pts<=3?["bajo","3 %","ok"]:pts<=5?["moderado","13 %","aj"]:pts<=7?["alto","27 %","ev"]:["muy alto","49 %","ev"];
+      $("o-chd").innerHTML = card("Charlson en diálisis", `${pts} pts`, `Riesgo ${g}: mortalidad anual aproximada ${m}<sup>25</sup>.`, lv);
+      T.chd = [`${pts} pts`, `Mortalidad anual ${m}`, lv];
+    } else { $("o-chd").innerHTML = card("Charlson en diálisis","—","Ingrese la edad en Funcionalidad.","na"); T.chd = ["—","Sin datos","na"]; }
+  }
+
+  // Hepatopatía terminal: complicaciones (mediana de sobrevida)
+  {
+    const HX = {enc:["Encefalopatía grave o refractaria","12 meses",7],asc:["Ascitis refractaria","6 meses",6],shr2:["Síndrome hepatorrenal tipo 2","3–6 meses",6],shr1:["Síndrome hepatorrenal tipo 1","2–4 semanas",4]};
+    const sel = [...document.querySelectorAll(".hx:checked")].map(x=>HX[x.value]);
+    if(sel.length){
+      sel.sort((a,b)=>a[2]-b[2]); const w = sel[0];
+      $("o-hx").innerHTML = card("Hepatopatía terminal", w[1], `Mediana de sobrevida con ${w[0].toLowerCase()}: ${w[1]} (sin complicaciones, unos 2 años; la muerte puede ser súbita)<sup>18</sup>.`, w[2]<=6?"ev":"aj");
+      T.hx = [`Mediana ${w[1]}`, `Mediana ${w[1]}`, w[2]<=6?"ev":"aj", w[2]];
+    } else { $("o-hx").innerHTML = ""; T.hx = ["—","Sin complicaciones marcadas","na",7]; }
+  }
+  // Resumen
+  const BC = {ok:"var(--ok)",aj:"#e0a100",ev:"var(--ev)",in:"var(--pri2)",na:"#c9ced6"};
+  const TL = [["func","Funcionalidad","func"],["cfs","Fragilidad","func"],["ppi","PPI","onc"],["pap","PaP · D-PaP","onc"],["pro","PRONOPALL","onc"],
+    ["paliar","PALIAR","non"],["profund","PROFUND","non"],["fast","FAST","non"],["nyha","NYHA","non"],["bode","BODE","non"],["child","Child-Pugh","non"],["meld","MELD-Na","non"],["cohen","Cohen","non"],["hx","Hepatopatía terminal","non"],["epx","EPOC post-exacerbación","non"],["chd","Charlson diálisis","non"],
+    ["conut","CONUT","nut"],["pni","PNI","nut"],["gps","mGPS","nut"],["fearon","Caquexia","nut"],["dol","Dolor","dol"],["men","Menten","ult"],["hui","Hui","ult"],["cha","Charlson","com"]].map(([k,t,tab]) => [k,t,{func:"s1",com:"s2",onc:"s2",non:"s2",nut:"s3",dol:"s4",ult:"s4"}[tab]]);
+  const GR = [["General",["func","cfs"]], tipo==="onc" ? ["Oncológico",["ppi","pap","pro"]] : ["No oncológico · "+PATN[pat],PATS[pat]],["Nutrición",["conut","pni","gps","fearon"]],["Síntomas y últimos días",["dol","men","hui"]]].concat(tipo==="non"&&pat==="cro"?[["Comorbilidad",["cha"]]]:[]);
+  const TAB = Object.fromEntries(TL.map(([k,t,tab]) => [k,[t,tab]]));
+  $("tiles").innerHTML = GR.map(([g,ks]) => {
+    const vis = ks.filter(k => T[k][0]!=="—" || ["func","ppi","dol","men","cha"].includes(k));
+    return vis.length ? `<div class="group" style="grid-column:1/-1;margin:8px 0 0">${g}</div>` + vis.map(k => `<div class="tile" data-go="${TAB[k][1]}" style="border-left-color:${BC[T[k][2]]}"><small>${TAB[k][0]}</small><b>${T[k][0]}</b><span>${T[k][1]}</span></div>`).join("") : "";
+  }).join("");
+  document.querySelectorAll(".tile").forEach(x => x.onclick = () => verTab(x.dataset.go));
+  // encabezados de las secciones
+  const PATK = {cro:["paliar","PALIAR"],dem:["fast","FAST"],ic:["nyha","NYHA"],epoc:["bode","BODE"],hep:["child","Child-Pugh"],ren:["cohen","Cohen"]};
+  const st = (k,t) => T[k][0]!=="—" ? `${t} ${T[k][0]}: ${T[k][1]}` : "";
+  $("h1").innerHTML = [tipo==="onc"?"Oncológico":"No oncológico · "+PATN[pat], fv?`PPS ${pps} %`:"", isNaN(edad)?"":`${edad} años`].filter(Boolean).join(" · ");
+  $("h2").innerHTML = (tipo==="onc" ? st("ppi","PPI") : (st(PATK[pat][0], PATK[pat][1]) || st("ppi","PPI"))) || "Según el tipo de paciente";
+  $("h3").innerHTML = [st("conut","CONUT"), T.fearon[0]!=="Sin caquexia"?T.fearon[0]:""].filter(Boolean).join(" · ") || "Laboratorio y caquexia";
+  $("h4").innerHTML = [T.dol[0]!=="—"?T.dol[0]:"", men?`Menten ${men}/8`:"", hui?`Hui ${hui}/8`:""].filter(Boolean).join(" · ") || "Dolor, Menten y Hui";
+
+  // ---------- Pronóstico integrado: horizonte de sobrevida ----------
+  // nivel: 1 horas-días · 2 días · 3 semanas (<3) · 4 semanas (<6) · 5 1–3 meses · 6 3–6 meses · 7 > 6 meses
+  const NIV = ["","Horas a pocos días","Días","Menos de 3 semanas","Menos de 6 semanas","1 a 3 meses","3 a 6 meses","Más de 6 meses"];
+  const E = [];
+  if(hui) E.push([1,"Signos de Hui","muerte probable en ≤ 3 días"]);
+  if(men>=4) E.push([1,"Menten","agonía: ~90 % fallece en 96 h"]);
+  else if(men>=1) E.push([2,"Menten","situación preagónica"]);
+  if(fv && LAU[pps]){
+    const f = LAU[pps]; let a = null, b = null;
+    for(let k=0;k<DIAS.length;k++){ if(f[k]==null) continue; if(f[k]<50){ b = DIAS[k]; break; } a = DIAS[k]; }
+    const med = a==null ? `menos de ${b} día` : `entre ${a} y ${b} días`;
+    const nv = (b||400)<=7?2:(b||400)<=21?3:(b||400)<=45?4:(b||400)<=90?5:(b||400)<=180?6:7;
+    E.push([nv,`PPS ${pps} %`,`mediana ${med}`]);
+  } else if(fv && pps>=80) E.push([7,`PPS ${pps} %`,"sobrevida prolongada"]);
+  if(fv){
+    const ppiV = parseFloat(v("s_ingesta")) + (ck("s_edema")?1:0) + (ck("s_disnea")?3.5:0) + (ck("s_delirium")?4:0) + (pps<=20?4:pps<=50?2.5:0);
+    if(tipo==="onc") E.push(ppiV>6?[3,"PPI","&lt; 3 semanas"]:ppiV>4?[4,"PPI","&lt; 6 semanas"]:[5,"PPI","&gt; 6 semanas"]);
+  }
+  if(tipo==="onc" && T.pap[0]!=="—"){ const g = T.pap[1].includes("&lt; 30")?3:T.pap[1].includes("30–70")?4:5; E.push([g,"D-PaP", "sobrevida a 30 días " + T.pap[1].split("días ")[1] + `<br><small class="pn">Escala más precisa a 30 días (PaP 88 %, D-PaP 80 %, PPI 72 %, PPS &lt; 50 %)<sup>25</sup>.</small>`]); }
+  if(tipo==="onc" && T.pro[0]!=="—"){ const md = parseInt(T.pro[1].replace(/\D/g,"")); E.push([md<=45?4:md<=90?5:7,"PRONOPALL",`mediana ${md} días<br><small class="pn">Orienta la decisión de tratamiento oncológico; no estima la fase final.</small>`]); }
+  if(tipo==="non"){
+    if(enPat("fast") && T.fast[1].startsWith("Demencia terminal")) E.push([6,"FAST","demencia terminal: &lt; 6 meses"]);
+    else if(enPat("fast") && /^Estadio 7/.test(T.fast[0])) E.push([6,"FAST","estadio 7: mediana ~4 meses"]);
+    if(enPat("epx") && T.epx[0]!=="—" && T.epx[1].startsWith("Mediana")) E.push([6,"EPOC post-exacerbación","mediana ≤ 6 meses"]);
+    if(enPat("chd") && T.chd[0]!=="—") E.push([7,"Charlson en diálisis",T.chd[1].toLowerCase()]);
+    if(enPat("paliar") && T.paliar[0]!=="—") E.push([T.paliar[2]==="ev"?6:7,"PALIAR",T.paliar[1].toLowerCase()]);
+    if(enPat("profund") && T.profund[0]!=="—") E.push([T.profund[2]==="ev"?6:7,"PROFUND",T.profund[1].toLowerCase()]);
+    if(enPat("cohen") && T.cohen[0]!=="—") E.push([parseFloat(T.cohen[0])>=50?6:7,"Cohen",`mortalidad a 6 meses ${T.cohen[0]}`]);
+    if(enPat("meld") && T.meld[0]!=="—" && T.meld[2]==="ev") E.push([5,"MELD-Na",T.meld[1].toLowerCase()]);
+    if(enPat("bode") && T.bode[0]!=="—") E.push([7,"BODE",T.bode[1].toLowerCase()]);
+    if(enPat("child") && T.child[0]!=="—") E.push([7,"Child-Pugh",T.child[1].toLowerCase()]);
+    if(enPat("hx") && T.hx[0]!=="—") E.push([T.hx[3],"Hepatopatía terminal",T.hx[1].toLowerCase()]);
+  }
+  const EI = [];
+  if(sq) EI.push([sqLv, `Pregunta sorpresa (${sqN})`, sq==="no" ? `muerte posible en ${sqN}<br><small class="pn">VPP ${sqVPP} %: no fija el horizonte.</small>` : `muerte en ${sqN} poco probable<br><small class="pn">VPN ${sqVPN} %.</small>`]);
+  if(E.length){
+    E.sort((x,y)=>x[0]-y[0]);
+    const peor = E[0][0];
+    const coinc = E.filter(e=>Math.abs(e[0]-peor)<=1).length;
+    $("prog").innerHTML = `<div class="prog"><small>Sobrevida estimada</small><b>${NIV[peor]}</b>
+      <div class="why">Según ${E[0][1]} (${E[0][2].split("<br>")[0]}). ${E.length===1?"Una sola escala: complete más datos para mayor precisión.":coinc>1?`${coinc} de ${E.length} escalas coinciden en este horizonte.`:peor<=2?"Las demás escalas sugieren un horizonte mayor, pero los signos clínicos de agonía tienen prioridad.":"Las escalas no coinciden: revise los datos y reevalúe."}${sq==="no"&&sqLv<peor?" La pregunta sorpresa sugiere menos tiempo: reevalúe pronto.":""}${sq==="si"&&sqLv>=peor&&sqp!=="12m"?" Ojo: respondió que le sorprendería la muerte en ese plazo; revise los datos.":""}</div></div>
+      <div class="card"><h2>Qué dice cada escala</h2><ul class="ev">${E.concat(EI).map(e=>`<li><span>${e[1]}</span><span>${e[2]}</span></li>`).join("")}</ul>
+      <div class="hint" style="margin-top:8px">Se toma como referencia el horizonte más corto. Son estimaciones de grupo: comunique el pronóstico como un rango (días, semanas o meses), no como una fecha, y reevalúe con cada cambio clínico.</div></div>`;
+  } else $("prog").innerHTML = `<div class="prog"><small>Sobrevida estimada</small><b>Sin datos</b><div class="why">Complete al menos el PPS en la sección 1.</div></div>`;
+
+  const sqTxt = sq==="no" ? " La respuesta a la pregunta sorpresa («no me sorprendería») indica necesidad de atención paliativa." : "";
+  $("recom").innerHTML = !fv && men===0 && !sq ? `<div class="alert a-b">Complete los datos para obtener una recomendación. Las escalas sin datos no aparecen en el resumen.</div>`
+    : (ecog>=3 || corto) ? `<div class="alert a-r"><b>Recomendación:</b> priorizar el manejo de confort y evitar medidas invasivas fútiles, dado el riesgo de mortalidad a corto plazo.${sqTxt}</div>`
+    : `<div class="alert a-y"><b>Recomendación:</b> mantener manejo activo y preventivo, reevaluando periódicamente.${sqTxt}</div>`;
+}
+
+function verTab(t){
+  if(t && t[0]==="s"){ abrir(t); return; }
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t===t));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id==="p-"+t));
+  document.body.classList.toggle("enres", t==="res");
+  calc();
+  window.scrollTo({top:0});
+}
+function abrir(id){
+  verTab("eval");
+  document.querySelectorAll(".sec").forEach(d => d.open = d.id===id);
+  const el = $(id); if(el) setTimeout(() => el.scrollIntoView({behavior:"smooth", block:"start"}), 50);
+}
+document.querySelectorAll(".sec").forEach(d => d.addEventListener("toggle", () => {
+  if(d.open && !window._todas) document.querySelectorAll(".sec").forEach(o => { if(o!==d) o.open = false; });
+}));
+document.querySelectorAll(".nx").forEach(b => b.onclick = e => { e.preventDefault(); const nn = b.dataset.n; nn==="res" ? verTab("res") : abrir(nn); });
+$("fab").onclick = () => verTab("res");
+$("abrirTodo").onclick = () => {
+  window._todas = !window._todas;
+  document.querySelectorAll(".sec").forEach((d,i) => d.open = window._todas || i===0);
+  $("abrirTodo").textContent = window._todas ? "Mostrar una sección a la vez" : "Abrir todas las secciones";
+};
+function limpiar(){
+  document.querySelectorAll("main input, main select").forEach(e => {
+    if(e.type==="checkbox") e.checked=false;
+    else if(e.type==="radio") e.checked = e.defaultChecked;
+    else if(e.tagName==="SELECT") e.selectedIndex=0;
+    else e.value="";
+  });
+  window._todas = false; $("abrirTodo").textContent = "Abrir todas las secciones";
+  abrir("s1");
+}
+window.limpiar = limpiar; window.calc = calc; window.verTab = verTab;
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => verTab(b.dataset.t));
+document.querySelector("main").addEventListener("input", calc);
+document.querySelector("main").addEventListener("change", calc);
+calc();
+}
+</script>
+<script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>

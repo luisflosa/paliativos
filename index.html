@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Paliativos LDFS</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paliativos LDFS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b4f7c">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;background:#eef1f6;color:#1b2433;min-height:100vh}
+  header{background:linear-gradient(160deg,#0b4f7c,#5b2f91);color:#fff;padding:calc(env(safe-area-inset-top) + 36px) 20px 40px;text-align:center}
+  header img{width:72px;height:72px;border-radius:18px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  h1{margin:14px 0 4px;font-size:1.5rem}
+  header p{margin:0;opacity:.85;font-size:.9rem}
+  main{max-width:520px;margin:-22px auto 0;padding:0 16px 40px}
+  a.t{display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;padding:18px;margin:12px 0;text-decoration:none;color:inherit;box-shadow:0 2px 12px rgba(20,40,60,.08)}
+  a.t i{flex:0 0 12px;height:46px;border-radius:6px}
+  a.t b{display:block;font-size:1.08rem}
+  a.t small{color:#66707f;font-size:.84rem}
+  a.t span.ar{margin-left:auto;font-size:1.4rem;color:#9aa3b0}
+  footer{text-align:center;font-size:.75rem;color:#66707f;padding:8px 16px 30px}
+</style>
+</head>
+<body>
+<header>
+  <img src="icon-180.png" alt="">
+  <h1>Paliativos LDFS</h1>
+  <p>Dr. Luis Diego Flores Salazar</p>
+</header>
+<main>
+  <a class="t" href="opioides.html"><i style="background:#1677b3"></i><div><b>Calculadora de opioides</b><small>Conversión, metadona, ketamina, compatibilidad</small></div><span class="ar">›</span></a>
+  <a class="t" href="pronostico.html"><i style="background:#2e9466"></i><div><b>Valoración pronóstica</b><small>PPS, PPI, PaP y escalas por patología</small></div><span class="ar">›</span></a>
+  <a class="t" href="renal.html"><i style="background:#7a4cc2"></i><div><b>Ajuste renal y hepático</b><small>Dosis, interacciones y final de vida</small></div><span class="ar">›</span></a>
+</main>
+<footer>Herramientas de apoyo clínico. No reemplazan el juicio clínico.</footer>
+<script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>

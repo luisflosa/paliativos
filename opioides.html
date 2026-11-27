@@ -139,7 +139,7 @@
     <select id="origin" onchange="calc()"></select>
     <label class="f">Dosis total en 24 h <span class="hint" id="unitHint"></span></label>
     <div class="row3">
-      <input type="number" id="dose" value="60" min="0" step="any" inputmode="decimal" oninput="calc()">
+      <input type="text" id="dose" value="60" inputmode="decimal" oninput="calc()">
       <select id="unit" onchange="calc()"></select>
     </div>
   </div>
@@ -166,7 +166,7 @@
       <label class="tg"><input type="checkbox" id="intol" onchange="calc()"><span>Efectos intolerables (delirium)</span></label>
     </div>
     <label class="f">Reducción al rotar (%) <span class="hint">0 = equivalencia directa</span></label>
-    <input type="number" id="reduction" value="0" min="0" max="75" inputmode="numeric" oninput="calc()">
+    <input type="text" id="reduction" value="0" inputmode="decimal" oninput="calc()">
   </div>
 
   <div class="ome"><small>Morfina oral equivalente</small><b id="morphineEq">—</b><div class="hint" id="omeNote"></div></div>
@@ -206,7 +206,7 @@
   <div class="card">
     <h2>Ketamina como adyuvante</h2>
     <label class="f">Peso del paciente (kg)</label>
-    <input type="number" id="weight" placeholder="kg" inputmode="decimal" oninput="calc()">
+    <input type="text" id="weight" placeholder="kg" inputmode="decimal" oninput="calc()">
     <div id="ketHero"></div>
   </div>
   <div class="card" id="ketMore"></div>
@@ -686,5 +686,14 @@ function verTab(t){
 })();
 </script>
 <script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+<script>
+document.addEventListener("input", e => {
+  const t = e.target;
+  if(t.tagName==="INPUT" && t.inputMode==="decimal"){
+    const v = t.value.replace(/,/g,".").replace(/[^0-9.]/g,"").replace(/(\..*)\./g,"$1");
+    if(v!==t.value) t.value = v;
+  }
+}, true);
+</script>
 </body>
 </html>

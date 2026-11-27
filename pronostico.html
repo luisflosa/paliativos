@@ -207,7 +207,7 @@
   <div class="card">
     <h2>Datos del paciente</h2>
     <label class="f">Edad (años)</label>
-    <input type="number" id="edad" inputmode="numeric" placeholder="Ej: 75">
+    <input type="text" id="edad" inputmode="decimal" placeholder="Ej: 75">
     <div class="q">Síntomas actuales <span class="hint">(se usan en PPI, PaP, PALIAR y caquexia)</span></div>
     <label class="f" style="margin-top:0">Ingesta oral</label>
     <select id="s_ingesta"><option value="0">Normal</option><option value="1">Moderadamente reducida</option><option value="2.5">Severamente reducida</option></select>
@@ -300,7 +300,7 @@
     </div>
     <div class="row">
       <div><label class="f">Sitios metastásicos</label><select id="pr_mets"><option value="">—</option><option value="0">0 o 1</option><option value="2">2 o más</option></select></div>
-      <div><label class="f">LDH (UI/L)</label><input type="number" id="pr_ldh" inputmode="decimal" placeholder="Ej: 450"></div>
+      <div><label class="f">LDH (UI/L)</label><input type="text" id="pr_ldh" inputmode="decimal" placeholder="Ej: 450"></div>
     </div>
     <div class="hint" style="margin-top:6px">Usa el ECOG de Funcionalidad y la albúmina de Nutrición.</div>
     <div id="o-pro"></div>
@@ -397,9 +397,9 @@
     <div class="card">
       <h2>BODE · EPOC</h2>
       <div class="grid2">
-        <div><label class="f">IMC (kg/m²)</label><input type="number" id="b_imc" step="0.1" inputmode="decimal"></div>
-        <div><label class="f">FEV1 (% del predicho)</label><input type="number" id="b_fev" inputmode="decimal"></div>
-        <div><label class="f">Caminata de 6 min (m)</label><input type="number" id="b_6m" inputmode="decimal"></div>
+        <div><label class="f">IMC (kg/m²)</label><input type="text" id="b_imc" inputmode="decimal"></div>
+        <div><label class="f">FEV1 (% del predicho)</label><input type="text" id="b_fev" inputmode="decimal"></div>
+        <div><label class="f">Caminata de 6 min (m)</label><input type="text" id="b_6m" inputmode="decimal"></div>
         <div><label class="f">Disnea mMRC</label><select id="b_mrc"><option value="">—</option><option value="0">0 · Solo con ejercicio intenso</option><option value="1">1 · Al andar rápido o subir una pendiente</option><option value="2">2 · Anda más lento que otros o debe parar en llano</option><option value="3">3 · Para tras ~100 m o pocos minutos</option><option value="4">4 · No sale de casa; disnea al vestirse</option></select></div>
       </div>
       <div id="o-bode"></div>
@@ -424,10 +424,10 @@
     <div class="card">
       <h2>Child-Pugh y MELD-Na</h2>
       <div class="grid2">
-        <div><label class="f">Bilirrubina (mg/dL)</label><input type="number" id="h_bil" step="0.1" inputmode="decimal"></div>
-        <div><label class="f">INR</label><input type="number" id="h_inr" step="0.1" inputmode="decimal"></div>
-        <div><label class="f">Creatinina (mg/dL)</label><input type="number" id="h_cr" step="0.1" inputmode="decimal"></div>
-        <div><label class="f">Sodio (mmol/L)</label><input type="number" id="h_na" inputmode="decimal"></div>
+        <div><label class="f">Bilirrubina (mg/dL)</label><input type="text" id="h_bil" inputmode="decimal"></div>
+        <div><label class="f">INR</label><input type="text" id="h_inr" inputmode="decimal"></div>
+        <div><label class="f">Creatinina (mg/dL)</label><input type="text" id="h_cr" inputmode="decimal"></div>
+        <div><label class="f">Sodio (mmol/L)</label><input type="text" id="h_na" inputmode="decimal"></div>
         <div><label class="f">Ascitis</label><select id="h_asc"><option value="">—</option><option value="1">Ausente</option><option value="2">Fácil de controlar</option><option value="3">Mal controlada</option></select></div>
         <div><label class="f">Encefalopatía</label><select id="h_enc"><option value="">—</option><option value="1">Ausente</option><option value="2">Grado 1–2</option><option value="3">Grado 3–4</option></select></div>
       </div>
@@ -495,11 +495,11 @@
   <div class="card">
     <h2>Laboratorio</h2>
     <div class="grid2">
-      <div><label class="f">Leucocitos (/mm³)</label><input type="number" id="l_wbc" inputmode="decimal" placeholder="9500"></div>
-      <div><label class="f">Linfocitos (%)</label><input type="number" id="l_lin" inputmode="decimal" placeholder="15"></div>
-      <div><label class="f">Albúmina (g/dL)</label><input type="number" id="l_alb" step="0.1" inputmode="decimal" placeholder="3.2"></div>
-      <div><label class="f">Colesterol (mg/dL)</label><input type="number" id="l_col" inputmode="decimal" placeholder="160"></div>
-      <div><label class="f">PCR (mg/L)</label><input type="number" id="l_pcr" step="0.1" inputmode="decimal" placeholder="12"></div>
+      <div><label class="f">Leucocitos (/mm³)</label><input type="text" id="l_wbc" inputmode="decimal" placeholder="9500"></div>
+      <div><label class="f">Linfocitos (%)</label><input type="text" id="l_lin" inputmode="decimal" placeholder="15"></div>
+      <div><label class="f">Albúmina (g/dL)</label><input type="text" id="l_alb" inputmode="decimal" placeholder="3.2"></div>
+      <div><label class="f">Colesterol (mg/dL)</label><input type="text" id="l_col" inputmode="decimal" placeholder="160"></div>
+      <div><label class="f">PCR (mg/L)</label><input type="text" id="l_pcr" inputmode="decimal" placeholder="12"></div>
     </div>
     <div id="o-conut"></div><div id="o-pni"></div><div id="o-gps"></div>
   </div>
@@ -531,7 +531,7 @@
       <label class="tg"><input type="radio" name="dtipo" value="eva" checked><span>Comunicativo (EVA/ENA)</span></label>
       <label class="tg"><input type="radio" name="dtipo" value="painad"><span>No comunicativo (PAINAD)</span></label>
     </div>
-    <div id="d-eva"><label class="f">Intensidad (0–10)</label><input type="number" id="eva" min="0" max="10" inputmode="numeric" placeholder="0–10"></div>
+    <div id="d-eva"><label class="f">Intensidad (0–10)</label><input type="text" id="eva" inputmode="decimal" placeholder="0–10"></div>
     <div id="d-painad" style="display:none"></div>
     <div id="o-dol"></div>
   </div>
@@ -1038,5 +1038,14 @@ calc();
 }
 </script>
 <script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+<script>
+document.addEventListener("input", e => {
+  const t = e.target;
+  if(t.tagName==="INPUT" && t.inputMode==="decimal"){
+    const v = t.value.replace(/,/g,".").replace(/[^0-9.]/g,"").replace(/(\..*)\./g,"$1");
+    if(v!==t.value) t.value = v;
+  }
+}, true);
+</script>
 </body>
 </html>
